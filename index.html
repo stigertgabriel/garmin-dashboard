@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Diário de Treino · Acesso</title>
+<style>
+  :root { --bg:#F4F5F7; --card:#fff; --tx:#1B1F24; --mut:#6B7280; --pri:#3D6FE0; --ok:#16977A; --err:#D43F55; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0F1216; --card:#1A1F26; --tx:#E8EAED; --mut:#9AA0A6; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--tx);
+         min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px; }
+  .card { background:var(--card); border-radius:16px; padding:28px; max-width:440px; width:100%; box-shadow:0 4px 24px rgba(0,0,0,.08); }
+  h1 { font-size:20px; margin:0 0 4px; } p { color:var(--mut); font-size:14px; margin:0 0 20px; }
+  button { width:100%; padding:12px; border:0; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; margin-top:8px; }
+  .pri { background:var(--pri); color:#fff; } .sec { background:transparent; color:var(--mut); border:1px solid #8884; }
+  .box { background:var(--bg); border-radius:10px; padding:12px; font-family:ui-monospace,Consolas,monospace; font-size:13px; word-break:break-all; margin:6px 0 12px; }
+  .lbl { font-size:12px; color:var(--mut); text-transform:uppercase; letter-spacing:.04em; }
+  .st { font-size:13px; padding:10px; border-radius:8px; margin-top:12px; }
+  .ok { background:#16977A22; color:var(--ok); } .err { background:#D43F5522; color:var(--err); }
+  .hide { display:none; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🏃 Diário de Treino</h1>
+  <p>Fase 2 · Teste de login e identificação do UID</p>
+
+  <div id="out">
+    <button class="pri" id="btnIn" type="button">Entrar com Google</button>
+  </div>
+
+  <div id="in" class="hide">
+    <div class="lbl">Conta</div><div class="box" id="email"></div>
+    <div class="lbl">Seu UID (copie e envie no chat)</div><div class="box" id="uid"></div>
+    <button class="pri" id="btnCopy" type="button">Copiar UID</button>
+    <button class="sec" id="btnTest" type="button">Testar leitura do banco</button>
+    <button class="sec" id="btnOut" type="button">Sair</button>
+  </div>
+
+  <div id="st" class="st hide" aria-live="polite"></div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBQhpRhJNuA81avroCq7sxoVnGFgLBKOZ4",
+    authDomain: "garmin-dashboard-3889b.firebaseapp.com",
+    databaseURL: "https://garmin-dashboard-3889b-default-rtdb.firebaseio.com",
+    projectId: "garmin-dashboard-3889b",
+    storageBucket: "garmin-dashboard-3889b.firebasestorage.app",
+    messagingSenderId: "281442531876",
+    appId: "1:281442531876:web:b4aac1de0f91919f1ef6b1"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+  const $ = id => document.getElementById(id);
+  const msg = (t, ok) => { const s = $('st'); s.textContent = t; s.className = 'st ' + (ok ? 'ok' : 'err'); };
+
+  $('btnIn').addEventListener('click', async () => {
+    try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+    catch (e) { msg('Falha no login: ' + e.code, false); }
+  });
+  $('btnOut').addEventListener('click', () => signOut(auth));
+  $('btnCopy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText($('uid').textContent); msg('UID copiado.', true); }
+    catch { msg('Não foi possível copiar, selecione o texto manualmente.', false); }
+  });
+  $('btnTest').addEventListener('click', async () => {
+    try { await get(ref(db, 'garmin/meta')); msg('Leitura PERMITIDA (esperado somente após a Fase 3).', true); }
+    catch (e) { msg('Leitura BLOQUEADA: ' + (e.code || e.message) + ' (esperado agora, regras fechadas).', false); }
+  });
+
+  onAuthStateChanged(auth, u => {
+    $('out').classList.toggle('hide', !!u);
+    $('in').classList.toggle('hide', !u);
+    $('st').classList.add('hide');
+    if (u) { $('email').textContent = u.email; $('uid').textContent = u.uid; }
+  });
+</script>
+</body>
+</html>
