@@ -442,6 +442,23 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
 .chip:disabled{opacity:.35;cursor:default}
 @media (max-width:900px){.dj-cols{grid-template-columns:minmax(0,1fr)}.dj-cols.eve .dj-n{order:-1}.dj-strip{grid-template-columns:repeat(3,minmax(0,1fr))}.dj-meds{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:640px){.dj-habs{grid-template-columns:minmax(0,1fr)}.dj-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.dj-btns button{width:32px}.dj-rpe button{width:27px}.dj-params{grid-template-columns:minmax(0,1fr)}.dj-rate{flex-wrap:wrap}}
+/* ===== v5 · revisões ===== */
+.mt-rv{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.mt-rv button{border:1px solid #3157E0;background:#EEF1FC;color:#2346B8;border-radius:10px;padding:5px 10px;font:700 12.5px Inter,system-ui,sans-serif;cursor:pointer}
+.mt-rv button span{font-weight:500;color:var(--ink2);margin-left:4px}
+.rv-pend{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.rv-pend .chip{border-color:#3157E0;color:#2346B8;background:#EEF1FC;font-weight:600}
+#rvT{margin-right:auto}
+#rvT button{padding:6px 12px;font-size:13px}
+.rv-body .card{margin-top:10px}.rv-body .grid .card{margin-top:0}
+.rv-t td{font-size:12.5px}.rv-t .delta{white-space:nowrap}.rv-t th{white-space:nowrap}.rv-t td:first-child{font-weight:500}
+.dj-rq{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--ink2);margin-top:8px}
+.dj-rq textarea{font:14px Inter,system-ui,sans-serif;border:1px solid var(--line);border-radius:9px;padding:7px 9px;background:var(--card);color:var(--ink);resize:vertical;font-weight:400}
+.dj-heat td{padding:1px!important}.dj-heat th{font-size:10px!important;padding:2px!important}
+.dj-heat i{display:block;width:14px;height:14px;border-radius:3px;background:var(--soft);margin:auto}
+.dj-heat i.y{background:#16977A}.dj-heat i.n{background:#F3C3CB}
+.rv-dates{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:640px){.rv-dates{grid-template-columns:repeat(2,minmax(0,1fr))}#rvT{display:flex;width:100%;overflow-x:auto}#rvT button{padding:6px 9px}}
 </style>
 </head>
 <body>
@@ -478,7 +495,7 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
   <button class="tab" data-tab="rss" type="button">⚡ Recuperação · Esforço · Sono</button>
 </nav>
 <div id="tab-diario">
-  <nav class="subtabs" id="djSubs" aria-label="Diário"><button type="button" data-dj="hoje">✍️ Hoje</button><button type="button" data-dj="habitos">✅ Hábitos</button><button type="button" data-dj="medidas">📏 Medidas</button><button type="button" data-dj="config">⚙️ Configurar</button></nav>
+  <nav class="subtabs" id="djSubs" aria-label="Diário"><button type="button" data-dj="hoje">✍️ Hoje</button><button type="button" data-dj="habitos">✅ Hábitos</button><button type="button" data-dj="medidas">📏 Medidas</button><button type="button" data-dj="revisoes">📊 Revisões</button><button type="button" data-dj="config">⚙️ Configurar</button></nav>
   <div id="djBody"></div>
 </div>
 <div id="tab-saude" hidden>
@@ -1329,7 +1346,7 @@ function drawChart(box, o) {
       s.values.forEach((v, i) => { if (v != null) el('circle', {cx: X(i), cy: Y(v), r: s.r || 2.5, fill: col, opacity: s.opacity || .9}, svg); });
     } else {
       let d = '', pen = false;
-      s.values.forEach((v, i) => { if (v == null) { pen = false; return; } d += (pen ? 'L' : 'M') + X(i) + ',' + Y(v); pen = true; });
+      s.values.forEach((v, i) => { if (v == null) { if (!s.connect) pen = false; return; } d += (pen ? 'L' : 'M') + X(i) + ',' + Y(v); pen = true; });
       el('path', {d, fill: 'none', stroke: col, 'stroke-width': s.width || 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', opacity: s.opacity || 1}, svg);
       if (s.area) {
         const pts = s.values.map((v, i) => v == null ? null : [X(i), Y(v)]).filter(Boolean);
@@ -2576,7 +2593,6 @@ desempenho  = dormido / necessidade`)}`;
       </div>
       <div class="card dj-n"><h3>🌙 Check-in da noite ${n.ts ? '<small class="dj-ok">✓</small>' : ''}</h3>
         <div class="dj-habs">${habRows}</div>
-        ${hasBjj ? `<div class="dj-rate"><span class="dj-rl">🥋 Nota do Jiu-Jitsu</span><div class="dj-btns dj-rpe" role="group" aria-label="Nota do Jiu-Jitsu">${[...Array(10)].map((_, i) => `<button type="button" class="${n.rpe === i + 1 ? 'on' : ''}" data-w="dias/${ds}/n/rpe" data-v="${i + 1}">${i + 1}</button>`).join('')}</div></div>` : ''}
         ${rate('dias/' + ds + '/n/estresse', 'estresse', n.estresse, 'Estresse percebido')}
         <div class="dj-refl"><div class="dj-rh"><span class="vchip" style="background:var(--soft)">${q.i} ${esc(q.t)}</span>
           <span><button type="button" class="dj-link" data-q="next">Outra pergunta</button> · <button type="button" class="dj-link" data-q="skip">${refl.pulada ? 'Desfazer pular' : 'Pular'}</button></span></div>
@@ -2585,7 +2601,7 @@ desempenho  = dormido / necessidade`)}`;
         </div>
       </div>
       <div class="card dj-g"><h3>🎯 Metas · semana de ${fd(ymd(wS))}</h3>${gl}
-        ${n.rpe ? '' : ''}<p class="note">A nota do Jiu-Jitsu e o peso entram nos cálculos de esforço e tendências ao reabrir ou clicar em ↻ Recarregar.</p></div>
+        <p class="note">🥋 A nota do Jiu-Jitsu vem do nome da atividade no Garmin Connect (ex.: "Jiu-jitsu 8"). O peso do diário entra nas tendências ao reabrir ou clicar em ↻ Recarregar.</p></div>
     </div>`;
     bindHoje();
   }
@@ -2670,10 +2686,10 @@ desempenho  = dormido / necessidade`)}`;
     if (!W.length) return;
     const xs = W.map(w => ymd(w.w));
     const daily = rangeDays(START, REAL()).filter(d => day(d).med && day(d).med.peso != null);
-    chart($('#djCW'), {x: xs, height: 190, yFmt: v => nf(v, 1), series: [{name: 'média semanal', color: css('--wt'), values: W.map(w => w.peso), type: 'line', width: 2.4},
+    chart($('#djCW'), {x: xs, height: 190, yFmt: v => nf(v, 1), series: [{name: 'média semanal', color: css('--wt'), values: W.map(w => w.peso), type: 'line', width: 2.4, connect: true, dec: 1},
       {name: 'registros', color: css('--wt'), values: xs.map((x, i) => { const v = daily.filter(d => iso(sunday(ymd(d))) === W[i].w).map(d => day(d).med.peso); return v.length ? Math.min(...v) : null; }), type: 'dots', r: 2.5, opacity: .45}]});
-    chart($('#djCB'), {x: xs, height: 190, yFmt: v => nf(v, 1) + '%', series: [{name: '% gordura', color: css('--hr'), values: W.map(w => w.bf), type: 'line', width: 2.4}]});
-    chart($('#djCC'), {x: xs, height: 190, yFmt: v => nf(v, 0), series: [['cintura', '--run'], ['peito', '--str'], ['braco', '--walk'], ['pescoco', '--bjj']].map(([k, c]) => ({name: k, color: css(c), values: W.map(w => w[k]), type: 'line', width: 2}))});
+    chart($('#djCB'), {x: xs, height: 190, yFmt: v => nf(v, 1) + '%', series: [{name: '% gordura', color: css('--hr'), values: W.map(w => w.bf), type: 'line', width: 2.4, connect: true, fmt: v => nf(v, 1) + '%'}, {name: 'semana medida', color: css('--hr'), values: W.map(w => w.bf), type: 'dots', r: 3.5, noTip: true}]});
+    chart($('#djCC'), {x: xs, height: 190, yFmt: v => nf(v, 0), series: [['cintura', '--run'], ['peito', '--str'], ['braco', '--walk'], ['pescoco', '--bjj']].map(([k, c]) => ({name: k, color: css(c), values: W.map(w => w[k]), type: 'line', width: 2, connect: true, dec: 1}))});
   }
 
   /* ---------- CONFIGURAR ---------- */
@@ -2761,11 +2777,13 @@ desempenho  = dormido / necessidade`)}`;
     const rank = {bad: 0, att: 1, na: 2, ok: 3}, okN = pillars.filter(x => x.st === 'ok').length, worst = pillars.slice().sort((x, y) => rank[x.st] - rank[y.st])[0];
     const main = okN === 3 ? `Tudo em dia nas 3 frentes: manter o ritmo e proteger o sono.`
       : `${okN} de 3 frentes em dia · prioridade da semana: <b>${worst.t.replace(/^\S+\s/, '')}</b>, atacando <b>${esc(worst.lever)}</b>.`;
-    $('#minto').innerHTML = `<div class="mt-main"><span class="mt-lbl">Resumo</span><span class="mt-msg">${main}</span><button type="button" class="mt-more" aria-expanded="${!$('#minto').classList.contains('closed')}" aria-controls="minto">detalhes</button></div>
+    const pend = pendingReviews();
+    $('#minto').innerHTML = (pend.length ? `<div class="mt-rv">${pend.map(p => `<button type="button" data-rvgo="${p.t}|${p.k}">📊 Revisão ${RTN[p.t]} disponível <span>${perOf(p.t, p.k).lab} · responder ›</span></button>`).join('')}</div>` : '') + `<div class="mt-main"><span class="mt-lbl">Resumo</span><span class="mt-msg">${main}</span><button type="button" class="mt-more" aria-expanded="${!$('#minto').classList.contains('closed')}" aria-controls="minto">detalhes</button></div>
       <div class="mt-p">${pillars.map(x => `<div class="mt-c" style="--mc:${C[x.st]}"><div class="mt-h">${x.t}</div>
         <div class="mt-b"><b class="num" style="color:${C[x.st]}">${E[x.st]} ${x.big}</b><span>${x.sub}</span>${x.tr}</div>
         <ul>${x.pts.map(t => `<li>${t}</li>`).join('')}</ul></div>`).join('')}</div>`;
     $('#minto .mt-more').onclick = () => { $('#minto').classList.toggle('closed'); renderHeader(); };
+    $('#minto').querySelectorAll('[data-rvgo]').forEach(b => b.onclick = () => { const [t, k] = b.dataset.rvgo.split('|'); window.__goReview(t, k); });
     fixSticky();
   }
   function fixSticky() { const h = $('#minto').offsetHeight; document.documentElement.style.setProperty('--mh', h + 'px'); }
@@ -2773,7 +2791,205 @@ desempenho  = dormido / necessidade`)}`;
   if (innerWidth < 640) $('#minto').classList.add('closed');
 
   /* ---------- sub-abas do diário ---------- */
-  const RENDER = {hoje: renderHoje, habitos: renderHabitos, medidas: renderMedidas, config: renderConfig};
+
+  /* ---------- v5 · REVISÕES E COMPARADOR ---------- */
+  const MESL = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+  const p2 = n => String(n).padStart(2, '0');
+  const RQ = {
+    sem: ['O que funcionou nesta semana?', 'O que atrapalhou?', 'Qual é o foco da próxima semana?'],
+    mes: ['Qual foi a maior conquista do mês?', 'Qual hábito mais evoluiu e qual mais caiu? Por quê?', 'O que muda no próximo mês?'],
+    ano: ['Do que mais me orgulho no ano?', 'O que deixo para trás?', 'Quais são as 3 prioridades do próximo ano?'],
+  };
+  const RT = {dia: 'Dia', sem: 'Semana', mes: 'Mês', ano: 'Ano', cmp: 'Comparar'};
+  const RTN = {sem: 'da semana', mes: 'do mês', ano: 'do ano'};
+  let rv = {t: 'sem', k: null}, CP = null;
+  const revOf = (t, k) => (DB.revisoes && DB.revisoes[t] && DB.revisoes[t][k]) || {};
+  function perOf(t, k) {
+    if (t === 'dia') return {a: k, b: k, lab: `${DOW[ymd(k).getDay()]}, ${fdy(ymd(k))}`, prev: iso(addD(ymd(k), -1)), next: iso(addD(ymd(k), 1))};
+    if (t === 'sem') { const e = iso(addD(ymd(k), 6)); return {a: k, b: e, lab: `${fd(ymd(k))} – ${fdy(ymd(e))}`, prev: iso(addD(ymd(k), -7)), next: iso(addD(ymd(k), 7))}; }
+    if (t === 'mes') {
+      const [y, m] = k.split('-').map(Number);
+      return {a: iso(new Date(y, m - 1, 1)), b: iso(new Date(y, m, 0)), lab: `${MESL[m - 1]} de ${y}`,
+        prev: m === 1 ? `${y - 1}-12` : `${y}-${p2(m - 1)}`, next: m === 12 ? `${y + 1}-01` : `${y}-${p2(m + 1)}`};
+    }
+    const y = +k; return {a: `${y}-01-01`, b: `${y}-12-31`, lab: String(y), prev: String(y - 1), next: String(y + 1)};
+  }
+  function defKey(t) {
+    const d = new Date();
+    if (t === 'dia') return REAL();
+    if (t === 'sem') return iso(d.getDay() === 0 ? addD(sunday(d), -7) : sunday(d));
+    if (t === 'mes') { const x = d.getDate() <= 7 ? new Date(d.getFullYear(), d.getMonth() - 1, 1) : d; return `${x.getFullYear()}-${p2(x.getMonth() + 1)}`; }
+    return String(d.getMonth() === 0 && d.getDate() <= 7 ? d.getFullYear() - 1 : d.getFullYear());
+  }
+  function pendingReviews() {
+    const d = new Date(), out = [];
+    if (d.getDay() === 0) { const k = iso(addD(sunday(d), -7)); if (iso(addD(ymd(k), 6)) >= START && !revOf('sem', k).ts) out.push({t: 'sem', k}); }
+    if (d.getDate() <= 7) { const x = new Date(d.getFullYear(), d.getMonth() - 1, 1), k = `${x.getFullYear()}-${p2(x.getMonth() + 1)}`; if (k >= START.slice(0, 7) && !revOf('mes', k).ts) out.push({t: 'mes', k}); }
+    if (d.getMonth() === 0 && d.getDate() <= 7) { const k = String(d.getFullYear() - 1); if (k >= START.slice(0, 4) && !revOf('ano', k).ts) out.push({t: 'ano', k}); }
+    return out;
+  }
+  const rssMap = () => Object.fromEntries(((D.rss && D.rss.days) || []).map(x => [x.date, x]));
+  function stats(a, b) {
+    const t = REAL(); if (b > t) b = t;
+    const ds = a <= b ? rangeDays(a, b) : [], dj = ds.filter(d => d >= START), rs = rssMap();
+    const ad = dj.length ? adherence(dj[0], dj[dj.length - 1]) : {pct: null, per: {}};
+    const f = g => avg(dj.map(g));
+    const med = k => f(d => day(d).med && day(d).med[k]);
+    return {n: ds.length, hab: ad.pct, per: ad.per,
+      humor: f(d => day(d).m && day(d).m.humor), energia: f(d => day(d).m && day(d).m.energia), sonoP: f(d => day(d).m && day(d).m.sono),
+      estresse: f(d => day(d).n && day(d).n.estresse), agua: f(d => day(d).agua),
+      sono: avg(ds.map(d => sleepMap[d] && sleepMap[d].total ? sleepMap[d].total / 3600 : null)),
+      rec: avg(ds.map(d => rs[d] && rs[d].recovery)), passos: avg(ds.map(d => dayMap[d] && dayMap[d].steps)),
+      ex: ds.length ? ds.filter(exerciseDay).length : null, bjj: ds.length ? ds.filter(d => actsOn(d).some(x => x.sport === 'bjj')).length : null,
+      peso: med('peso'), bf: navy(med('cintura'), med('pescoco'), cfg().height)};
+  }
+  const KP = [
+    ['hab', '✅ Hábitos cumpridos', v => Math.round(v * 100) + '%', 1, 100, ' p.p.'], ['humor', '🙂 Humor (1–5)', v => nf(v, 1), 1, 1, ''],
+    ['energia', '⚡ Energia (1–5)', v => nf(v, 1), 1, 1, ''], ['sonoP', '🛌 Como dormi (1–5)', v => nf(v, 1), 1, 1, ''],
+    ['estresse', '😟 Estresse percebido (1–5)', v => nf(v, 1), -1, 1, ''], ['sono', '😴 Sono por noite', v => hm(v * 3600), 1, 60, ' min'],
+    ['rec', '🔋 Recuperação média', v => nf(v) + '%', 1, 1, ' pts'], ['passos', '👟 Passos por dia', v => nf(v), 1, 1, ''],
+    ['ex', '🏋️ Dias com exercício', v => nf(v), 1, 1, ''], ['bjj', '🥋 Dias de Jiu-Jitsu', v => nf(v), 1, 1, ''],
+    ['agua', '💧 Água por dia (L)', v => nf(v, 1), 1, 1, ' L'], ['peso', '⚖️ Peso médio (kg)', v => nf(v, 1), 0, 1, ' kg'], ['bf', '📏 % gordura', v => nf(v, 1) + '%', -1, 1, ' p.p.'],
+  ];
+  function cmpRows(A, B) {
+    return KP.map(([k, l, fmt, dir, mul, u]) => {
+      const a = A[k], b = B[k];
+      if (a == null && b == null) return '';
+      let dl = '';
+      if (a != null && b != null) {
+        const d = (a - b) * mul, dd = Math.abs(d) < (k === 'passos' ? 50 : 0.05);
+        const cls = dd || dir === 0 ? 'flat' : (d > 0) === (dir > 0) ? 'up' : 'down';
+        dl = `<span class="delta ${cls}">${dd ? '=' : (d > 0 ? '+' : '−') + nf(Math.abs(d), k === 'passos' || k === 'sono' || k === 'rec' || k === 'hab' ? 0 : 1) + u}</span>`;
+      }
+      return `<tr><td>${l}</td><td>${a == null ? '–' : fmt(a)}</td><td>${b == null ? '–' : fmt(b)}</td><td>${dl}</td></tr>`;
+    }).join('');
+  }
+  const cmpTable = (A, B, la, lb) => `<div class="tablewrap"><table class="tin rv-t"><tr><th>Indicador</th><th>${la}</th><th>${lb}</th><th>Δ</th></tr>${cmpRows(A, B)}</table></div>`;
+  function highlights(A, B) {
+    const hs = habitsActive().map(([id, h]) => ({h, a: A.per[id], b: B.per[id]})).filter(x => x.a && x.a.tot);
+    if (!hs.length) return '';
+    const pc = x => x.ok / x.tot;
+    const best = hs.slice().sort((x, y) => pc(y.a) - pc(x.a))[0], worst = hs.slice().sort((x, y) => pc(x.a) - pc(y.a))[0];
+    const ch = hs.filter(x => x.b && x.b.tot).map(x => ({...x, d: pc(x.a) - pc(x.b)})).sort((x, y) => y.d - x.d);
+    const li = [];
+    li.push(`🏅 Melhor hábito: <b>${best.h.i} ${esc(best.h.n)}</b> (${Math.round(pc(best.a) * 100)}%)`);
+    if (worst !== best) li.push(`🎯 Mais fraco: <b>${worst.h.i} ${esc(worst.h.n)}</b> (${Math.round(pc(worst.a) * 100)}%)`);
+    if (ch.length && ch[0].d >= 0.1) li.push(`📈 Maior evolução: <b>${esc(ch[0].h.n)}</b> (+${Math.round(ch[0].d * 100)} p.p.)`);
+    if (ch.length && ch[ch.length - 1].d <= -0.1) li.push(`📉 Maior queda: <b>${esc(ch[ch.length - 1].h.n)}</b> (${Math.round(ch[ch.length - 1].d * 100)} p.p.)`);
+    return `<ul class="ins">${li.map(x => `<li><span>${x}</span></li>`).join('')}</ul>`;
+  }
+  function habTable(A, B) {
+    return `<div class="tablewrap"><table class="tin rv-t"><tr><th>Hábito</th><th>Período</th><th>Anterior</th><th>Δ</th></tr>${habitsActive().map(([id, h]) => {
+      const a = A.per[id], b = B.per[id], pa = a && a.tot ? a.ok / a.tot : null, pb = b && b.tot ? b.ok / b.tot : null;
+      const d = pa != null && pb != null ? Math.round((pa - pb) * 100) : null;
+      return `<tr><td>${h.i} ${esc(h.n)}</td><td>${pa == null ? '–' : Math.round(pa * 100) + '% <small style="color:var(--muted)">' + a.ok + '/' + a.tot + '</small>'}</td><td>${pb == null ? '–' : Math.round(pb * 100) + '%'}</td><td>${d == null ? '' : `<span class="delta ${Math.abs(d) < 1 ? 'flat' : d > 0 ? 'up' : 'down'}">${Math.abs(d) < 1 ? '=' : (d > 0 ? '+' : '') + d + ' p.p.'}</span>`}</td></tr>`;
+    }).join('')}</table></div>`;
+  }
+  function qBlock(t, k) {
+    if (!RQ[t]) return '';
+    const r = revOf(t, k);
+    return `<div class="card"><h3>📝 Revisão ${RTN[t]} ${r.ts ? '<small class="dj-ok">✓ respondida</small>' : ''}</h3><p class="q">As respostas ficam gravadas; volte aqui pela seta para reler.</p>
+      ${RQ[t].map((q, i) => `<label class="dj-rq"><span>${i + 1}. ${q}</span><textarea maxlength="600" rows="2" data-rq="${i}" placeholder="Resposta curta">${esc(r['q' + i])}</textarea></label>`).join('')}</div>`;
+  }
+  function monthHeat(P) {
+    const ds = rangeDays(P.a, P.b), t = REAL();
+    return `<div class="card"><h3>Mapa do mês</h3><p class="q">Verde = cumprido · vermelho = não cumprido · vazio = sem registro.</p><div class="tablewrap"><table class="dj-grid dj-heat"><tr><th></th>${ds.map(d => `<th>${ymd(d).getDate()}</th>`).join('')}</tr>
+      ${habitsActive().map(([id, h]) => `<tr><th scope="row">${h.i} ${esc(h.n)}</th>${ds.map(d => { const v = d > t || d < START ? null : hv(id, d).v; return `<td><i class="${v === true ? 'y' : v === false ? 'n' : ''}" title="${esc(h.n)} · ${fd(ymd(d))}"></i></td>`; }).join('')}</tr>`).join('')}</table></div></div>`;
+  }
+  function yearTable(y) {
+    const rows = [];
+    for (let m = 0; m < 12; m++) {
+      const a = iso(new Date(y, m, 1)), b = iso(new Date(y, m + 1, 0));
+      if (a > REAL()) break;
+      const S = stats(a, b);
+      rows.push(`<tr><td>${MESL[m]}</td><td>${S.hab == null ? '–' : Math.round(S.hab * 100) + '%'}</td><td>${S.humor == null ? '–' : nf(S.humor, 1)}</td><td>${S.sono == null ? '–' : hm(S.sono * 3600)}</td><td>${S.rec == null ? '–' : nf(S.rec)}</td><td>${S.passos == null ? '–' : nf(S.passos)}</td><td>${S.ex ?? '–'}</td><td>${S.peso == null ? '–' : nf(S.peso, 1)}</td><td>${S.bf == null ? '–' : nf(S.bf, 1)}</td></tr>`);
+    }
+    return `<div class="card"><h3>Mês a mês</h3><div class="tablewrap"><table class="tin rv-t"><tr><th>Mês</th><th>Hábitos</th><th>Humor</th><th>Sono</th><th>Recup.</th><th>Passos</th><th>Exercício</th><th>Peso</th><th>% G</th></tr>${rows.join('')}</table></div>
+      <p class="note">Recuperação disponível só para os últimos 90 dias. Hábitos, humor e medidas começam em ${fdy(ymd(START))}.</p></div>`;
+  }
+  function dayView(k) {
+    const d = day(k), m = d.m || {}, n = d.n || {}, rf = n.reflexao || {}, sl = sleepMap[k], x = dayMap[k] || {}, r = rssMap()[k];
+    const em = (key, v) => v ? `${EMO[key][v - 1]} ${v}/5` : '–';
+    return `<div class="grid g2">
+      <div class="card"><h3>Como foi o dia</h3><table class="tin rv-t">
+        <tr><td>🙂 Humor</td><td>${em('humor', m.humor)}</td></tr><tr><td>⚡ Energia</td><td>${em('energia', m.energia)}</td></tr>
+        <tr><td>🛌 Como dormi</td><td>${em('sono', m.sono)}</td></tr><tr><td>😟 Estresse percebido</td><td>${em('estresse', n.estresse)}</td></tr>
+        <tr><td>😴 Sono (Garmin)</td><td>${sl && sl.total ? hm(sl.total) : '–'}</td></tr><tr><td>🔋 Recuperação</td><td>${r && r.recovery != null ? nf(r.recovery) + '%' : '–'}</td></tr>
+        <tr><td>👟 Passos</td><td>${x.steps != null ? nf(x.steps) : '–'}</td></tr><tr><td>🏋️ Treinos</td><td>${actsOn(k).map(a => typeOf(a) + (a.sport === 'bjj' && a.rpe != null ? ' (nota ' + nf(a.rpe) + ')' : '')).join(', ') || '–'}</td></tr>
+        ${d.med ? `<tr><td>⚖️ Medidas</td><td>${MEDS.filter(([kk]) => d.med[kk] != null).map(([kk, l, u]) => `${l} ${nf(d.med[kk], 1)} ${u}`).join(' · ')}</td></tr>` : ''}
+      </table>${m.intencao ? `<p class="read" style="margin-top:8px">🎯 <b>Intenção:</b> ${esc(m.intencao)}</p>` : ''}
+      ${rf.r ? `<p class="read" style="margin-top:6px">💭 <b>${esc(rf.q)}</b><br>${esc(rf.r)}</p>` : ''}</div>
+      <div class="card"><h3>Hábitos</h3><div class="dj-habs">${habitsActive().map(([id, h]) => { const v = hv(id, k).v; return `<div class="dj-hab ${v ? 'dj-tog done' : ''}"><span class="dj-hi">${h.i}</span><span class="dj-hn">${esc(h.n)}</span><span class="dj-tick">${tick(v)}</span></div>`; }).join('')}</div>
+        <button type="button" class="chip" id="rvEdit" style="margin-top:10px">✍️ Editar este dia</button></div></div>`;
+  }
+  function cmpPreset(k) {
+    const t = REAL(), td = ymd(t);
+    if (k === 'sem') { const a = sunday(td), n = td.getDay(); return [iso(a), t, iso(addD(a, -7)), iso(addD(a, -7 + n))]; }
+    if (k === 'mes') { const a = new Date(td.getFullYear(), td.getMonth(), 1), pa = new Date(td.getFullYear(), td.getMonth() - 1, 1), pe = new Date(td.getFullYear(), td.getMonth(), 0);
+      const pb = addD(pa, td.getDate() - 1); return [iso(a), t, iso(pa), iso(pb > pe ? pe : pb)]; }
+    if (k === 'mesant') { const pa = new Date(td.getFullYear(), td.getMonth() - 1, 1), pe = new Date(td.getFullYear(), td.getMonth(), 0), qa = new Date(td.getFullYear(), td.getMonth() - 2, 1), qe = new Date(td.getFullYear(), td.getMonth() - 1, 0); return [iso(pa), iso(pe), iso(qa), iso(qe)]; }
+    return [iso(addD(td, -29)), t, iso(addD(td, -59)), iso(addD(td, -30))];
+  }
+  function renderCmp(head) {
+    if (!CP) CP = {p: 'sem', r: cmpPreset('sem')};
+    const [a1, a2, b1, b2] = CP.r, A = stats(a1, a2), B = stats(b1, b2);
+    const lab = (x, y) => `${fd(ymd(x))} – ${fd(ymd(y))}`;
+    $('#djBody').innerHTML = head + `<div class="card"><h3>Comparar períodos</h3><p class="q">Escolha um atalho ou ajuste as datas. Contagens (dias com exercício, Jiu-Jitsu) dependem do tamanho de cada período.</p>
+      <div class="ctrls" style="margin-bottom:8px">${[['sem', 'Esta semana × anterior'], ['mes', 'Este mês × anterior (mesmos dias)'], ['mesant', 'Mês passado × retrasado'], ['30', '30 dias × 30 anteriores']].map(([k, l]) => `<button type="button" class="chip ${CP.p === k ? 'on' : ''}" data-cp="${k}">${l}</button>`).join('')}</div>
+      <div class="dj-params rv-dates"><label>Período A · início<input type="date" data-cr="0" value="${a1}"></label><label>Período A · fim<input type="date" data-cr="1" value="${a2}"></label>
+        <label>Período B · início<input type="date" data-cr="2" value="${b1}"></label><label>Período B · fim<input type="date" data-cr="3" value="${b2}"></label></div>
+      <div class="grid g2" style="margin-top:10px"><div>${cmpTable(A, B, 'A · ' + lab(a1, a2), 'B · ' + lab(b1, b2))}</div><div>${habTable(A, B)}${highlights(A, B)}</div></div></div>`;
+    $('#djBody').querySelectorAll('[data-cp]').forEach(b => b.onclick = () => { CP = {p: b.dataset.cp, r: cmpPreset(b.dataset.cp)}; renderRevisoes(); });
+    $('#djBody').querySelectorAll('[data-cr]').forEach(i => i.onchange = () => { if (!i.value) return; CP.r[+i.dataset.cr] = i.value; CP.p = null; if (CP.r[0] > CP.r[1]) CP.r[1] = CP.r[0]; if (CP.r[2] > CP.r[3]) CP.r[3] = CP.r[2]; renderRevisoes(); });
+  }
+  function renderRevisoes() {
+    if (!rv.k) rv.k = defKey(rv.t);
+    const pend = pendingReviews();
+    const head = `<div class="dj-nav"><div class="seg" id="rvT">${Object.entries(RT).map(([k, n]) => `<button type="button" data-rt="${k}" class="${rv.t === k ? 'on' : ''}">${n}</button>`).join('')}</div><span id="djSave" class="dj-save" aria-live="polite"></span></div>
+      ${pend.length ? `<div class="rv-pend">${pend.map(p => `<button type="button" class="chip" data-go="${p.t}|${p.k}">📊 Revisão ${RTN[p.t]} pendente · ${perOf(p.t, p.k).lab}</button>`).join('')}</div>` : ''}`;
+    const bindHead = () => {
+      $('#djBody').querySelectorAll('[data-rt]').forEach(b => b.onclick = () => { rv = {t: b.dataset.rt, k: null}; renderRevisoes(); });
+      $('#djBody').querySelectorAll('[data-go]').forEach(b => b.onclick = () => { const [t, k] = b.dataset.go.split('|'); rv = {t, k}; renderRevisoes(); });
+    };
+    if (rv.t === 'cmp') { renderCmp(head); bindHead(); return; }
+    const P = perOf(rv.t, rv.k), PP = perOf(rv.t, P.prev), PN = perOf(rv.t, P.next), t = REAL();
+    const canPrev = PP.b >= START, canNext = PN.a <= t;
+    const nav = `<div class="dj-nav"><button type="button" class="chip" data-rk="${P.prev}" ${canPrev ? '' : 'disabled'} aria-label="período anterior">‹</button><b>${P.lab}</b>
+      <button type="button" class="chip" data-rk="${P.next}" ${canNext ? '' : 'disabled'} aria-label="próximo período">›</button>${P.b >= t && rv.t !== 'dia' ? '<span class="vchip" style="background:var(--soft);color:var(--muted)">em andamento</span>' : ''}</div>`;
+    let body;
+    if (rv.t === 'dia') body = dayView(rv.k);
+    else {
+      const end = P.b > t ? t : P.b, el = rangeDays(P.a, end).length, pbEnd = iso(addD(ymd(PP.a), el - 1));
+      const A = stats(P.a, end), B = stats(PP.a, pbEnd > PP.b ? PP.b : pbEnd);
+      const labB = rv.t === 'sem' ? 'Semana anterior' : rv.t === 'mes' ? 'Mês anterior' : 'Ano anterior';
+      const goals = rv.t === 'sem' ? `<h3 style="margin-top:12px">🎯 Metas da semana</h3>${goalsList().map(([, g]) => { const p = goalWeek(g, P.a, end); const pct = p.pct == null ? 0 : p.pct;
+        return `<div class="dj-goal"><div class="dj-gh"><b>${esc(g.n)}</b><span>${p.n}/${p.tgt}${g.per === 'week' ? ' na semana' : ' dias'}</span></div><div class="bar" style="margin-top:4px"><div style="width:${pct * 100}%;background:${pct >= 1 ? 'var(--walk)' : pct >= .6 ? '#C98A00' : 'var(--hr)'}"></div></div></div>`; }).join('')}` : '';
+      body = `<div class="grid g2">
+        <div class="card"><h3>Resumo × ${labB.toLowerCase()}</h3>${P.b > t ? `<p class="q">Período em andamento: comparado com os mesmos ${el} primeiros dias do anterior.</p>` : ''}${cmpTable(A, B, 'Período', labB)}${goals}</div>
+        <div class="card"><h3>Hábitos no período</h3>${habTable(A, B)}<h3 style="margin-top:12px">Destaques</h3>${highlights(A, B) || '<p class="q">Sem registros de hábitos no período.</p>'}</div></div>
+        ${rv.t === 'mes' ? monthHeat(P) : rv.t === 'ano' ? yearTable(+rv.k) : ''}
+        ${qBlock(rv.t, rv.k)}`;
+    }
+    $('#djBody').innerHTML = head + nav + `<div class="rv-body">${body}</div>`;
+    bindHead();
+    $('#djBody').querySelectorAll('[data-rk]').forEach(b => b.onclick = () => { rv.k = b.dataset.rk; renderRevisoes(); });
+    const ed = $('#rvEdit'); if (ed) ed.onclick = () => { selDay = rv.k; show('hoje'); };
+    let tq;
+    $('#djBody').querySelectorAll('[data-rq]').forEach(ta => {
+      const sv = () => {
+        const base = `revisoes/${rv.t}/${rv.k}`, i = ta.dataset.rq, v = ta.value.trim();
+        put(`${base}/q${i}`, v || null);
+        const r = revOf(rv.t, rv.k), any = RQ[rv.t].some((_, j) => r['q' + j]);
+        put(`${base}/ts`, any ? (r.ts || Date.now()) : null);
+        renderHeader();
+      };
+      ta.oninput = () => { clearTimeout(tq); tq = setTimeout(sv, 900); };
+      ta.onchange = () => { clearTimeout(tq); sv(); };
+    });
+  }
+  window.__goReview = (t, k) => { rv = {t, k}; if (window.__showTab) window.__showTab('diario'); show('revisoes'); };
+
+  const RENDER = {hoje: renderHoje, habitos: renderHabitos, medidas: renderMedidas, revisoes: renderRevisoes, config: renderConfig};
   function show(k) {
     sub = k; document.querySelectorAll('#djSubs button').forEach(b => { b.classList.toggle('on', b.dataset.dj === k); b.setAttribute('aria-pressed', b.dataset.dj === k); });
     for (let i = CHARTS.length - 1; i >= 0; i--) if (CHARTS[i][0].closest && CHARTS[i][0].closest('#djBody')) CHARTS.splice(i, 1);
@@ -2844,8 +3060,6 @@ function mergeDiario(fb, dj) {
   const acts = fb.activities || {};
   const BJJ = /jiu|jj|bjj|jitsu/i, MMA = ['mixed_martial_arts', 'martial_arts'];
   Object.entries(dias).forEach(([ds, d]) => {
-    const rpe = d && d.n && d.n.rpe;
-    if (rpe) Object.values(acts).forEach(a => { if (a && String(a.startTimeLocal || '').slice(0, 10) === ds && (BJJ.test(a.activityName || '') || MMA.includes(a.type))) a.activityName = 'Jiu-Jitsu ' + rpe; });
     const kg = d && d.med && d.med.peso;
     if (kg) { fb.weight = fb.weight || {}; fb.weight[ds] = {kg}; }
   });
