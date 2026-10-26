@@ -262,6 +262,108 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;text-align:center;line-
 @keyframes gsp{to{transform:rotate(360deg)}}
 a.pill.btn{text-decoration:none;color:inherit}
 .pill.st-erro .dot{background:#D43F55!important}.pill.st-parcial .dot,.pill.st-velho .dot{background:#C98A00!important}
+
+/* ===== v3 · layout compacto ===== */
+body{padding:16px 14px 30px}
+header{margin-bottom:10px;gap:10px}
+h1{font-size:23px}
+h3{font-size:16px}
+.q{font-size:12.5px;margin:0 0 8px}
+header .sub{margin-top:2px;font-size:13px}
+.pill{padding:5px 11px;font-size:12.5px}
+section{margin-top:12px}
+.card{padding:13px 14px}
+.grid{gap:10px}
+.tabs{margin:0 0 8px}
+.tab{padding:7px 2px;font-size:14px}
+.subtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 0 10px;padding:2px 0 4px;position:sticky;top:0;z-index:20;background:var(--bg)}
+.subtabs button{flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font:600 13px Inter,system-ui,sans-serif;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.subtabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.subtabs button:focus-visible{outline:2px solid var(--str);outline-offset:2px}
+.pane[hidden]{display:none!important}
+.pane>section:first-child,.pane>.watch:first-child{margin-top:0}
+.pane>section[style]{margin-bottom:0!important}
+.kpi .v{font-size:24px}
+.kpi .l{margin-top:2px}
+.bar{margin-top:8px}
+.legend{margin-top:4px;gap:12px}
+/* check-up */
+.cu{grid-template-columns:minmax(200px,230px) 1fr;gap:10px}
+.cu-main svg{width:130px}
+.cu-main .lbl{font-size:17px;margin-top:2px}
+.cu-main .sub{font-size:12px;margin-top:2px;line-height:1.4}
+.cats{gap:10px}
+.cat{padding:10px 12px}
+.cat-s{font-size:23px}
+.cat-l{font-size:12.5px;margin:6px 0 4px;line-height:1.4}
+.sbar{margin:6px 0}
+.cu3{display:grid;grid-template-columns:1fr 1fr 1.35fr;gap:10px;margin-top:10px;align-items:start}
+@media (max-width:1000px){.cu3{grid-template-columns:1fr 1fr}.cu3 .recs{grid-column:1/-1}}
+@media (max-width:640px){.cu3{grid-template-columns:minmax(0,1fr)}}
+.ins{margin-top:4px}
+.ins li{padding:6px 0;font-size:13px;line-height:1.4}
+.recl li{grid-template-columns:26px 1fr;gap:8px;padding:7px 0;cursor:pointer}
+.rn{width:24px;height:24px;font-size:12px}
+.recl .t{font-size:13.5px;gap:6px}
+.recl .why{font-size:12.5px;margin-top:2px;line-height:1.4}
+.recl .how{font-size:12.5px;margin-top:6px;padding:7px 9px}
+.recl .meta{margin-top:4px}
+.recl li:not(.open) .why,.recl li:not(.open) .how,.recl li:not(.open) .meta{display:none}
+.recl li .t::after{content:'▸';color:var(--muted);font-weight:400;margin-left:auto}
+.recl li.open .t::after{content:'▾'}
+.disc{margin-top:10px;padding:12px}
+.insg{padding:10px 12px}
+.insg .t{font-size:13.5px}
+.insg p{font-size:12.5px;margin:4px 0;line-height:1.4}
+.note{margin-top:8px;font-size:11.5px;line-height:1.45}
+/* relógio */
+.watch{padding:14px 16px;border-radius:20px}
+.rings{margin:8px 0 4px;gap:6px}
+.ring svg{max-width:92px}
+.wpanel{padding:10px 12px;margin-top:6px}
+/* sono */
+.ph{margin:7px 0}
+.ph-t{height:10px;margin-top:4px}
+.sk .v{font-size:21px}
+.sk .r{margin-top:3px}
+/* treinos */
+.act{padding:7px 2px}
+/* recordes */
+.rec .v{font-size:17px}
+.medal{flex-basis:32px;height:32px;font-size:15px}
+/* aba 2 */
+.rv{grid-template-columns:minmax(220px,270px) 1fr;gap:10px}
+.bigring svg{width:150px}
+.bigring .lbl{font-size:17px}
+.strip{gap:6px}
+.cell{padding:6px 4px;border-radius:12px}
+.cell .v{font-size:15px;margin-top:1px}
+.cell .b{margin-top:4px}
+.read{font-size:13.5px;line-height:1.5}
+.basebox{margin-top:10px;font-size:12px;line-height:1.55}
+.gauge{margin:12px 0 4px}
+.stages{margin:8px 0 6px}
+footer{margin-top:16px}
+table td,table th{padding-top:5px!important;padding-bottom:5px!important}
+@media (min-width:1100px){#sqKpis{grid-template-columns:repeat(6,minmax(0,1fr))}#sqKpis .r{font-size:11px}}
+@media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.cu,.rv{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){
+  body{padding:10px 10px 24px}
+  h1{font-size:20px}
+  .g2{grid-template-columns:minmax(0,1fr)}
+  .g3,.g4,#sqKpis,#goalKpis,#records{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #trends,#insights{grid-template-columns:minmax(0,1fr)}
+  .cats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cat-q,.cat-l{display:none}
+  .cat-h{gap:6px}.cat-n{font-size:13.5px}.cat-s{font-size:20px}
+  .cu-main{flex-direction:row;gap:12px;text-align:left}
+  .cu-main svg{width:96px}
+  .rings{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ring svg{max-width:78px}
+  .kpi .v{font-size:20px}
+  .rec .v{font-size:15px}
+  .card{padding:11px 12px}
+}
 </style>
 </head>
 <body>
@@ -324,6 +426,8 @@ a.pill.btn{text-decoration:none;color:inherit}
   </form>
 </dialog>
 
+<nav class="subtabs" id="subtabs" aria-label="Seções"><button type="button" data-sub="checkup">🩺 Check-up</button><button type="button" data-sub="hoje">⌚ Hoje</button><button type="button" data-sub="sono">😴 Sono</button><button type="button" data-sub="objetivo">🎯 Objetivo</button><button type="button" data-sub="semana">📅 Semana</button><button type="button" data-sub="tend">📈 Tendências</button><button type="button" data-sub="treinos">🏋️ Treinos</button><button type="button" data-sub="recordes">🏆 Recordes</button></nav>
+<div class="pane" data-sub="checkup">
 <!-- CHECK-UP -->
 <section style="margin-top:0;margin-bottom:26px">
   <h2>Check-up de saúde</h2>
@@ -333,28 +437,30 @@ a.pill.btn{text-decoration:none;color:inherit}
     <div class="card cu-main" id="cuMain"></div>
     <div class="cats" id="cuCats"></div>
   </div>
-  <div class="grid g2" style="margin-top:16px">
+  <div class="cu3">
     <div class="card"><h3>✅ O que está bom</h3><ul class="ins" id="insGood"></ul></div>
     <div class="card"><h3>⚠️ O que precisa de atenção</h3><ul class="ins" id="insWarn"></ul></div>
-  </div>
-  <div class="card recs" style="margin-top:16px">
-    <div class="head"><div><h3>🎯 Recomendações</h3><p class="q">Até 5 ações, em ordem de impacto na sua nota. Recalculadas a cada atualização a partir dos seus indicadores e descobertas.</p></div></div>
+  <div class="card recs">
+    <div class="head"><div><h3>🎯 Recomendações</h3><p class="q">Até 5 ações por impacto na nota · toque para ver como fazer.</p></div></div>
     <ol class="recl" id="recs"></ol>
+  </div>
   </div>
   <div class="disc">
     <div class="head"><div><h3>🔎 Descobertas sobre você</h3><p class="q">Padrões encontrados nos seus próprios dados do último ano. São associações, não provas de causa.</p></div>
       <span class="pill" title="Arquivo na pasta garmin-dashboard">📝 Registradas em descobertas.md</span></div>
-    <div class="grid g2" id="insights"></div>
+    <div class="grid g3" id="insights"></div>
     <details class="more" id="insOld" style="margin-top:10px"></details>
   </div>
-  <div class="card" style="margin-top:16px">
+  <div class="card" style="margin-top:10px">
     <div class="head"><div><h3>Pontuação ao longo do tempo</h3><p class="q">Estou melhorando? Cada ponto avalia os 7 dias anteriores àquela data.</p></div><div class="ctrls" id="histRange"></div></div>
     <div class="chart" id="cScore"></div>
   </div>
-  <details class="card more" style="margin-top:16px"><summary>Como a pontuação é calculada</summary><div class="method" id="method"></div></details>
+  <details class="card more" style="margin-top:10px"><summary>Como a pontuação é calculada</summary><div class="method" id="method"></div></details>
   <p class="note">⚕️ Este painel organiza seus dados com referências públicas, mas <b>não é diagnóstico médico</b>. Relógios estimam as fases do sono com menos precisão que um exame de laboratório, então a tendência vale mais que uma noite isolada. Sinais 🔴 que persistem por mais de uma semana, principalmente FC de repouso alta junto com respiração alterada, merecem conversa com um médico.</p>
 </section>
 
+</div>
+<div class="pane" data-sub="hoje">
 <!-- RELÓGIO -->
 <div class="watch">
   <div class="top">
@@ -372,31 +478,37 @@ a.pill.btn{text-decoration:none;color:inherit}
   </div>
 </div>
 
+</div>
+<div class="pane" data-sub="sono">
 <!-- SONO -->
 <section>
   <h2>Sono</h2>
   <h3>Estou dormindo bem?</h3>
   <p class="q" id="sqNote"></p>
   <div class="grid g3" id="sqKpis"></div>
-  <div class="grid g2" style="margin-top:16px">
+  <div class="grid g2" style="margin-top:10px">
     <div class="card"><h3>Fases do sono x faixa saudável</h3><p class="q" id="phNote">A faixa verde marca o intervalo típico de adultos saudáveis.</p><div id="phases"></div></div>
     <div class="card"><h3>Horário de dormir e acordar</h3><p class="q">Últimos 90 dias com relógio. Horários regulares ajudam a qualidade do sono.</p><div class="chart" id="cBed"></div>
       <div class="legend"><span><i style="background:var(--sleep);width:8px;height:8px;border-radius:50%"></i>dormiu</span><span><i style="background:var(--stress);width:8px;height:8px;border-radius:50%"></i>acordou</span></div></div>
   </div>
 </section>
 
+</div>
+<div class="pane" data-sub="objetivo">
 <!-- META -->
 <section>
   <h2>Objetivo</h2>
   <h3>Saúde em dia: estou sendo constante?</h3>
   <p class="q" id="goalQ">Referência da OMS: 150 minutos de intensidade por semana (minutos vigorosos contam em dobro).</p>
   <div class="grid g4" id="goalKpis"></div>
-  <div class="grid g2" style="margin-top:16px">
+  <div class="grid g2" style="margin-top:10px">
     <div class="card"><div class="head"><div><h3>Minutos de intensidade por semana</h3><p class="q">Bati a meta de 150 min?</p></div></div><div class="chart" id="cIM"></div></div>
     <div class="card"><div class="head"><div><h3>Dias treinados</h3><p class="q">Últimas 26 semanas: cada quadrado é um dia.</p></div></div><div class="heat" id="heat"></div><div class="heat-legend" id="heatLegend"></div></div>
   </div>
 </section>
 
+</div>
+<div class="pane" data-sub="semana">
 <!-- SEMANA -->
 <section>
   <h2>Esta semana</h2>
@@ -413,13 +525,17 @@ a.pill.btn{text-decoration:none;color:inherit}
   </div>
 </section>
 
+</div>
+<div class="pane" data-sub="tend">
 <!-- TENDÊNCIAS -->
 <section>
   <div class="head"><div><h2>Tendências</h2><h3>Meu corpo está respondendo?</h3><p class="q">Linhas finas mostram o dia a dia; linhas grossas, a média de 7 dias.</p></div>
     <div class="ctrls" id="range"></div></div>
-  <div class="grid g2" id="trends"></div>
+  <div class="grid g3" id="trends"></div>
 </section>
 
+</div>
+<div class="pane" data-sub="treinos">
 <!-- TREINOS -->
 <section>
   <div class="head"><div><h2>Treinos</h2><h3>Detalhes de cada treino</h3><p class="q">Toque num treino para ver zonas de FC, efeito de treino e séries.</p></div>
@@ -427,14 +543,17 @@ a.pill.btn{text-decoration:none;color:inherit}
   <div class="card"><div class="acts" id="acts"></div><div style="text-align:center;margin-top:12px"><button class="chip" id="more">Mostrar mais</button></div></div>
 </section>
 
+</div>
+<div class="pane" data-sub="recordes">
 <!-- RECORDES -->
 <section>
   <h2>Recordes</h2>
   <h3>Meus recordes e maiores dias</h3>
   <p class="q">De todo o histórico baixado.</p>
-  <div class="grid g3" id="records"></div>
+  <div class="grid g4" id="records"></div>
 </section>
 
+</div>
 </div><!-- /tab-saude -->
 
 <div id="tab-rss" hidden>
@@ -1040,7 +1159,7 @@ const CHARTS = [];
 function chart(box, o) { CHARTS.push([box, o]); drawChart(box, o); }
 function drawChart(box, o) {
   box.innerHTML = '';
-  const W = Math.max(260, box.clientWidth), H = o.height || 210;
+  const W = Math.max(260, box.clientWidth), H = Math.round((o.height || 210) * (innerWidth < 640 ? 0.72 : 0.74));
   const m = {l: 40, r: 10, t: 10, b: 24};
   const iw = W - m.l - m.r, ih = H - m.t - m.b, n = o.x.length;
   if (!n) { box.innerHTML = '<div class="empty">Sem dados neste período</div>'; return; }
@@ -1536,7 +1655,7 @@ function ringSVG(frac, color, big, small, dark = true) {
 
 /* ---------- treinos ---------- */
 (function list() {
-  const box = $('#acts'); let shown = 15, filt = 'all';
+  const box = $('#acts'); let shown = 10, filt = 'all';
   const icon = s => `<div class="ico" style="background:var(${SPORTS[s].c})">${SPORTS[s].i}</div>`;
   const ZC = ['#9AA3AF', '#18A8CF', '#16977A', '#EF9F0A', '#E2445C'];
   const render = () => {
@@ -1875,12 +1994,12 @@ function ringSVG(frac, color, big, small, dark = true) {
     const strip = (val, color, label) => {
       const from = Math.max(0, sel - 6 > last - 6 ? last - 6 : Math.min(sel, last - 6)), idx = [];
       const s0 = Math.max(0, last - 6); for (let i = s0; i <= last; i++) idx.push(i);
-      return `<div class="card" style="margin-top:16px"><div class="head"><div><h3>Últimos 7 dias</h3><p class="q">${label} Toque num dia para ver os detalhes dele.</p></div></div>
+      return `<div class="card" style="margin-top:10px"><div class="head"><div><h3>Últimos 7 dias</h3><p class="q">${label} Toque num dia para ver os detalhes dele.</p></div></div>
         <div class="strip">${idx.map(i => { const d = days[i], v = val(d), c = color(d);
           return `<button class="cell ${i === sel ? 'on' : ''}" data-i="${i}" type="button"><div class="d">${i === last ? 'hoje' : dlab(d)}</div><div class="v" style="color:${c}">${v}</div><div class="b" style="background:${c}"></div></button>`; }).join('')}</div></div>`;
     };
     const bindStrip = () => document.querySelectorAll('#rssBody .cell').forEach(c => c.onclick = () => { sel = +c.dataset.i; render(); });
-    const formula = (txt) => `<details class="card more" style="margin-top:16px"><summary>Ver a fórmula usada</summary><div class="formula">${txt}</div></details>`;
+    const formula = (txt) => `<details class="card more" style="margin-top:10px"><summary>Ver a fórmula usada</summary><div class="formula">${txt}</div></details>`;
 
     function render() {
       const d = days[sel];
@@ -1916,7 +2035,7 @@ function ringSVG(frac, color, big, small, dark = true) {
         <div class="card tablewrap"><h3>O que entrou na nota</h3><p class="q">Cada entrada vira uma nota de 0 a 100 comparando com a sua própria base.</p>
           <table class="tin"><tr><th>Entrada</th><th>Valor</th><th>Sua base</th><th>Desvio</th><th>Nota</th><th>Peso usado</th></tr>
           ${rows.map(rw => `<tr>${rw.map(x => `<td>${x}</td>`).join('')}</tr>`).join('')}</table></div></div>
-        <div class="card read" style="margin-top:16px"><h3 style="margin-bottom:6px">O que isso significa ${sel === last ? 'hoje' : 'neste dia'}</h3>${read}${notes.length ? `<ul style="margin:10px 0 0;padding-left:18px;font-size:13px">${notes.map(n => `<li>${n}</li>`).join('')}</ul>` : ''}</div>
+        <div class="card read" style="margin-top:10px"><h3 style="margin-bottom:6px">O que isso significa ${sel === last ? 'hoje' : 'neste dia'}</h3>${read}${notes.length ? `<ul style="margin:10px 0 0;padding-left:18px;font-size:13px">${notes.map(n => `<li>${n}</li>`).join('')}</ul>` : ''}</div>
         ${strip(x => x.recovery == null ? '–' : f0(x.recovery) + '%', x => x.recovery == null ? '#A3A8B0' : BAND[x.band], 'Recuperação de cada dia.')}
         ${formula(`fc_z        = (fc_repouso_hoje − média_30d) / dp_30d
 nota_fc     = limitar(50 − 20 × fc_z, 0, 100)        # FC mais baixa é melhor
@@ -1949,13 +2068,13 @@ Faixas: 67–100 verde · 34–66 amarelo · 0–33 vermelho`)}`;
           <p class="q">${tgt ? `A recuperação ${sel === last ? 'desta manhã' : 'deste dia'} (${f0(d.recovery)}%, ${BANDN[d.band].toLowerCase()}) sugere esforço entre <b>${nf(tgt[0], 1)} e ${nf(tgt[1], 1)}</b>.` : 'Sem recuperação calculada para este dia, então não há meta.'}</p>
           <div class="gauge">${tgt ? `<div class="tz" style="left:${tgt[0] / 21 * 100}%;width:${(tgt[1] - tgt[0]) / 21 * 100}%"></div>` : ''}<div class="mk" style="left:calc(${s / 21 * 100}% - 2px)"></div></div>
           <div class="gscale"><span>0</span><span>leve · 9</span><span>13 · moderado</span><span>alto · 17</span><span>21</span></div>
-          <p class="read" style="font-size:13.5px;margin-top:14px">${!tgt ? '' : s < tgt[0] ? `Abaixo da meta: ${sel === last ? 'ainda cabe treino hoje' : 'dia mais leve que o sugerido'}.` : s > tgt[1] ? 'Acima da meta: o esforço passou do que a recuperação sugeria.' : 'Dentro da meta.'}
-          ${estToday ? ' <span class="tag estim">inclui Jiu-Jitsu estimado</span>' : ''}</p></div></div>
-        <div class="card" style="margin-top:16px"><div class="head"><div><h3>Esforço dos últimos 7 dias</h3><p class="q">Barras = esforço do dia (0–21). Toque para ver as atividades.</p></div></div><div class="chart" id="cStr"></div></div>
-        <div class="card tablewrap" style="margin-top:16px"><h3>Atividades recentes</h3><p class="q">Últimos 14 dias até o dia selecionado. "Carga" = pontos de TRIMPexp que entram no esforço.</p>
+          <p class="read" style="font-size:13.5px;margin-top:8px">${!tgt ? '' : s < tgt[0] ? `Abaixo da meta: ${sel === last ? 'ainda cabe treino hoje' : 'dia mais leve que o sugerido'}.` : s > tgt[1] ? 'Acima da meta: o esforço passou do que a recuperação sugeria.' : 'Dentro da meta.'}
+          ${estToday ? ' <span class="tag estim">inclui Jiu-Jitsu estimado</span>' : ''}</p>
+          <h3 style="margin-top:10px">Esforço dos últimos 7 dias</h3><p class="q">Barras = esforço do dia (0–21). Toque para ver as atividades.</p><div class="chart" id="cStr"></div></div></div>
+        <div class="card tablewrap" style="margin-top:10px"><h3>Atividades recentes</h3><p class="q">Últimos 14 dias até o dia selecionado. "Carga" = pontos de TRIMPexp que entram no esforço.</p>
           <table class="tin"><tr><th>Data</th><th style="text-align:left">Atividade</th><th>Carga</th><th>Duração</th><th>FC média</th><th style="text-align:left">Origem</th></tr>
           ${recent.map(a => `<tr><td>${fd(pd(a.date))} ${a.time}</td><td style="text-align:left;font-family:inherit">${a.bjj ? '🥋 ' : ''}${a.name}</td><td>${f1(a.load)}</td><td>${hm(a.dur)}</td><td>${a.avgHR ? f0(a.avgHR) : '–'}</td><td style="text-align:left">${srcTag(a)}</td></tr>`).join('') || '<tr><td colspan="6" class="empty">Nenhuma atividade</td></tr>'}</table></div>
-        <div class="card" style="margin-top:16px"><h3>Atividades sem frequência cardíaca</h3><p class="q">Contam <b>zero</b> no esforço. Estão listadas para que a falta de dado não pareça descanso.</p>
+        <div class="card" style="margin-top:10px"><h3>Atividades sem frequência cardíaca</h3><p class="q">Contam <b>zero</b> no esforço. Estão listadas para que a falta de dado não pareça descanso.</p>
           ${noHR.length ? `<ul class="ins">${noHR.map(a => `<li><span class="e">⚠️</span><span>${fdy(pd(a.date))} · ${a.name} · ${hm(a.dur)}</span></li>`).join('')}</ul>` : '<p class="read" style="font-size:13.5px">Nenhuma nos últimos 90 dias. ✅</p>'}
           <p class="note">🥋 O <b>Jiu-Jitsu registrado manualmente</b> não tem FC, mas entra como <span class="tag estim">estimado</span>: nota de esforço → % da FC de reserva pela escala do ACSM (5 ≈ 45%, 7 ≈ 65%, 8 ≈ 78%, 9 ≈ 88%) → TRIMPexp pela duração. Sem nota, assume ${P.rpeDefault}.</p></div>
         ${formula(`carga_do_dia = Σ TRIMPexp das atividades + 4,0      # 4,0 = vida fora do treino
@@ -1972,7 +2091,7 @@ Faixas: 0–9 leve · 10–13 moderado · 14–17 alto · 18–21 no limite`)}`;
       $('#strRing').appendChild(ringSVG(s / 21, bc, nf(s, 1), 'de 21', false));
       $('#strRing').insertAdjacentHTML('beforeend', `<div class="lbl" style="color:${bc}">${bn}</div><div class="sub">${fdy(dd(d))}<br>Carga: ${f1(d.load)} pontos + 4,0 da vida diária</div>`);
       const w = days.slice(Math.max(0, sel - 6), sel + 1);
-      chart($('#cStr'), {x: w.map(dd), kind: 'band', height: 210, yMin: 0, yMax: 21, ticks: [0, 7, 14, 21],
+      chart($('#cStr'), {x: w.map(dd), kind: 'band', height: 170, yMin: 0, yMax: 21, ticks: [0, 7, 14, 21],
         zones: [{from: 0, to: 9, color: 'rgba(127,166,238,.08)'}, {from: 18, to: 21, color: 'rgba(18,30,102,.07)'}],
         tipTitle: i => fdy(dd(w[i])), tipExtra: i => w[i].acts.map(a => row(a.name + (a.src === 'estimado' ? ' (estimado)' : a.src === 'sem_fc' ? ' (sem FC)' : ''), f1(a.load))).join('') || row('Atividades', 'nenhuma'),
         series: [{name: 'Esforço', color: '#3D6FE0', values: w.map(x => x.strain), type: 'bar', fmt: v => nf(v, 1)}]});
@@ -1993,7 +2112,7 @@ Faixas: 0–9 leve · 10–13 moderado · 14–17 alto · 18–21 no limite`)}`;
           <tr><td style="font-family:inherit">Cochilos</td><td>${n.naps ? '−' + hm(n.naps) : '0'}</td><td></td></tr>
           <tr class="tot"><td style="font-family:inherit">= Necessidade</td><td>${hm(n.total)}</td><td></td></tr>
           <tr><td style="font-family:inherit">Dormiu</td><td>${sl ? hm(sl.slept) : '–'}</td><td style="text-align:left;font-family:inherit;color:${c};font-weight:600">${perf != null ? f0(perf) + '% da necessidade' : 'noite não registrada'}</td></tr></table></div></div>
-        <div class="grid g2" style="margin-top:16px">
+        <div class="grid g2" style="margin-top:10px">
           <div class="card"><h3>Fases do sono</h3>${sl ? `<div class="stages">${stg.map(([nm, v, cc]) => `<div title="${nm}: ${hm(v)}" style="width:${v / tot * 100}%;background:var(${cc})"></div>`).join('')}</div>
             <div class="legend">${stg.map(([nm, v, cc]) => `<span><i style="background:var(${cc});width:10px;height:10px;border-radius:3px"></i>${nm} ${hm(v)} (${nf(v / tot * 100)}%)</span>`).join('')}</div>
             <p class="note">Fases estimadas pelo relógio (inferência, não exame de laboratório). A API não fornece o hipnograma minuto a minuto, só os totais da noite.</p>` : '<div class="empty">Noite não registrada</div>'}</div>
@@ -2143,6 +2262,23 @@ desempenho  = dormido / necessidade`)}`;
   window.__exportSet = k => { st.set = k; renderSet(); };
   $('#expBtn').onclick = () => { renderSet(); dlg.showModal(); };
   dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+})();
+
+/* ===== v3 · sub-abas e recomendações recolhidas ===== */
+(function subtabs() {
+  const btns = [...document.querySelectorAll('#subtabs button')], subs = [...document.querySelectorAll('#tab-saude .pane')];
+  const show = k => {
+    if (!subs.some(s => s.dataset.sub === k)) k = 'checkup';
+    btns.forEach(b => { const on = b.dataset.sub === k; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+    subs.forEach(s => s.hidden = s.dataset.sub !== k);
+    try { sessionStorage.setItem('gsub', k); } catch (e) {}
+    setTimeout(() => CHARTS.forEach(([b, o]) => { if (b.offsetParent) drawChart(b, o); }), 0);
+    const nav = document.getElementById('subtabs'); if (nav.getBoundingClientRect().top < 0) nav.scrollIntoView({block: 'start'});
+  };
+  btns.forEach(b => b.addEventListener('click', () => show(b.dataset.sub)));
+  let k0 = 'checkup'; try { k0 = sessionStorage.getItem('gsub') || 'checkup'; } catch (e) {}
+  show(k0);
+  document.getElementById('recs').addEventListener('click', e => { const li = e.target.closest('li'); if (li) li.classList.toggle('open'); });
 })();
 } // fim BOOT
 </script>
