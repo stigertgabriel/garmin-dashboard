@@ -459,6 +459,24 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
 .dj-heat i.y{background:#16977A}.dj-heat i.n{background:#F3C3CB}
 .rv-dates{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media (max-width:640px){.rv-dates{grid-template-columns:repeat(2,minmax(0,1fr))}#rvT{display:flex;width:100%;overflow-x:auto}#rvT button{padding:6px 9px}}
+/* ===== v6 · onde evoluir ===== */
+.evo-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:6px}
+.evo-c{border-top:4px solid var(--hr);padding:11px 12px}
+.evo-h{display:flex;align-items:center;gap:7px;font-size:14.5px}
+.evo-n{font:700 12px var(--mono);background:var(--ink);color:#fff;border-radius:6px;padding:2px 6px}
+.evo-i{font-size:18px}
+.evo-s{margin-left:auto;font:700 13px var(--mono);color:var(--hr)}
+.evo-row{display:grid;grid-template-columns:92px 1fr;gap:8px;font-size:12.5px;line-height:1.45;padding:6px 0;border-bottom:1px solid var(--soft)}
+.evo-row>span{color:var(--muted);font-size:11.5px}
+.evo-row small{color:var(--muted)}
+.evo-act{margin-top:8px;background:#EEF1FC;border-radius:10px;padding:7px 9px;font-size:13px;line-height:1.45}
+.evo-meta{margin-top:6px;font:11px var(--mono);color:var(--muted)}
+.evo-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}.evo-chips .chip{font-size:12px;padding:4px 9px}
+.dj-wts{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:10px}
+.dj-wts label{display:flex;flex-direction:column;gap:3px;font-size:11.5px;color:var(--muted)}
+.dj-wts input{font:14px Inter,system-ui,sans-serif;border:1px solid var(--line);border-radius:9px;padding:6px 8px;background:var(--card);color:var(--ink);min-width:0;width:100%}
+@media (max-width:900px){.evo-g{grid-template-columns:minmax(0,1fr)}.dj-wts{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){#insights.g3,.evo-disc{grid-template-columns:minmax(0,1fr)!important}.evo-row{grid-template-columns:78px 1fr}}
 </style>
 </head>
 <body>
@@ -2395,7 +2413,7 @@ desempenho  = dormido / necessidade`)}`;
 
   /* ---------- configuração padrão (editável em Configurar) ---------- */
   const DEF = {
-    height: 178, wake: {wd: '06:30', we: '07:30'},
+    height: 178, wake: {wd: '06:30', we: '07:30'}, exAlvo: 5, pesos: {rec: 2, bb: 1, sono: 1, energia: 2, humor: 1, estresse: 1},
     habits: {
       acordar: {n: 'Acordar 6:00', i: '⏰', src: 'auto', rule: 'wake', o: 1},
       agua: {n: 'Beber 3 L de água', i: '💧', src: 'manual', rule: 'water', target: 3, o: 2},
@@ -2700,13 +2718,14 @@ desempenho  = dormido / necessidade`)}`;
     const habOpts = hs.filter(([, h]) => !h.arch).map(([id, h]) => [`habit:${id}`, `Hábito: ${h.n}`]);
     $('#djBody').innerHTML = `
     <div class="card"><div class="head"><div><h3>Hábitos</h3><p class="q">🤖 Garmin = marcado automaticamente pela regra · ✋ Manual = você marca. Arquivar esconde sem apagar o histórico.</p></div><span id="djSave" class="dj-save" aria-live="polite"></span></div>
-      <div class="tablewrap"><table class="dj-cfg"><tr><th>Ícone</th><th style="text-align:left">Nome</th><th>Origem</th><th>Regra</th><th>Meta</th><th>Ordem</th><th></th></tr>
+      <div class="tablewrap"><table class="dj-cfg"><tr><th>Ícone</th><th style="text-align:left">Nome</th><th>Origem</th><th>Regra</th><th>Meta</th><th title="Alvo usado no ranking Onde evoluir">Alvo (d/sem)</th><th>Ordem</th><th></th></tr>
       ${hs.map(([id, h], i) => `<tr class="${h.arch ? 'arch' : ''}" data-hid="${id}">
         <td><input data-f="i" value="${esc(h.i)}" maxlength="4" style="width:46px;text-align:center" aria-label="ícone"></td>
         <td><input data-f="n" value="${esc(h.n)}" maxlength="40" aria-label="nome"></td>
         <td><select data-f="src" aria-label="origem"><option value="manual" ${h.src !== 'auto' ? 'selected' : ''}>✋ Manual</option><option value="auto" ${h.src === 'auto' ? 'selected' : ''}>🤖 Garmin</option></select></td>
         <td><select data-f="rule" aria-label="regra"><option value="">—</option>${Object.entries(RULES).map(([k, l]) => `<option value="${k}" ${h.rule === k ? 'selected' : ''}>${l}</option>`).join('')}</select></td>
         <td>${h.rule === 'water' ? `<input data-f="target" type="number" min="0.5" max="8" step="0.5" value="${h.target || 3}" style="width:64px" aria-label="litros"> L` : '–'}</td>
+        <td>${EXR.includes(h.rule) ? '<small style="color:var(--muted)">no 🏋️ Exercício</small>' : `<input data-f="alvo" type="number" min="0" max="7" step="1" value="${alvoOf(id, h)}" style="width:58px" aria-label="alvo em dias por semana">`}</td>
         <td><button type="button" class="chip" data-mv="-1" ${i ? '' : 'disabled'} aria-label="subir">↑</button><button type="button" class="chip" data-mv="1" ${i < hs.length - 1 ? '' : 'disabled'} aria-label="descer">↓</button></td>
         <td><button type="button" class="chip" data-arch="1">${h.arch ? 'Restaurar' : 'Arquivar'}</button></td></tr>`).join('')}</table></div>
       <button type="button" class="chip" id="djAddH" style="margin-top:8px">+ Novo hábito</button></div>
@@ -2720,14 +2739,19 @@ desempenho  = dormido / necessidade`)}`;
       <button type="button" class="chip" id="djAddG" style="margin-top:8px">+ Nova meta</button></div>
     <div class="card" style="margin-top:10px"><h3>Parâmetros</h3><div class="dj-params">
       <label>Altura (cm)<input type="number" id="djH" min="120" max="230" value="${C.height}"></label>
+      <label>🏋️ Exercício · alvo (d/sem)<input type="number" id="djEx" min="0" max="7" step="1" value="${C.exAlvo != null ? C.exAlvo : exAlvo()}"></label>
       <label>Acordar até (seg–sex)<input type="time" id="djWd" value="${C.wake.wd}"></label>
       <label>Acordar até (sáb–dom)<input type="time" id="djWe" value="${C.wake.we}"></label></div>
+      <h3 style="margin-top:14px">Pesos do ranking “Onde evoluir”</h3><p class="q">Quanto cada indicador pesa no impacto de um hábito (0 desliga · 3 = triplo).</p>
+      <div class="dj-wts">${Object.entries(WLAB).map(([k, l]) => `<label>${l}<input type="number" min="0" max="3" step="0.5" data-wt="${k}" value="${pesos()[k]}"></label>`).join('')}</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button type="button" class="chip on" id="djSaveCfg">Salvar configurações</button><button type="button" class="chip" id="djReset">Restaurar padrão</button></div></div>`;
     const B = $('#djBody');
     const collect = () => {
       B.querySelectorAll('[data-hid]').forEach(tr => { const h = C.habits[tr.dataset.hid]; tr.querySelectorAll('[data-f]').forEach(i => { h[i.dataset.f] = i.type === 'number' ? +i.value : i.value; }); if (!h.rule) delete h.rule; if (h.src === 'auto' && !h.rule) h.src = 'manual'; });
       B.querySelectorAll('[data-gid]').forEach(tr => { const g = C.goals[tr.dataset.gid]; tr.querySelectorAll('[data-f]').forEach(i => { g[i.dataset.f] = i.type === 'number' ? +i.value : i.value; }); });
       C.height = +$('#djH').value || 178; C.wake = {wd: $('#djWd').value || '06:30', we: $('#djWe').value || '07:30'};
+      C.exAlvo = clampN(+$('#djEx').value || 0, 0, 7); C.pesos = {}; B.querySelectorAll('[data-wt]').forEach(i => { C.pesos[i.dataset.wt] = clampN(+i.value || 0, 0, 3); });
+      Object.values(C.habits).forEach(h => { if (h.alvo != null) h.alvo = clampN(+h.alvo || 0, 0, 7); });
     };
     const commit = (rerender = true) => { CFG = C; put('config', C); if (rerender) renderConfig(); renderHeader(); };
     B.querySelectorAll('[data-hid] select[data-f="rule"], [data-hid] select[data-f="src"]').forEach(s => s.onchange = () => { collect(); commit(); });
@@ -2749,6 +2773,8 @@ desempenho  = dormido / necessidade`)}`;
     const a = adherence(wS < START ? START : wS, today), p = adherence(pwS < START ? START : pwS, pwE);
     const gw = goalsList().filter(([, g]) => g.per === 'week').map(([, g]) => { const r = goalWeek(g, wS, today); return {g, r, ok: r.n >= g.target, onTrack: r.n + r.left >= g.target}; });
     const weakest = habitsActive().map(([id, h]) => ({h, ...a.per[id]})).filter(x => x.tot).sort((x, y) => x.ok / x.tot - y.ok / y.tot)[0];
+    const EV = analyze(), top = EV.ranked[0];
+    injectInsights(EV);
     const hp = a.pct == null ? null : Math.round(a.pct * 100), hd = a.pct != null && p.pct != null ? Math.round((a.pct - p.pct) * 100) : null;
     const hSt = hp == null ? 'na' : hp >= 80 ? 'ok' : hp >= 60 ? 'att' : 'bad';
     // 2. Saúde e treino
@@ -2765,8 +2791,8 @@ desempenho  = dormido / necessidade`)}`;
     const pillars = [
       {k: 'hab', st: hSt, t: '📓 Hábitos', big: hp == null ? '–' : hp + '%', sub: 'cumpridos na semana', tr: arrow(hd, ' p.p.'),
         pts: [gw.length ? `Metas semanais: ${gw.filter(x => x.ok).length}/${gw.length} batidas · ${gw.filter(x => !x.ok && x.onTrack).length} no ritmo` : 'Sem metas semanais',
-          weakest && weakest.tot ? `Ponto fraco: ${weakest.h.i} ${weakest.h.n} (${weakest.ok}/${weakest.tot})` : 'Registre o check-in para medir'],
-        lever: weakest ? weakest.h.n : 'registrar os hábitos'},
+          top ? `Onde evoluir: ${top.i} ${esc(top.n)} (${Math.round(top.c * 100)}% · alvo ${Math.round(top.alvoPct * 100)}%)` : weakest && weakest.tot ? `Ponto fraco: ${weakest.h.i} ${weakest.h.n} (${weakest.ok}/${weakest.tot})` : 'Registre o check-in para medir'],
+        lever: top ? top.n : weakest ? weakest.h.n : 'registrar os hábitos'},
       {k: 'sau', st: sSt, t: '🩺 Saúde e treino', big: sc == null ? '–' : sc + '/100', sub: 'check-up 7 dias', tr: arrow(sd, ' pts'),
         pts: [`Exercício: ${exD}/${exG} dias na semana`, worstCat ? `Menor área: ${worstCat.c.i} ${worstCat.c.n} (${worstCat.s})` : '—'],
         lever: worstCat ? worstCat.c.n.toLowerCase() : 'saúde'},
@@ -2800,7 +2826,7 @@ desempenho  = dormido / necessidade`)}`;
     mes: ['Qual foi a maior conquista do mês?', 'Qual hábito mais evoluiu e qual mais caiu? Por quê?', 'O que muda no próximo mês?'],
     ano: ['Do que mais me orgulho no ano?', 'O que deixo para trás?', 'Quais são as 3 prioridades do próximo ano?'],
   };
-  const RT = {dia: 'Dia', sem: 'Semana', mes: 'Mês', ano: 'Ano', cmp: 'Comparar'};
+  const RT = {dia: 'Dia', sem: 'Semana', mes: 'Mês', ano: 'Ano', evo: '🎯 Evoluir', cmp: 'Comparar'};
   const RTN = {sem: 'da semana', mes: 'do mês', ano: 'do ano'};
   let rv = {t: 'sem', k: null}, CP = null;
   const revOf = (t, k) => (DB.revisoes && DB.revisoes[t] && DB.revisoes[t][k]) || {};
@@ -2952,6 +2978,7 @@ desempenho  = dormido / necessidade`)}`;
       $('#djBody').querySelectorAll('[data-go]').forEach(b => b.onclick = () => { const [t, k] = b.dataset.go.split('|'); rv = {t, k}; renderRevisoes(); });
     };
     if (rv.t === 'cmp') { renderCmp(head); bindHead(); return; }
+    if (rv.t === 'evo') { renderEvo(head); bindHead(); return; }
     const P = perOf(rv.t, rv.k), PP = perOf(rv.t, P.prev), PN = perOf(rv.t, P.next), t = REAL();
     const canPrev = PP.b >= START, canNext = PN.a <= t;
     const nav = `<div class="dj-nav"><button type="button" class="chip" data-rk="${P.prev}" ${canPrev ? '' : 'disabled'} aria-label="período anterior">‹</button><b>${P.lab}</b>
@@ -2988,6 +3015,151 @@ desempenho  = dormido / necessidade`)}`;
     });
   }
   window.__goReview = (t, k) => { rv = {t, k}; if (window.__showTab) window.__showTab('diario'); show('revisoes'); };
+
+  /* ---------- v6 · ONDE EVOLUIR (ranking + descobertas do diário) ---------- */
+  const DEFW = {rec: 2, bb: 1, sono: 1, energia: 2, humor: 1, estresse: 1};
+  const WLAB = {rec: '🔋 Recuperação', bb: '⚡ Body Battery', sono: '😴 Sono', energia: '⚡ Energia', humor: '🙂 Humor', estresse: '😟 Estresse'};
+  const pesos = () => ({...DEFW, ...(cfg().pesos || {})});
+  const EXR = ['str', 'runswim', 'anyex', 'walk20'];
+  const SLEEPR = ['wake', 'sleep7'];
+  const WDP = ['domingos', 'segundas', 'terças', 'quartas', 'quintas', 'sextas', 'sábados'];
+  const art = w => (w === 0 || w === 6 ? 'aos ' : 'às ') + WDP[w];
+  const artList = ws => { const a = ws.map(art); return a.length > 1 ? a.slice(0, -1).join(', ') + ' e ' + a[a.length - 1] : a[0]; };
+  const sdv = a => { a = a.filter(v => v != null && !isNaN(v)); if (a.length < 2) return null; const m = avg(a); return Math.sqrt(a.reduce((s, v) => s + (v - m) ** 2, 0) / (a.length - 1)); };
+  function alvoOf(id, h) {
+    if (h.alvo != null && h.alvo !== '') return clampN(+h.alvo, 0, 7);
+    const g = goalsList().find(([, x]) => x.metric === 'habit:' + id && x.per === 'week');
+    return g ? clampN(+g[1].target, 0, 7) : 6;
+  }
+  const exAlvo = () => { const c = cfg(); if (c.exAlvo != null) return clampN(+c.exAlvo, 0, 7); const g = goalsList().find(([, x]) => x.metric === 'exercise_days'); return g ? clampN(+g[1].target, 0, 7) : 5; };
+  function evoItems() {
+    const out = habitsActive().filter(([, h]) => !EXR.includes(h.rule)).map(([id, h]) => ({id, n: h.n, i: h.i, rule: h.rule, alvo: alvoOf(id, h), val: ds => hv(id, ds).v}));
+    out.push({id: '_ex', n: 'Exercício', i: '🏋️', rule: '_ex', alvo: exAlvo(), val: ds => (dayMap[ds] || sleepMap[ds] || actsOn(ds).length || touched(ds)) ? exerciseDay(ds) : null});
+    return out;
+  }
+  function indicators(rs) {
+    const nx = (ds, off) => off ? iso(addD(ymd(ds), 1)) : ds;
+    return [
+      ['rec', 'a recuperação', (ds, o) => { const r = rs[nx(ds, o)]; return r ? r.recovery : null; }, 1, v => nf(v) + ' pts', o => o ? 'do dia seguinte' : 'do dia'],
+      ['bb', 'o Body Battery máximo', (ds, o) => { const x = dayMap[nx(ds, o)]; return x ? x.bbMax : null; }, 1, v => nf(v) + ' pts', o => o ? 'do dia seguinte' : 'do dia'],
+      ['sono', 'o sono', (ds, o) => { const s = sleepMap[nx(ds, 1)]; return s && s.total ? s.total / 3600 : null; }, 1, v => nf(v * 60) + ' min', () => 'da noite'],
+      ['energia', 'a energia', (ds, o) => { const m = day(nx(ds, o)).m; return m && m.energia; }, 1, v => nf(v, 1), o => o ? 'da manhã seguinte' : 'da manhã'],
+      ['humor', 'o humor', (ds, o) => { const m = day(nx(ds, o)).m; return m && m.humor; }, 1, v => nf(v, 1), o => o ? 'da manhã seguinte' : 'da manhã'],
+      ['estresse', 'o estresse percebido', ds => { const n = day(ds).n; return n && n.estresse; }, -1, v => nf(v, 1), () => 'do dia'],
+    ];
+  }
+  function analyze() {
+    const today = REAL(), rs = rssMap(), W = pesos(), INDS = indicators(rs);
+    const all = rangeDays(START, today);
+    const rate = (it, a, b) => { a = a < START ? START : a; if (a > b) return {c: null, n: 0, ok: 0}; const v = rangeDays(a, b).map(it.val).filter(x => x != null); return {c: v.length ? v.filter(Boolean).length / v.length : null, n: v.length, ok: v.filter(Boolean).length}; };
+    const items = evoItems().map(it => {
+      const off = SLEEPR.includes(it.rule) ? 0 : 1;
+      const r28 = rate(it, iso(addD(ymd(today), -27)), today), rp = rate(it, iso(addD(ymd(today), -55)), iso(addD(ymd(today), -28)));
+      const alvoPct = it.alvo / 7;
+      const espaco = r28.c == null || alvoPct <= 0 ? 0 : Math.max(0, (alvoPct - r28.c) / alvoPct);
+      const dTr = r28.c != null && rp.c != null && rp.n >= 7 ? r28.c - rp.c : null;
+      const trend = dTr == null ? 1 : dTr <= -0.15 ? 1.2 : dTr >= 0.15 ? 0.9 : 1;
+      const eff = [];
+      INDS.forEach(([k, lab, f, dir, fmt, when]) => {
+        if (k === 'sono' && SLEEPR.includes(it.rule)) return;
+        const A = [], B = [];
+        all.forEach(ds => { const v = it.val(ds); if (v == null) return; if (off && iso(addD(ymd(ds), 1)) > today && k !== 'estresse') return; const y = f(ds, off); if (y == null || isNaN(y)) return; (v ? A : B).push(y); });
+        if (A.length < 8 || B.length < 8) return;
+        const s = sdv([...A, ...B]); if (!s) return;
+        const ma = avg(A), mb = avg(B), e = (ma - mb) / s * dir;
+        eff.push({k, lab, e, raw: ma - mb, ma, mb, nA: A.length, nB: B.length, fmt, when: when(off), dir, w: +W[k] || 0});
+      });
+      const ws = eff.filter(x => x.w > 0), sw = ws.reduce((s, x) => s + x.w, 0);
+      const measured = sw > 0;
+      const fav = measured ? ws.reduce((s, x) => s + x.w * Math.max(0, x.e), 0) / sw : 0;
+      const conf = measured ? Math.min(1, avg(ws.map(x => Math.min(x.nA, x.nB))) / 20) : 0;
+      const impact = measured ? Math.min(1, fav / 0.5) * conf : 0.3;
+      const prio = espaco * (0.3 + 0.7 * impact) * trend;
+      // dia da semana mais fraco e mais forte
+      const wd = [0, 1, 2, 3, 4, 5, 6].map(w => { const v = all.filter(ds => ymd(ds).getDay() === w).map(it.val).filter(x => x != null); return {w, n: v.length, ok: v.filter(Boolean).length, r: v.length ? v.filter(Boolean).length / v.length : null}; });
+      const valid = wd.filter(x => x.n >= 2);
+      const weak = valid.slice().sort((a, b) => a.r - b.r)[0], strong = valid.filter(x => x.r > 0).sort((a, b) => b.r - a.r).slice(0, Math.max(2, Math.round(it.alvo)));
+      return {...it, c: r28.c, n28: r28.n, ok28: r28.ok, alvoPct, espaco, dTr, trend, eff, measured, impact, conf, prio, weak, strong};
+    }).filter(x => x.n28 >= 7);
+    const ranked = items.filter(x => x.espaco > 0).sort((a, b) => b.prio - a.prio || b.impact - a.impact);
+    const protect = items.filter(x => x.espaco === 0).sort((a, b) => b.impact - a.impact);
+    const disc = items.flatMap(it => it.eff.filter(x => Math.abs(x.e) >= 0.3).map(x => ({it, ...x}))).sort((a, b) => Math.abs(b.e) - Math.abs(a.e));
+    return {items, ranked, protect, disc};
+  }
+  function bedtimeTip(it) {
+    const mins = ok => rangeDays(START, REAL()).filter(ds => it.val(ds) === ok).map(ds => { const s = sleepMap[ds]; if (!s || !s.start) return null; const d = new Date(s.start); let m = d.getUTCHours() * 60 + d.getUTCMinutes(); if (m < 720) m += 1440; return m; }).filter(x => x != null);
+    const a = mins(true), b = mins(false);
+    if (a.length < 3) return null;
+    const f = m => { m = Math.round(m) % 1440; return p2(Math.floor(m / 60)) + ':' + p2(m % 60); };
+    return {yes: f(avg(a)), no: b.length >= 3 ? f(avg(b)) : null};
+  }
+  function actionOf(it) {
+    const dia = it.weak ? art(it.weak.w) : 'nos dias mais fracos';
+    if (SLEEPR.includes(it.rule)) {
+      const b = bedtimeTip(it);
+      return b ? `Deitar até <b>${b.yes}</b>: é o horário médio das noites em que você cumpriu${b.no ? ` (nas outras, ${b.no})` : ''}.` : `Fixe um horário de deitar e proteja-o ${dia}.`;
+    }
+    if (it.rule === '_ex' || it.rule === 'bjj' || /leitura|estudo/i.test(it.n)) {
+      const s = it.strong.map(x => x.w).slice(0, Math.max(2, Math.round(it.alvo))).sort((a, b) => a - b);
+      return s.length ? `Transforme em bloco fixo <b>${artList(s)}</b>, os dias em que mais acontece.` : `Reserve blocos fixos na agenda para chegar a ${nf(it.alvo)}x por semana.`;
+    }
+    if (it.rule === 'water') return `Concentre <b>1,5 L até as 12h</b> ${dia}, o dia mais fraco.`;
+    if (/vitamin/i.test(it.n)) return `Deixe as vitaminas à vista no café da manhã, principalmente ${dia}.`;
+    if (/along/i.test(it.n)) return `Faça 5 min de alongamento logo ao acordar, começando ${dia}.`;
+    if (/cuidado/i.test(it.n)) return `Reserve 10 min fixos após o banho, principalmente ${dia}.`;
+    return `Amarre o hábito a um horário fixo, principalmente ${dia}, o dia mais fraco.`;
+  }
+  const pc = v => v == null ? '–' : Math.round(v * 100) + '%';
+  const trTxt = it => it.dTr == null ? '' : it.dTr <= -0.15 ? `<span class="delta down">▼ caindo ${Math.round(-it.dTr * 100)} p.p.</span>` : it.dTr >= 0.15 ? `<span class="delta up">▲ subindo ${Math.round(it.dTr * 100)} p.p.</span>` : '<span class="delta flat">estável</span>';
+  const effLine = x => `${WLAB[x.k]} ${x.when}: <b>${x.raw >= 0 ? '+' : '−'}${x.fmt(Math.abs(x.raw))}</b> <small>(${x.nA} com × ${x.nB} sem)</small>`;
+  function discText(d) {
+    const up = d.raw > 0;
+    return `Nos dias com <b>${d.it.i} ${esc(d.it.n)}</b>, ${d.lab} ${d.when} fica <b>${d.fmt(Math.abs(d.raw))} ${up ? 'maior' : 'menor'}</b> (${d.fmt(d.ma)} vs ${d.fmt(d.mb)}).`;
+  }
+  function discCards(list, cls = '') {
+    return list.map(d => `<div class="card insg ${cls}" style="--tc:${d.e > 0 ? '#16977A' : '#D43F55'}"><div class="t"><span>📓</span>${esc(d.it.n)} × ${WLAB[d.k].replace(/^\S+\s/, '')}<span class="vchip" style="background:#3157E01F;color:#3157E0;margin-left:auto">diário</span></div>
+      <p>${discText(d)}</p><div class="n">Base: ${d.nA} dias com × ${d.nB} sem · desde ${fdy(ymd(START))} · associação, não causa</div></div>`).join('');
+  }
+  function injectInsights(R) {
+    const box = document.getElementById('insights'); if (!box) return;
+    box.querySelectorAll('.dj-insg').forEach(e => e.remove());
+    const top = R.disc.slice(0, 6);
+    if (top.length) box.insertAdjacentHTML('beforeend', discCards(top, 'dj-insg'));
+  }
+  let evoSel = null;
+  function renderEvo(head) {
+    const R = analyze();
+    const top3 = R.ranked.slice(0, 3), rest = R.ranked.slice(3);
+    const card = (it, i) => `<div class="card evo-c"><div class="evo-h"><span class="evo-n">${i + 1}º</span><span class="evo-i">${it.i}</span><b>${esc(it.n)}</b><span class="evo-s" title="Prioridade = espaço × (0,3 + 0,7 × impacto) × tendência">${nf(it.prio, 2)}</span></div>
+      <div class="evo-row"><span>Situação</span><div>${pc(it.c)} dos dias (28 d) · alvo ${pc(it.alvoPct)} ${trTxt(it)}<div class="bar" style="margin-top:5px"><div style="width:${Math.min(100, (it.c || 0) / (it.alvoPct || 1) * 100)}%;background:var(--hr)"></div></div></div></div>
+      <div class="evo-row"><span>Efeito medido</span><div>${it.measured ? (it.eff.filter(x => x.e > 0.05 && x.w > 0).sort((a, b) => b.e - a.e).slice(0, 3).map(effLine).join('<br>') || 'Sem efeito favorável relevante nos indicadores medidos.') : '<span class="vchip" style="background:var(--soft);color:var(--muted)">efeito ainda não medido</span> <small>precisa de 8 dias com e 8 sem</small>'}</div></div>
+      ${it.weak ? `<div class="evo-row"><span>Dia mais fraco</span><div>${WDP[it.weak.w].replace(/^./, c => c.toUpperCase())}: ${it.weak.ok} de ${it.weak.n}</div></div>` : ''}
+      <div class="evo-act">👉 ${actionOf(it)}</div>
+      <div class="evo-meta">Espaço ${nf(it.espaco, 2)} · impacto ${nf(it.impact, 2)}${it.measured ? '' : ' (referência)'} · tendência ×${nf(it.trend, 1)}</div></div>`;
+    const items = R.items;
+    if (!evoSel || !items.some(x => x.id === evoSel)) evoSel = (top3[0] || items[0] || {}).id;
+    $('#djBody').innerHTML = head + `
+      <div class="card"><h3>🎯 Onde evoluir · Top 3</h3><p class="q">Ranking = quanto falta para o alvo (últimos 28 dias) × quanto o hábito melhora seus próprios dados (pesos em ⚙️ Configurar) × tendência. Efeitos só aparecem com 8 dias com e 8 sem.</p>
+        ${top3.length ? `<div class="evo-g">${top3.map(card).join('')}</div>` : '<div class="empty">Todos os hábitos estão no alvo nos últimos 28 dias. 👏</div>'}</div>
+      <div class="grid g2" style="margin-top:10px">
+        <div class="card"><h3>🛡️ Proteger</h3><p class="q">No alvo nos últimos 28 dias. Não deixe cair.</p>
+          ${R.protect.length ? `<ul class="ins">${R.protect.map(it => `<li><span class="e">${it.i}</span><span><b>${esc(it.n)}</b> · ${pc(it.c)} (alvo ${pc(it.alvoPct)})${it.measured && it.eff.some(x => x.e > 0.3) ? '<br><small>' + it.eff.filter(x => x.e > 0.3).sort((a, b) => b.e - a.e).slice(0, 2).map(effLine).join(' · ') + '</small>' : ''}</span></li>`).join('')}</ul>` : '<p class="q">Nenhum hábito no alvo ainda.</p>'}
+          ${rest.length ? `<h3 style="margin-top:12px">Demais posições</h3><div class="tablewrap"><table class="tin rv-t"><tr><th>#</th><th>Hábito</th><th>28 d</th><th>Alvo</th><th>Impacto</th><th>Prior.</th></tr>${rest.map((it, i) => `<tr><td>${i + 4}º</td><td style="text-align:left;font-family:inherit">${it.i} ${esc(it.n)}</td><td>${pc(it.c)}</td><td>${pc(it.alvoPct)}</td><td>${nf(it.impact, 2)}${it.measured ? '' : '*'}</td><td>${nf(it.prio, 2)}</td></tr>`).join('')}</table></div><p class="note">* impacto de referência (0,3): efeito ainda não medido.</p>` : ''}</div>
+        <div class="card"><h3>📈 Tendência por hábito</h3><p class="q">% de dias cumpridos por semana desde ${fdy(ymd(START))} · linha tracejada = alvo.</p>
+          <div class="ctrls evo-chips">${items.map(it => `<button type="button" class="chip ${it.id === evoSel ? 'on' : ''}" data-evo="${it.id}">${it.i} ${esc(it.n)}</button>`).join('')}</div>
+          <div class="chart" id="evoChart"></div></div></div>
+      <div class="card" style="margin-top:10px"><h3>📓 Descobertas do diário</h3><p class="q">Diferenças entre dias com e sem cada hábito, com pelo menos 8 dias em cada grupo e efeito relevante. São associações, não provas de causa. As 6 principais também aparecem no Check-up de saúde.</p>
+        ${R.disc.length ? `<div class="grid g3 evo-disc">${discCards(R.disc)}</div>` : '<div class="empty">Ainda sem diferenças relevantes. Elas aparecem conforme os dias se acumulam.</div>'}</div>`;
+    const it = items.find(x => x.id === evoSel);
+    if (it) {
+      const ws = []; for (let w = sunday(ymd(START)); iso(w) <= REAL(); w = addD(w, 7)) ws.push(iso(w));
+      const vals = ws.map(w => { const v = rangeDays(w < START ? START : w, iso(addD(ymd(w), 6)) > REAL() ? REAL() : iso(addD(ymd(w), 6))).map(it.val).filter(x => x != null); return v.length ? v.filter(Boolean).length / v.length * 100 : null; });
+      chart($('#evoChart'), {x: ws.map(ymd), height: 210, yMin: 0, yMax: 100, yFmt: v => nf(v) + '%', tipTitle: i => 'Semana de ' + fd(ymd(ws[i])),
+        refLine: {v: it.alvoPct * 100, label: 'alvo ' + pc(it.alvoPct)},
+        series: [{name: '% cumprido', color: css('--str'), values: vals, type: 'line', width: 2.4, connect: true, fmt: v => nf(v) + '%'}, {name: 'semana', color: css('--str'), values: vals, type: 'dots', r: 3, noTip: true}]});
+    }
+    $('#djBody').querySelectorAll('[data-evo]').forEach(b => b.onclick = () => { evoSel = b.dataset.evo; for (let i = CHARTS.length - 1; i >= 0; i--) if (CHARTS[i][0].id === 'evoChart') CHARTS.splice(i, 1); renderRevisoes(); });
+  }
 
   const RENDER = {hoje: renderHoje, habitos: renderHabitos, medidas: renderMedidas, revisoes: renderRevisoes, config: renderConfig};
   function show(k) {
