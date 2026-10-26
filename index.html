@@ -262,6 +262,7 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;text-align:center;line-
 @keyframes gsp{to{transform:rotate(360deg)}}
 a.pill.btn{text-decoration:none;color:inherit}
 .pill.st-erro .dot{background:#D43F55!important}.pill.st-parcial .dot,.pill.st-velho .dot{background:#C98A00!important}
+#gate[hidden],#app[hidden]{display:none!important}
 
 /* ===== v3 · layout compacto ===== */
 body{padding:16px 14px 30px}
@@ -276,7 +277,7 @@ section{margin-top:12px}
 .grid{gap:10px}
 .tabs{margin:0 0 8px}
 .tab{padding:7px 2px;font-size:14px}
-.subtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 0 10px;padding:2px 0 4px;position:sticky;top:0;z-index:20;background:var(--bg)}
+.subtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 0 10px;padding:4px 0;position:sticky;top:var(--mh,0px);z-index:20;background:var(--bg)}
 .subtabs button{flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font:600 13px Inter,system-ui,sans-serif;color:var(--ink2);cursor:pointer;white-space:nowrap}
 .subtabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .subtabs button:focus-visible{outline:2px solid var(--str);outline-offset:2px}
@@ -287,7 +288,6 @@ section{margin-top:12px}
 .kpi .l{margin-top:2px}
 .bar{margin-top:8px}
 .legend{margin-top:4px;gap:12px}
-/* check-up */
 .cu{grid-template-columns:minmax(200px,230px) 1fr;gap:10px}
 .cu-main svg{width:130px}
 .cu-main .lbl{font-size:17px;margin-top:2px}
@@ -316,22 +316,17 @@ section{margin-top:12px}
 .insg .t{font-size:13.5px}
 .insg p{font-size:12.5px;margin:4px 0;line-height:1.4}
 .note{margin-top:8px;font-size:11.5px;line-height:1.45}
-/* relógio */
 .watch{padding:14px 16px;border-radius:20px}
 .rings{margin:8px 0 4px;gap:6px}
 .ring svg{max-width:92px}
 .wpanel{padding:10px 12px;margin-top:6px}
-/* sono */
 .ph{margin:7px 0}
 .ph-t{height:10px;margin-top:4px}
 .sk .v{font-size:21px}
 .sk .r{margin-top:3px}
-/* treinos */
 .act{padding:7px 2px}
-/* recordes */
 .rec .v{font-size:17px}
 .medal{flex-basis:32px;height:32px;font-size:15px}
-/* aba 2 */
 .rv{grid-template-columns:minmax(220px,270px) 1fr;gap:10px}
 .bigring svg{width:150px}
 .bigring .lbl{font-size:17px}
@@ -364,6 +359,89 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
   .rec .v{font-size:15px}
   .card{padding:11px 12px}
 }
+/* ===== v4 · cabeçalho Minto fixo ===== */
+#minto{position:sticky;top:0;z-index:30;background:var(--bg);padding:6px 0 8px;margin:0 0 6px;border-bottom:1px solid var(--line)}
+.mt-main{display:flex;align-items:flex-start;gap:8px;font-size:14px;line-height:1.4}
+.mt-lbl{flex:0 0 auto;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#fff;background:var(--ink);border-radius:6px;padding:3px 7px;margin-top:1px}
+.mt-msg{flex:1}
+.mt-more{flex:0 0 auto;border:0;background:none;color:var(--str);font:600 12px Inter,system-ui,sans-serif;cursor:pointer;padding:2px 0;display:none}
+.mt-p{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:6px}
+.mt-c{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--mc);border-radius:12px;padding:7px 10px}
+.mt-h{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.mt-b{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin-top:1px}
+.mt-b b{font-size:18px}
+.mt-b span{font-size:11.5px;color:var(--muted)}
+.mt-tr{font-weight:600}.mt-tr.up{color:#0F7A5F!important}.mt-tr.down{color:#B3263C!important}
+.mt-c ul{margin:3px 0 0;padding:0 0 0 14px;font-size:12px;line-height:1.4;color:var(--ink2)}
+@media (max-width:900px){
+  .mt-more{display:inline}
+  #minto.closed .mt-p{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+  #minto.closed .mt-c ul,#minto.closed .mt-h,#minto.closed .mt-b span:not(.mt-tr){display:none}
+  #minto.closed .mt-c{padding:4px 7px}
+  #minto.closed .mt-b b{font-size:14px}
+  #minto:not(.closed) .mt-p{grid-template-columns:minmax(0,1fr)}
+  .mt-main{font-size:13px}
+}
+/* ===== v4 · diário ===== */
+#tab-diario .subtabs{top:var(--mh,0px)}
+.dj-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.dj-nav b{font-size:14.5px}
+.dj-save{font-size:12px;font-weight:600;margin-left:auto}.dj-save.ok{color:#0F7A5F}.dj-save.bad{color:#B3263C}
+.dj-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.dj-strip>div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:7px 10px;min-width:0}
+.dj-strip span{display:block;font-size:11.5px;color:var(--muted)}
+.dj-strip b{font-size:15px;font-family:var(--mono);display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dj-strip>div:last-child b{font-family:inherit;font-size:13px}
+.dj-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.dj-cols{display:grid;grid-template-columns:1fr 1.15fr;gap:10px;align-items:start}
+.dj-cols .dj-g{grid-column:1/-1}
+.dj-ok{color:#0F7A5F;font-size:13px}
+.dj-rate{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--soft)}
+.dj-rl{font-size:13px;color:var(--ink2)}
+.dj-btns{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.dj-btns button{width:36px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:10px;font-size:17px;cursor:pointer;padding:0;opacity:.55}
+.dj-btns button.on{opacity:1;border-color:var(--ink);background:var(--soft);box-shadow:inset 0 0 0 1px var(--ink)}
+.dj-rpe button{width:30px;font:600 13px var(--mono);opacity:.8}
+.dj-meds{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px}
+.dj-meds label,.dj-line,.dj-params label{display:flex;flex-direction:column;gap:3px;font-size:11.5px;color:var(--muted)}
+.dj-meds input,.dj-line input,.dj-params input,.dj-cfg input,.dj-cfg select,.dj-refl textarea{font:14px Inter,system-ui,sans-serif;border:1px solid var(--line);border-radius:9px;padding:6px 8px;background:var(--card);color:var(--ink);min-width:0;width:100%}
+.dj-line{margin-top:8px}
+.dj-habs{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.dj-hab{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 8px;text-align:left;font:13px Inter,system-ui,sans-serif;color:var(--ink);min-width:0}
+.dj-tog{cursor:pointer}.dj-tog.done{background:#E6F5EF;border-color:#BFE6D7}
+.dj-hi{font-size:16px;flex:0 0 auto}
+.dj-hn{flex:1;min-width:0;line-height:1.25}.dj-hn small{display:block;font-size:10.5px;color:var(--muted)}
+.dj-src{font-size:10.5px;color:var(--muted)}.dj-src.aj{color:#C98A00}
+.dj-tick{flex:0 0 auto;font-size:14px}
+.dj-water{display:flex;align-items:center;gap:4px}.dj-water b{font:600 12.5px var(--mono);min-width:40px;text-align:center}
+.dj-water button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--soft);font-size:16px;cursor:pointer}
+.dj-refl{margin-top:8px;background:var(--bg);border-radius:12px;padding:8px 10px}
+.dj-rh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;font-size:12px}
+.dj-link{border:0;background:none;color:var(--str);font:600 12px Inter,system-ui,sans-serif;cursor:pointer;padding:0}
+.dj-q{font-size:14px;font-weight:600;margin:6px 0}
+.dj-refl textarea{resize:vertical}
+.dj-goal{padding:4px 0}
+.dj-gh{display:flex;justify-content:space-between;gap:8px;font-size:13px}.dj-gh span{color:var(--muted);font-size:12px}
+.dj-cols .dj-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 16px}
+.dj-cols .dj-g h3,.dj-cols .dj-g .note{grid-column:1/-1}
+.dj-grid{border-collapse:collapse;width:100%;font-size:13px}
+.dj-grid th{font-size:11.5px;font-weight:600;color:var(--muted);padding:4px;text-align:center}
+.dj-grid th[scope=row]{text-align:left;color:var(--ink);font-size:13px;white-space:nowrap;text-transform:none;letter-spacing:0}
+.dj-grid td{text-align:center;padding:3px!important}
+.dj-cell{width:34px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card);cursor:pointer;font:700 14px Inter,system-ui,sans-serif}
+.dj-cell.y{background:#16977A;border-color:#16977A;color:#fff}.dj-cell.n{background:#FDECEE;border-color:#F3C3CB;color:#B3263C}
+.dj-cell.aj{border-style:dashed;border-width:2px}
+.dj-cell:disabled{opacity:.25;cursor:default}
+.dj-cfg{border-collapse:collapse;width:100%;font-size:13px}
+.dj-cfg th{font-size:11.5px;color:var(--muted);font-weight:600;padding:4px}
+.dj-cfg td{padding:3px 4px!important}
+.dj-cfg tr.arch{opacity:.45}
+.dj-cfg .chip{padding:4px 9px}
+.dj-params{display:grid;grid-template-columns:repeat(3,minmax(0,200px));gap:10px}
+.dj-kp .kpi .l{font-size:11.5px}
+.chip:disabled{opacity:.35;cursor:default}
+@media (max-width:900px){.dj-cols{grid-template-columns:minmax(0,1fr)}.dj-cols.eve .dj-n{order:-1}.dj-strip{grid-template-columns:repeat(3,minmax(0,1fr))}.dj-meds{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.dj-habs{grid-template-columns:minmax(0,1fr)}.dj-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.dj-btns button{width:32px}.dj-rpe button{width:27px}.dj-params{grid-template-columns:minmax(0,1fr)}.dj-rate{flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -393,11 +471,17 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
     <button class="pill btn" id="outBtn" type="button">Sair</button>
   </div>
 </header>
+<div id="minto" aria-live="polite"></div>
 <nav class="tabs" id="tabs">
-  <button class="tab on" data-tab="saude" type="button">🩺 Saúde e treino</button>
+  <button class="tab on" data-tab="diario" type="button">📓 Diário</button>
+  <button class="tab" data-tab="saude" type="button">🩺 Saúde e treino</button>
   <button class="tab" data-tab="rss" type="button">⚡ Recuperação · Esforço · Sono</button>
 </nav>
-<div id="tab-saude">
+<div id="tab-diario">
+  <nav class="subtabs" id="djSubs" aria-label="Diário"><button type="button" data-dj="hoje">✍️ Hoje</button><button type="button" data-dj="habitos">✅ Hábitos</button><button type="button" data-dj="medidas">📏 Medidas</button><button type="button" data-dj="config">⚙️ Configurar</button></nav>
+  <div id="djBody"></div>
+</div>
+<div id="tab-saude" hidden>
 
 <dialog id="exp">
   <form method="dialog" class="exp">
@@ -1950,14 +2034,15 @@ function ringSVG(frac, color, big, small, dark = true) {
   let built = false;
   const show = t => {
     tabs.forEach(b => b.classList.toggle('on', b.dataset.tab === t));
-    $('#tab-saude').hidden = t !== 'saude'; $('#tab-rss').hidden = t !== 'rss';
+    ['saude', 'rss', 'diario'].forEach(k => { $('#tab-' + k).hidden = t !== k; });
     if (t === 'rss' && !built) { built = true; build(); }
     setTimeout(() => CHARTS.forEach(([b, o]) => { if (b.offsetParent) drawChart(b, o); }), 0);
-    try { history.replaceState(null, '', t === 'rss' ? '#recuperacao' : '#'); } catch (e) {}
+    try { history.replaceState(null, '', t === 'rss' ? '#recuperacao' : t === 'saude' ? '#saude' : '#'); } catch (e) {}
   };
   tabs.forEach(b => b.onclick = () => show(b.dataset.tab));
+  window.__showTab = show;
   if (!R || !R.days || !R.days.length) { $('#rssBody').innerHTML = '<div class="card empty">Sem dados brutos ainda. Rode o refresh.</div>'; return; }
-  if (location.hash === '#recuperacao') show('rss');
+  if (location.hash === '#recuperacao') show('rss'); else if (location.hash === '#saude') show('saude');
 
   function build() {
     const days = R.days, last = days.length - 1;
@@ -2068,7 +2153,7 @@ Faixas: 67–100 verde · 34–66 amarelo · 0–33 vermelho`)}`;
           <p class="q">${tgt ? `A recuperação ${sel === last ? 'desta manhã' : 'deste dia'} (${f0(d.recovery)}%, ${BANDN[d.band].toLowerCase()}) sugere esforço entre <b>${nf(tgt[0], 1)} e ${nf(tgt[1], 1)}</b>.` : 'Sem recuperação calculada para este dia, então não há meta.'}</p>
           <div class="gauge">${tgt ? `<div class="tz" style="left:${tgt[0] / 21 * 100}%;width:${(tgt[1] - tgt[0]) / 21 * 100}%"></div>` : ''}<div class="mk" style="left:calc(${s / 21 * 100}% - 2px)"></div></div>
           <div class="gscale"><span>0</span><span>leve · 9</span><span>13 · moderado</span><span>alto · 17</span><span>21</span></div>
-          <p class="read" style="font-size:13.5px;margin-top:8px">${!tgt ? '' : s < tgt[0] ? `Abaixo da meta: ${sel === last ? 'ainda cabe treino hoje' : 'dia mais leve que o sugerido'}.` : s > tgt[1] ? 'Acima da meta: o esforço passou do que a recuperação sugeria.' : 'Dentro da meta.'}
+          <p class="read" style="font-size:13.5px;margin-top:14px">${!tgt ? '' : s < tgt[0] ? `Abaixo da meta: ${sel === last ? 'ainda cabe treino hoje' : 'dia mais leve que o sugerido'}.` : s > tgt[1] ? 'Acima da meta: o esforço passou do que a recuperação sugeria.' : 'Dentro da meta.'}
           ${estToday ? ' <span class="tag estim">inclui Jiu-Jitsu estimado</span>' : ''}</p>
           <h3 style="margin-top:10px">Esforço dos últimos 7 dias</h3><p class="q">Barras = esforço do dia (0–21). Toque para ver as atividades.</p><div class="chart" id="cStr"></div></div></div>
         <div class="card tablewrap" style="margin-top:10px"><h3>Atividades recentes</h3><p class="q">Últimos 14 dias até o dia selecionado. "Carga" = pontos de TRIMPexp que entram no esforço.</p>
@@ -2273,13 +2358,441 @@ desempenho  = dormido / necessidade`)}`;
     subs.forEach(s => s.hidden = s.dataset.sub !== k);
     try { sessionStorage.setItem('gsub', k); } catch (e) {}
     setTimeout(() => CHARTS.forEach(([b, o]) => { if (b.offsetParent) drawChart(b, o); }), 0);
-    const nav = document.getElementById('subtabs'); if (nav.getBoundingClientRect().top < 0) nav.scrollIntoView({block: 'start'});
   };
   btns.forEach(b => b.addEventListener('click', () => show(b.dataset.sub)));
   let k0 = 'checkup'; try { k0 = sessionStorage.getItem('gsub') || 'checkup'; } catch (e) {}
   show(k0);
   document.getElementById('recs').addEventListener('click', e => { const li = e.target.closest('li'); if (li) li.classList.toggle('open'); });
 })();
+
+/* ================= v4 · DIÁRIO E HÁBITOS + CABEÇALHO MINTO ================= */
+(function diario() {
+  const START = '2026-09-01';
+  const REAL = () => iso(new Date());
+  const ymd = s => pd(s);
+  const sunday = d => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); return addD(x, -x.getDay()); };
+  const write = (path, val) => (window.__fbWrite ? window.__fbWrite('diario/' + path, val) : Promise.reject(new Error('sem conexão')));
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+  const clampN = (v, a, b) => Math.max(a, Math.min(b, v));
+  const rangeDays = (a, b) => { const o = []; for (let d = ymd(a); iso(d) <= b; d = addD(d, 1)) o.push(iso(d)); return o; };
+
+  /* ---------- configuração padrão (editável em Configurar) ---------- */
+  const DEF = {
+    height: 178, wake: {wd: '06:30', we: '07:30'},
+    habits: {
+      acordar: {n: 'Acordar 6:00', i: '⏰', src: 'auto', rule: 'wake', o: 1},
+      agua: {n: 'Beber 3 L de água', i: '💧', src: 'manual', rule: 'water', target: 3, o: 2},
+      along: {n: 'Alongamentos', i: '🤸', src: 'manual', o: 3},
+      musc: {n: 'Musculação', i: '🏋️', src: 'auto', rule: 'str', o: 4},
+      nado: {n: 'Natação/Corrida', i: '🏊', src: 'auto', rule: 'runswim', o: 5},
+      bjj: {n: 'Jiu-Jitsu', i: '🥋', src: 'auto', rule: 'bjj', o: 6},
+      leitura: {n: 'Leitura ou Estudos', i: '📚', src: 'manual', o: 7},
+      cuidado: {n: 'Cuidado pessoal', i: '🧴', src: 'manual', o: 8},
+      vitam: {n: 'Tomar vitaminas', i: '💊', src: 'manual', o: 9},
+      sono7: {n: 'Dormir no mínimo 7 h', i: '😴', src: 'auto', rule: 'sleep7', o: 10},
+    },
+    goals: {
+      g_sono: {n: '7 h de sono', per: 'day', metric: 'sleep_h', target: 7, o: 1},
+      g_passos: {n: '6 mil passos', per: 'day', metric: 'steps', target: 6000, o: 2},
+      g_ex: {n: 'Exercitar 5x', per: 'week', metric: 'exercise_days', target: 5, o: 3},
+      g_bjj: {n: 'Jiu-Jitsu 2x', per: 'week', metric: 'habit:bjj', target: 2, o: 4},
+      g_leit: {n: 'Leitura/estudo 3x', per: 'week', metric: 'habit:leitura', target: 3, o: 5},
+    },
+  };
+  const RULES = {wake: 'Acordar no horário (sono do Garmin)', sleep7: 'Dormir 7 h ou mais', str: 'Musculação registrada', runswim: 'Corrida ou natação registrada',
+    bjj: 'Jiu-Jitsu registrado', walk20: 'Caminhada de 20 min ou mais', anyex: 'Qualquer exercício do dia', water: 'Litros de água (meta)'};
+  const METRICS = {sleep_h: 'Horas de sono', steps: 'Passos', exercise_days: 'Dias com exercício'};
+
+  /* ---------- estado ---------- */
+  let DB = window.__diarioInit || {};
+  let CFG = null;
+  const cfg = () => CFG || DB.config || DEF;
+  const day = ds => (DB.dias && DB.dias[ds]) || {};
+  const habitsActive = () => Object.entries(cfg().habits || {}).filter(([, h]) => !h.arch).sort((a, b) => (a[1].o || 0) - (b[1].o || 0));
+  const goalsList = () => Object.entries(cfg().goals || {}).sort((a, b) => (a[1].o || 0) - (b[1].o || 0));
+  let selDay = REAL(), sub = 'hoje', gridWeek = iso(sunday(new Date())), pendingRender = false;
+
+  /* ---------- regras automáticas (Garmin) ---------- */
+  const actsOn = ds => ACTS.filter(a => iso(a.d) === ds);
+  const SWIM = ['lap_swimming', 'open_water_swimming', 'swimming'];
+  const isExercise = a => a.sport === 'walk' ? a.duration >= 1200 : (a.sport !== 'oth' || SWIM.includes(a.type) || a.duration >= 1200);
+  const toMin = t => { const [h, m] = String(t || '0:0').split(':').map(Number); return h * 60 + (m || 0); };
+  function autoRule(rule, ds, h) {
+    const sl = sleepMap[ds], acts = actsOn(ds);
+    switch (rule) {
+      case 'wake': {
+        if (!sl || !sl.end) return null;
+        const e = new Date(sl.end), m = e.getUTCHours() * 60 + e.getUTCMinutes(), wd = ymd(ds).getDay();
+        const lim = toMin(wd === 0 || wd === 6 ? cfg().wake.we : cfg().wake.wd);
+        return m <= lim;
+      }
+      case 'sleep7': return sl && sl.total ? sl.total >= 7 * 3600 : null;
+      case 'str': return acts.some(a => ['strength_training', 'fitness_equipment'].includes(a.type));
+      case 'runswim': return acts.some(a => a.sport === 'run' || SWIM.includes(a.type));
+      case 'bjj': return acts.some(a => a.sport === 'bjj');
+      case 'walk20': return acts.some(a => a.sport === 'walk' && a.duration >= 1200);
+      case 'anyex': return acts.some(isExercise);
+      default: return null;
+    }
+  }
+  const touched = ds => { const d = day(ds); return !!(d.m || d.n || d.h || d.agua != null || d.med); };
+  // valor do hábito no dia: {v: true|false|null, how: 'auto'|'manual'|'ajuste'}
+  function hv(id, ds) {
+    const h = cfg().habits[id]; if (!h) return {v: null};
+    const d = day(ds), ov = d.h ? d.h[id] : undefined;
+    if (ov === true || ov === false) return {v: ov, how: h.src === 'auto' ? 'ajuste' : 'manual'};
+    if (h.rule === 'water') { const l = d.agua; return l != null ? {v: l >= (h.target || 3), how: 'manual'} : {v: touched(ds) ? false : null, how: 'manual'}; }
+    if (h.src === 'auto') {
+      const v = ds > REAL() ? null : autoRule(h.rule, ds, h);
+      return {v: v === false && !(dayMap[ds] || sleepMap[ds] || actsOn(ds).length) ? null : v, how: 'auto'};
+    }
+    return {v: touched(ds) ? false : null, how: 'manual'};
+  }
+  const exerciseDay = ds => actsOn(ds).some(isExercise) || ['musc', 'nado', 'bjj'].some(id => day(ds).h && day(ds).h[id] === true);
+  function goalDay(g, ds) {
+    if (g.metric === 'sleep_h') { const s = sleepMap[ds]; return s && s.total ? {val: s.total / 3600, ok: s.total / 3600 >= g.target} : {val: null, ok: null}; }
+    if (g.metric === 'steps') { const x = dayMap[ds]; return x && x.steps != null ? {val: x.steps, ok: x.steps >= g.target} : {val: null, ok: null}; }
+    if (g.metric === 'exercise_days') { const v = exerciseDay(ds); return {val: v ? 1 : 0, ok: v}; }
+    if (g.metric.startsWith('habit:')) { const r = hv(g.metric.slice(6), ds); return {val: r.v ? 1 : 0, ok: r.v}; }
+    return {val: null, ok: null};
+  }
+  // progresso de meta em uma semana (domingo a sábado) até 'ate'
+  function goalWeek(g, wStart, ate) {
+    const ds = rangeDays(wStart, iso(addD(ymd(wStart), 6))).filter(d => d <= ate);
+    const r = ds.map(d => goalDay(g, d));
+    if (g.per === 'week') { const n = r.filter(x => x.ok).length; return {n, tgt: g.target, pct: Math.min(1, n / g.target), left: 7 - ds.length}; }
+    const known = r.filter(x => x.ok != null), n = known.filter(x => x.ok).length;
+    return {n, tgt: known.length, pct: known.length ? n / known.length : null, left: 7 - ds.length};
+  }
+  function adherence(a, b) {
+    let ok = 0, tot = 0; const per = {};
+    habitsActive().forEach(([id]) => { per[id] = {ok: 0, tot: 0}; });
+    rangeDays(a, b).forEach(ds => habitsActive().forEach(([id]) => { const v = hv(id, ds).v; if (v == null) return; tot++; per[id].tot++; if (v) { ok++; per[id].ok++; } }));
+    return {pct: tot ? ok / tot : null, ok, tot, per};
+  }
+  function streak(id, upto) {
+    const ds = rangeDays(START, upto);
+    let cur = 0, best = 0, run = 0;
+    for (let i = ds.length - 1; i >= 0; i--) { const v = hv(id, ds[i]).v; if (v) cur++; else if (i === ds.length - 1 && v == null) continue; else break; }
+    ds.forEach(d => { const v = hv(id, d).v; if (v) { run++; best = Math.max(best, run); } else if (v === false) run = 0; });
+    return {cur, best};
+  }
+
+  /* ---------- perguntas de reflexão ---------- */
+  const THEMES = [
+    ['Família', '👨‍👩‍👦', ['O que fiz hoje que aproximou minha família?', 'Com quem da família eu deveria falar esta semana?', 'Que tradição de família eu quero manter viva?', 'Qual momento em família de hoje eu quero lembrar?', 'O que minha família precisa mais de mim agora?', 'Que conversa adiada eu poderia ter?']],
+    ['Casamento', '💍', ['O que a Patrícia fez esta semana que eu ainda não agradeci?', 'Qual foi nosso melhor momento juntos hoje?', 'O que posso fazer amanhã para facilitar o dia dela?', 'Que plano a dois está esquecido?', 'Em que ponto eu ouvi mais do que falei hoje?', 'Qual atitude minha fortalece nossa parceria?']],
+    ['Saúde', '❤️', ['O que meu corpo pediu hoje e eu ignorei?', 'Qual escolha de hoje meu eu de 60 anos agradeceria?', 'O que mais atrapalhou meu sono esta semana?', 'Qual hábito pequeno teve mais efeito hoje?', 'Como está minha energia de 1 a 5, e por quê?', 'O que comi hoje que me fez bem?']],
+    ['Finanças', '💰', ['Qual gasto de hoje eu não repetiria?', 'Fiz algo hoje pela minha meta financeira?', 'Que compra eu adiei e foi a decisão certa?', 'Qual despesa recorrente merece revisão?', 'O que quero que meu dinheiro construa em 5 anos?', 'Gastei hoje alinhado com o que valorizo?']],
+    ['Estudos', '📚', ['O que aprendi hoje que vale a pena guardar?', 'Qual tema quero dominar até o fim do ano?', 'Que pergunta ficou sem resposta hoje?', 'Como apliquei algo que estudei recentemente?', 'Quanto tempo dei ao aprendizado hoje?', 'Que livro ou curso merece minha próxima hora livre?']],
+    ['Carreira', '💼', ['Qual decisão de hoje teve mais impacto?', 'O que fiz hoje que só eu poderia ter feito?', 'Em que posso delegar melhor amanhã?', 'Que conversa com a liderança vale preparar?', 'Que resultado desta semana vai importar daqui a um ano?', 'O que me deu mais energia no trabalho hoje?']],
+    ['Amizade', '🤝', ['Que amigo eu não vejo há tempo demais?', 'Quem me ajudou recentemente e merece um retorno?', 'Que amizade quero cultivar mais este mês?', 'Fui um bom amigo para alguém hoje?', 'Que encontro posso marcar nas próximas semanas?', 'Que conversa com um amigo me fez bem recentemente?']],
+    ['Lazer', '🎉', ['O que fiz hoje só por prazer?', 'Qual hobby está esquecido?', 'Como quero passar o próximo fim de semana?', 'Que pausa de hoje realmente me descansou?', 'O que eu faria com uma tarde livre amanhã?', 'Que experiência nova quero viver este mês?']],
+    ['Propósito', '🧭', ['O que deu sentido ao meu dia?', 'Que valor guiou minha principal escolha hoje?', 'Pelo que quero ser lembrado?', 'Fiz hoje algo alinhado ao que é importante para mim?', 'Que meta grande merece meu próximo passo?', 'Pelo que sou grato hoje?']],
+  ];
+  const dayNum = ds => Math.round(ymd(ds) / 864e5);
+  function question(ds, shift = 0) {
+    const n = dayNum(ds), t = THEMES[((n + shift) % 9 + 9) % 9], q = t[2][(Math.floor(n / 9) + shift) % t[2].length];
+    return {t: t[0], i: t[1], q};
+  }
+
+  /* ---------- medidas ---------- */
+  const MEDS = [['peso', 'Peso', 'kg', 30, 250, 0.1], ['cintura', 'Cintura', 'cm', 40, 200, 0.1], ['pescoco', 'Pescoço', 'cm', 20, 70, 0.1], ['braco', 'Braço direito', 'cm', 15, 70, 0.1], ['peito', 'Peitoral', 'cm', 50, 200, 0.1]];
+  const navy = (w, n, h) => w && n && h && w > n ? 495 / (1.0324 - 0.19077 * Math.log10(w - n) + 0.15456 * Math.log10(h)) - 450 : null;
+  function medWeeks() {
+    const out = [];
+    for (let w = sunday(ymd(START)); iso(w) <= REAL(); w = addD(w, 7)) {
+      const ds = rangeDays(iso(w), iso(addD(w, 6))), row = {w: iso(w), n: 0};
+      MEDS.forEach(([k]) => { const v = ds.map(d => day(d).med && day(d).med[k]).filter(x => x != null); row[k] = v.length ? avg(v) : null; row.n = Math.max(row.n, v.length); });
+      row.bf = navy(row.cintura, row.pescoco, cfg().height);
+      out.push(row);
+    }
+    return out;
+  }
+
+  /* ---------- UI helpers ---------- */
+  const EMO = {humor: ['😞', '🙁', '😐', '🙂', '😄'], energia: ['🪫', '😮‍💨', '😐', '⚡', '🚀'], sono: ['😵', '🥱', '😐', '😌', '🛌'], estresse: ['😌', '🙂', '😐', '😟', '😫']};
+  const rate = (path, key, val, label) => `<div class="dj-rate"><span class="dj-rl">${label}</span><div class="dj-btns" role="group" aria-label="${label}">${[1, 2, 3, 4, 5].map(n =>
+    `<button type="button" class="${val === n ? 'on' : ''}" data-w="${path}" data-v="${n}" aria-pressed="${val === n}" title="${n}">${EMO[key][n - 1]}</button>`).join('')}</div></div>`;
+  const tick = v => v === true ? '✅' : v === false ? '❌' : '⬜';
+  let saveT;
+  const flash = (ok = true, msg) => { const s = $('#djSave'); if (!s) return; s.textContent = ok ? '✓ salvo' : '⚠️ ' + (msg || 'não salvo'); s.className = 'dj-save ' + (ok ? 'ok' : 'bad'); clearTimeout(saveT); saveT = setTimeout(() => { s.textContent = ''; }, 2200); };
+  const save = (path, val) => write(path, val).then(() => flash(true)).catch(e => flash(false, String(e.code || e.message).includes('PERMISSION') ? 'sem permissão: atualize as regras do Firebase' : e.message));
+  const setLocal = (path, val) => { // aplica na hora (resposta otimista)
+    const parts = path.split('/'); let o = DB; for (let i = 0; i < parts.length - 1; i++) { o[parts[i]] = o[parts[i]] || {}; o = o[parts[i]]; }
+    if (val === null) delete o[parts[parts.length - 1]]; else o[parts[parts.length - 1]] = val;
+  };
+  const put = (path, val) => { setLocal(path, val); save(path, val); };
+
+  /* ---------- HOJE ---------- */
+  function rssOf(ds) { return (D.rss && D.rss.days || []).find(x => x.date === ds); }
+  function renderHoje() {
+    const ds = selDay, d = day(ds), m = d.m || {}, n = d.n || {}, med = d.med || {};
+    const sl = sleepMap[ds], x = dayMap[ds] || {}, r = rssOf(ds), acts = actsOn(ds);
+    const isToday = ds === REAL(), evening = isToday && new Date().getHours() >= 15;
+    const hasBjj = acts.some(a => a.sport === 'bjj') || (d.h && d.h.bjj === true);
+    const refl = n.reflexao || {}, q = refl.q ? {t: refl.t, i: (THEMES.find(t => t[0] === refl.t) || [, '💭'])[1], q: refl.q} : question(ds, refl.s || 0);
+    const wS = iso(sunday(ymd(ds)));
+    const gl = goalsList().map(([id, g]) => {
+      const p = goalWeek(g, wS, ds), dv = goalDay(g, ds);
+      const pct = p.pct == null ? 0 : p.pct, c = pct >= 1 ? 'var(--walk)' : pct >= 0.6 ? '#C98A00' : 'var(--hr)';
+      const txt = g.per === 'week' ? `${p.n}/${p.tgt} na semana` : `${p.n}/${p.tgt} dias na semana` + (dv.val != null ? ` · hoje ${g.metric === 'steps' ? nf(dv.val) : nf(dv.val, 1) + ' h'}` : '');
+      return `<div class="dj-goal"><div class="dj-gh"><b>${esc(g.n)}</b><span>${txt}</span></div><div class="bar" style="margin-top:4px"><div style="width:${pct * 100}%;background:${c}"></div></div></div>`;
+    }).join('');
+    const habRows = habitsActive().map(([id, h]) => {
+      const r2 = hv(id, ds);
+      if (h.rule === 'water') {
+        const l = d.agua || 0;
+        return `<div class="dj-hab"><span class="dj-hi">${h.i}</span><span class="dj-hn">${esc(h.n)}<small>${nf(l, 1)} de ${nf(h.target || 3, 1)} L</small></span>
+          <span class="dj-water"><button type="button" data-water="-0.5" aria-label="menos meio litro">−</button><b>${nf(l, 1)} L</b><button type="button" data-water="0.5" aria-label="mais meio litro">+</button></span>
+          <span class="dj-tick">${tick(r2.v)}</span></div>`;
+      }
+      const tag = h.src === 'auto' ? (r2.how === 'ajuste' ? '<small class="dj-src aj">✋ ajustado</small>' : '<small class="dj-src">🤖 Garmin</small>') : '';
+      return `<button type="button" class="dj-hab dj-tog ${r2.v ? 'done' : ''}" data-hab="${id}" aria-pressed="${!!r2.v}"><span class="dj-hi">${h.i}</span><span class="dj-hn">${esc(h.n)}${tag}</span><span class="dj-tick">${tick(r2.v)}</span></button>`;
+    }).join('');
+    const st = r && r.recovery != null ? `${nf(r.recovery)}% <span class="dj-dot" style="background:${{verde: '#16977A', amarelo: '#C98A00', vermelho: '#D43F55'}[r.band]}"></span>` : '–';
+    $('#djBody').innerHTML = `
+    <div class="dj-nav">
+      <button type="button" class="chip" data-nav="-1" ${ds <= START ? 'disabled' : ''} aria-label="dia anterior">‹</button>
+      <b>${DOW[ymd(ds).getDay()]}, ${fdy(ymd(ds))}</b>
+      <button type="button" class="chip" data-nav="1" ${ds >= REAL() ? 'disabled' : ''} aria-label="próximo dia">›</button>
+      ${isToday ? '' : '<button type="button" class="chip" data-nav="0">Hoje</button>'}
+      <span id="djSave" class="dj-save" aria-live="polite"></span>
+    </div>
+    <div class="dj-strip">
+      <div><span>😴 Sono</span><b>${sl && sl.total ? hm(sl.total) : '–'}</b></div>
+      <div><span>🔋 Recuperação</span><b>${st}</b></div>
+      <div><span>⚡ Body Battery</span><b>${x.bbMax ?? '–'}</b></div>
+      <div><span>👟 Passos</span><b>${x.steps != null ? nf(x.steps) : '–'}</b></div>
+      <div><span>🏋️ Treinos</span><b>${acts.length ? acts.map(a => typeOf(a)).join(', ') : '–'}</b></div>
+    </div>
+    <div class="dj-cols ${evening ? 'eve' : ''}">
+      <div class="card dj-m"><h3>☀️ Check-in da manhã ${m.ts ? '<small class="dj-ok">✓</small>' : ''}</h3>
+        ${rate('dias/' + ds + '/m/humor', 'humor', m.humor, 'Humor')}
+        ${rate('dias/' + ds + '/m/energia', 'energia', m.energia, 'Energia')}
+        ${rate('dias/' + ds + '/m/sono', 'sono', m.sono, 'Como dormi')}
+        <div class="dj-meds">${MEDS.map(([k, l, u, a, b, s]) => `<label><span>${l} (${u})</span><input type="number" inputmode="decimal" min="${a}" max="${b}" step="${s}" data-med="${k}" value="${med[k] ?? ''}" placeholder="–"></label>`).join('')}</div>
+        <label class="dj-line"><span>Intenção do dia</span><input type="text" maxlength="120" data-txt="dias/${ds}/m/intencao" value="${esc(m.intencao)}" placeholder="Opcional · uma linha"></label>
+      </div>
+      <div class="card dj-n"><h3>🌙 Check-in da noite ${n.ts ? '<small class="dj-ok">✓</small>' : ''}</h3>
+        <div class="dj-habs">${habRows}</div>
+        ${hasBjj ? `<div class="dj-rate"><span class="dj-rl">🥋 Nota do Jiu-Jitsu</span><div class="dj-btns dj-rpe" role="group" aria-label="Nota do Jiu-Jitsu">${[...Array(10)].map((_, i) => `<button type="button" class="${n.rpe === i + 1 ? 'on' : ''}" data-w="dias/${ds}/n/rpe" data-v="${i + 1}">${i + 1}</button>`).join('')}</div></div>` : ''}
+        ${rate('dias/' + ds + '/n/estresse', 'estresse', n.estresse, 'Estresse percebido')}
+        <div class="dj-refl"><div class="dj-rh"><span class="vchip" style="background:var(--soft)">${q.i} ${esc(q.t)}</span>
+          <span><button type="button" class="dj-link" data-q="next">Outra pergunta</button> · <button type="button" class="dj-link" data-q="skip">${refl.pulada ? 'Desfazer pular' : 'Pular'}</button></span></div>
+          ${refl.pulada ? '<p class="q" style="margin:6px 0 0">Pergunta pulada hoje.</p>' : `<p class="dj-q">${esc(q.q)}</p>
+          <textarea maxlength="280" rows="2" data-refl="1" placeholder="Resposta curta (até 280 caracteres)">${esc(refl.r)}</textarea>`}
+        </div>
+      </div>
+      <div class="card dj-g"><h3>🎯 Metas · semana de ${fd(ymd(wS))}</h3>${gl}
+        ${n.rpe ? '' : ''}<p class="note">A nota do Jiu-Jitsu e o peso entram nos cálculos de esforço e tendências ao reabrir ou clicar em ↻ Recarregar.</p></div>
+    </div>`;
+    bindHoje();
+  }
+  function stamp(part) { const ds = selDay, d = day(ds); if (!(d[part] && d[part].ts)) put(`dias/${ds}/${part}/ts`, Date.now()); }
+  function bindHoje() {
+    const B = $('#djBody');
+    B.querySelectorAll('[data-nav]').forEach(b => b.onclick = () => { const v = +b.dataset.nav; selDay = v === 0 ? REAL() : iso(addD(ymd(selDay), v)); if (selDay < START) selDay = START; if (selDay > REAL()) selDay = REAL(); renderHoje(); });
+    B.querySelectorAll('[data-w]').forEach(b => b.onclick = () => {
+      const p = b.dataset.w, v = +b.dataset.v, cur = p.split('/').reduce((o, k) => o && o[k], DB);
+      put(p, cur === v ? null : v); stamp(p.includes('/m/') ? 'm' : 'n'); renderHoje();
+    });
+    B.querySelectorAll('[data-hab]').forEach(b => b.onclick = () => {
+      const id = b.dataset.hab, h = cfg().habits[id], ds = selDay, ov = day(ds).h ? day(ds).h[id] : undefined, cur = hv(id, ds).v;
+      let nv;
+      if (h.src === 'auto') nv = ov === undefined ? !cur : null;              // ajusta o automático ou volta ao Garmin
+      else nv = ov === true ? false : ov === false ? null : true;            // ✅ → ❌ → vazio
+      put(`dias/${ds}/h/${id}`, nv); stamp('n'); renderHoje();
+    });
+    B.querySelectorAll('[data-water]').forEach(b => b.onclick = () => {
+      const l = clampN(Math.round(((day(selDay).agua || 0) + +b.dataset.water) * 10) / 10, 0, 8);
+      put(`dias/${selDay}/agua`, l || null); stamp('n'); renderHoje();
+    });
+    B.querySelectorAll('[data-med]').forEach(i => i.onchange = () => {
+      const k = i.dataset.med, def = MEDS.find(x => x[0] === k), v = i.value === '' ? null : Math.round(parseFloat(i.value.replace(',', '.')) * 10) / 10;
+      if (v != null && (isNaN(v) || v < def[3] || v > def[4])) { i.setCustomValidity(`Entre ${def[3]} e ${def[4]}`); i.reportValidity(); return; }
+      i.setCustomValidity(''); put(`dias/${selDay}/med/${k}`, v); stamp('m');
+    });
+    B.querySelectorAll('[data-txt]').forEach(i => i.onchange = () => { put(i.dataset.txt, i.value.trim() || null); stamp('m'); });
+    let tt; const ta = B.querySelector('[data-refl]');
+    const saveRefl = () => { const ds = selDay, q = question(ds, (day(ds).n && day(ds).n.reflexao && day(ds).n.reflexao.s) || 0), cur = (day(ds).n && day(ds).n.reflexao) || {};
+      put(`dias/${ds}/n/reflexao`, ta.value.trim() ? {t: cur.t || q.t, q: cur.q || q.q, r: ta.value.trim(), s: cur.s || 0} : (cur.s ? {s: cur.s} : null)); stamp('n'); };
+    if (ta) { ta.oninput = () => { clearTimeout(tt); tt = setTimeout(saveRefl, 900); }; ta.onchange = () => { clearTimeout(tt); saveRefl(); }; }
+    B.querySelectorAll('[data-q]').forEach(b => b.onclick = () => {
+      const ds = selDay, cur = (day(ds).n && day(ds).n.reflexao) || {};
+      if (b.dataset.q === 'skip') put(`dias/${ds}/n/reflexao`, cur.pulada ? null : {pulada: true, s: cur.s || 0});
+      else { const s = (cur.s || 0) + 1; put(`dias/${ds}/n/reflexao`, {s}); }
+      renderHoje();
+    });
+  }
+
+  /* ---------- HÁBITOS (grade semanal + preenchimento retroativo) ---------- */
+  function renderHabitos() {
+    const wS = gridWeek, ds = rangeDays(wS, iso(addD(ymd(wS), 6))), today = REAL();
+    const prevOk = wS > iso(sunday(ymd(START))), nextOk = iso(addD(ymd(wS), 7)) <= today;
+    const rows = habitsActive().map(([id, h]) => {
+      const st = streak(id, today), a30 = adherence(iso(addD(new Date(), -29)) < START ? START : iso(addD(new Date(), -29)), today).per[id] || {ok: 0, tot: 0};
+      return `<tr><th scope="row"><span class="dj-hi">${h.i}</span> ${esc(h.n)}${h.src === 'auto' ? ' <small class="dj-src">🤖</small>' : ''}</th>
+        ${ds.map(d => { const r = hv(id, d); const fut = d > today || d < START;
+          return `<td><button type="button" class="dj-cell ${r.v === true ? 'y' : r.v === false ? 'n' : ''} ${r.how === 'ajuste' ? 'aj' : ''}" ${fut ? 'disabled' : ''} data-cell="${id}|${d}" aria-label="${esc(h.n)} em ${d}">${fut ? '' : r.v === true ? '✓' : r.v === false ? '✕' : ''}</button></td>`; }).join('')}
+        <td class="num">${a30.tot ? Math.round(a30.ok / a30.tot * 100) + '%' : '–'}</td><td class="num">${st.cur}</td><td class="num">${st.best}</td></tr>`;
+    }).join('');
+    const ad = adherence(wS, ds[6] > today ? today : ds[6]);
+    $('#djBody').innerHTML = `
+    <div class="card"><div class="head"><div><h3>Hábitos da semana</h3><p class="q">Toque para marcar. Manuais: ✓ → ✕ → vazio. 🤖 Automáticos vêm do Garmin; tocar ajusta (borda tracejada) e tocar de novo volta ao Garmin. Preenchimento disponível desde ${fdy(ymd(START))}.</p></div>
+      <div class="dj-nav"><button type="button" class="chip" data-wk="-1" ${prevOk ? '' : 'disabled'} aria-label="semana anterior">‹</button><b>${fd(ymd(wS))} – ${fd(ymd(ds[6]))}</b><button type="button" class="chip" data-wk="1" ${nextOk ? '' : 'disabled'} aria-label="próxima semana">›</button><span id="djSave" class="dj-save" aria-live="polite"></span></div></div>
+      <div class="tablewrap"><table class="dj-grid"><thead><tr><th></th>${ds.map(d => `<th>${DOW[ymd(d).getDay()]}<br><span class="num">${ymd(d).getDate()}</span></th>`).join('')}<th title="Cumprimento nos últimos 30 dias">30 d</th><th title="Sequência atual">Seq.</th><th title="Maior sequência desde 01/09">Recorde</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>
+      <p class="q" style="margin-top:8px">Cumprimento nesta semana: <b>${ad.pct == null ? '–' : Math.round(ad.pct * 100) + '%'}</b> (${ad.ok} de ${ad.tot} marcações). Dias sem nenhum registro ficam fora da conta.</p></div>`;
+    $('#djBody').querySelectorAll('[data-wk]').forEach(b => b.onclick = () => { gridWeek = iso(addD(ymd(gridWeek), 7 * +b.dataset.wk)); renderHabitos(); });
+    $('#djBody').querySelectorAll('[data-cell]').forEach(b => b.onclick = () => {
+      const [id, d] = b.dataset.cell.split('|'), h = cfg().habits[id], ov = day(d).h ? day(d).h[id] : undefined, cur = hv(id, d).v;
+      const nv = h.src === 'auto' || h.rule === 'water' ? (ov === undefined ? !cur : null) : (ov === true ? false : ov === false ? null : true);
+      put(`dias/${d}/h/${id}`, nv); renderHabitos();
+    });
+  }
+
+  /* ---------- MEDIDAS ---------- */
+  function renderMedidas() {
+    const W = medWeeks().filter(w => w.n > 0), last = W[W.length - 1], first = W[0];
+    const delta = (k, d = 1) => last && first && last[k] != null && first[k] != null && W.length > 1 ? `<span class="delta ${last[k] - first[k] <= 0 ? 'up' : 'down'}">${last[k] - first[k] > 0 ? '+' : ''}${nf(last[k] - first[k], d)}</span>` : '';
+    const kp = [...MEDS.map(([k, l, u]) => [k, l, u, 1]), ['bf', '% gordura (Marinha EUA)', '%', 1]];
+    $('#djBody').innerHTML = `
+    <div class="grid g3 dj-kp">${kp.map(([k, l, u, d]) => `<div class="card kpi"><div class="v num">${last && last[k] != null ? nf(last[k], d) : '–'}<small>${u}</small>${delta(k, d)}</div><div class="l">${l} · média da última semana com registro${k === 'bf' ? '' : ''}</div></div>`).join('')}</div>
+    ${W.length ? `<div class="grid g2" style="margin-top:10px">
+      <div class="card"><h3>Peso (kg)</h3><p class="q">Pontos = registros diários · linha = média da semana (domingo a sábado).</p><div class="chart" id="djCW"></div></div>
+      <div class="card"><h3>% de gordura estimado</h3><p class="q">Fórmula da Marinha dos EUA com cintura, pescoço e altura de ${nf(cfg().height)} cm (médias semanais). Estimativa, não substitui bioimpedância ou DEXA.</p><div class="chart" id="djCB"></div></div>
+      <div class="card"><h3>Circunferências (cm)</h3><p class="q">Médias semanais.</p><div class="chart" id="djCC"></div>
+        <div class="legend"><span><i style="background:var(--run)"></i>cintura</span><span><i style="background:var(--str)"></i>peitoral</span><span><i style="background:var(--walk)"></i>braço direito</span><span><i style="background:var(--bjj)"></i>pescoço</span></div></div>
+      <div class="card tablewrap"><h3>Médias por semana</h3><table class="tin"><tr><th style="text-align:left">Semana</th><th>Peso</th><th>Cintura</th><th>Pescoço</th><th>Braço</th><th>Peitoral</th><th>% G</th></tr>
+        ${W.slice().reverse().map(w => `<tr><td style="text-align:left;font-family:inherit">${fd(ymd(w.w))}</td>${['peso', 'cintura', 'pescoco', 'braco', 'peito', 'bf'].map(k => `<td>${w[k] != null ? nf(w[k], 1) : '–'}</td>`).join('')}</tr>`).join('')}</table></div>
+    </div>` : '<div class="card empty" style="margin-top:10px">Ainda sem medidas. Registre no check-in da manhã (aba Hoje).</div>'}`;
+    if (!W.length) return;
+    const xs = W.map(w => ymd(w.w));
+    const daily = rangeDays(START, REAL()).filter(d => day(d).med && day(d).med.peso != null);
+    chart($('#djCW'), {x: xs, height: 190, yFmt: v => nf(v, 1), series: [{name: 'média semanal', color: css('--wt'), values: W.map(w => w.peso), type: 'line', width: 2.4},
+      {name: 'registros', color: css('--wt'), values: xs.map((x, i) => { const v = daily.filter(d => iso(sunday(ymd(d))) === W[i].w).map(d => day(d).med.peso); return v.length ? Math.min(...v) : null; }), type: 'dots', r: 2.5, opacity: .45}]});
+    chart($('#djCB'), {x: xs, height: 190, yFmt: v => nf(v, 1) + '%', series: [{name: '% gordura', color: css('--hr'), values: W.map(w => w.bf), type: 'line', width: 2.4}]});
+    chart($('#djCC'), {x: xs, height: 190, yFmt: v => nf(v, 0), series: [['cintura', '--run'], ['peito', '--str'], ['braco', '--walk'], ['pescoco', '--bjj']].map(([k, c]) => ({name: k, color: css(c), values: W.map(w => w[k]), type: 'line', width: 2}))});
+  }
+
+  /* ---------- CONFIGURAR ---------- */
+  function renderConfig() {
+    const C = JSON.parse(JSON.stringify(cfg()));
+    const hs = Object.entries(C.habits).sort((a, b) => (a[1].o || 0) - (b[1].o || 0));
+    const gs = Object.entries(C.goals).sort((a, b) => (a[1].o || 0) - (b[1].o || 0));
+    const habOpts = hs.filter(([, h]) => !h.arch).map(([id, h]) => [`habit:${id}`, `Hábito: ${h.n}`]);
+    $('#djBody').innerHTML = `
+    <div class="card"><div class="head"><div><h3>Hábitos</h3><p class="q">🤖 Garmin = marcado automaticamente pela regra · ✋ Manual = você marca. Arquivar esconde sem apagar o histórico.</p></div><span id="djSave" class="dj-save" aria-live="polite"></span></div>
+      <div class="tablewrap"><table class="dj-cfg"><tr><th>Ícone</th><th style="text-align:left">Nome</th><th>Origem</th><th>Regra</th><th>Meta</th><th>Ordem</th><th></th></tr>
+      ${hs.map(([id, h], i) => `<tr class="${h.arch ? 'arch' : ''}" data-hid="${id}">
+        <td><input data-f="i" value="${esc(h.i)}" maxlength="4" style="width:46px;text-align:center" aria-label="ícone"></td>
+        <td><input data-f="n" value="${esc(h.n)}" maxlength="40" aria-label="nome"></td>
+        <td><select data-f="src" aria-label="origem"><option value="manual" ${h.src !== 'auto' ? 'selected' : ''}>✋ Manual</option><option value="auto" ${h.src === 'auto' ? 'selected' : ''}>🤖 Garmin</option></select></td>
+        <td><select data-f="rule" aria-label="regra"><option value="">—</option>${Object.entries(RULES).map(([k, l]) => `<option value="${k}" ${h.rule === k ? 'selected' : ''}>${l}</option>`).join('')}</select></td>
+        <td>${h.rule === 'water' ? `<input data-f="target" type="number" min="0.5" max="8" step="0.5" value="${h.target || 3}" style="width:64px" aria-label="litros"> L` : '–'}</td>
+        <td><button type="button" class="chip" data-mv="-1" ${i ? '' : 'disabled'} aria-label="subir">↑</button><button type="button" class="chip" data-mv="1" ${i < hs.length - 1 ? '' : 'disabled'} aria-label="descer">↓</button></td>
+        <td><button type="button" class="chip" data-arch="1">${h.arch ? 'Restaurar' : 'Arquivar'}</button></td></tr>`).join('')}</table></div>
+      <button type="button" class="chip" id="djAddH" style="margin-top:8px">+ Novo hábito</button></div>
+    <div class="card" style="margin-top:10px"><h3>Metas</h3><p class="q">Diárias contam os dias da semana em que a meta foi batida; semanais contam dias até o alvo (semana de domingo a sábado).</p>
+      <div class="tablewrap"><table class="dj-cfg"><tr><th style="text-align:left">Nome</th><th>Período</th><th>Medida</th><th>Alvo</th><th></th></tr>
+      ${gs.map(([id, g]) => `<tr data-gid="${id}"><td><input data-f="n" value="${esc(g.n)}" maxlength="40" aria-label="nome da meta"></td>
+        <td><select data-f="per" aria-label="período"><option value="day" ${g.per === 'day' ? 'selected' : ''}>Diária</option><option value="week" ${g.per === 'week' ? 'selected' : ''}>Semanal</option></select></td>
+        <td><select data-f="metric" aria-label="medida">${[...Object.entries(METRICS), ...habOpts].map(([k, l]) => `<option value="${k}" ${g.metric === k ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></td>
+        <td><input data-f="target" type="number" min="0" step="any" value="${g.target}" style="width:84px" aria-label="alvo"></td>
+        <td><button type="button" class="chip" data-delg="1">Remover</button></td></tr>`).join('')}</table></div>
+      <button type="button" class="chip" id="djAddG" style="margin-top:8px">+ Nova meta</button></div>
+    <div class="card" style="margin-top:10px"><h3>Parâmetros</h3><div class="dj-params">
+      <label>Altura (cm)<input type="number" id="djH" min="120" max="230" value="${C.height}"></label>
+      <label>Acordar até (seg–sex)<input type="time" id="djWd" value="${C.wake.wd}"></label>
+      <label>Acordar até (sáb–dom)<input type="time" id="djWe" value="${C.wake.we}"></label></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button type="button" class="chip on" id="djSaveCfg">Salvar configurações</button><button type="button" class="chip" id="djReset">Restaurar padrão</button></div></div>`;
+    const B = $('#djBody');
+    const collect = () => {
+      B.querySelectorAll('[data-hid]').forEach(tr => { const h = C.habits[tr.dataset.hid]; tr.querySelectorAll('[data-f]').forEach(i => { h[i.dataset.f] = i.type === 'number' ? +i.value : i.value; }); if (!h.rule) delete h.rule; if (h.src === 'auto' && !h.rule) h.src = 'manual'; });
+      B.querySelectorAll('[data-gid]').forEach(tr => { const g = C.goals[tr.dataset.gid]; tr.querySelectorAll('[data-f]').forEach(i => { g[i.dataset.f] = i.type === 'number' ? +i.value : i.value; }); });
+      C.height = +$('#djH').value || 178; C.wake = {wd: $('#djWd').value || '06:30', we: $('#djWe').value || '07:30'};
+    };
+    const commit = (rerender = true) => { CFG = C; put('config', C); if (rerender) renderConfig(); renderHeader(); };
+    B.querySelectorAll('[data-hid] select[data-f="rule"], [data-hid] select[data-f="src"]').forEach(s => s.onchange = () => { collect(); commit(); });
+    B.querySelectorAll('[data-mv]').forEach(b => b.onclick = () => { collect(); const id = b.closest('tr').dataset.hid, i = hs.findIndex(x => x[0] === id), j = i + +b.dataset.mv;
+      const a = C.habits[hs[i][0]].o, c = C.habits[hs[j][0]].o; C.habits[hs[i][0]].o = c; C.habits[hs[j][0]].o = a; if (a === c) { C.habits[hs[i][0]].o = j + 1; C.habits[hs[j][0]].o = i + 1; } commit(); });
+    B.querySelectorAll('[data-arch]').forEach(b => b.onclick = () => { collect(); const h = C.habits[b.closest('tr').dataset.hid]; if (h.arch) delete h.arch; else h.arch = true; commit(); });
+    B.querySelectorAll('[data-delg]').forEach(b => b.onclick = () => { collect(); delete C.goals[b.closest('tr').dataset.gid]; commit(); });
+    $('#djAddH').onclick = () => { collect(); C.habits['h' + Date.now().toString(36)] = {n: 'Novo hábito', i: '⭐', src: 'manual', o: hs.length + 1}; commit(); };
+    $('#djAddG').onclick = () => { collect(); C.goals['g' + Date.now().toString(36)] = {n: 'Nova meta', per: 'week', metric: 'exercise_days', target: 3, o: gs.length + 1}; commit(); };
+    $('#djSaveCfg').onclick = () => { collect(); commit(); };
+    $('#djReset').onclick = () => { if (confirm('Restaurar hábitos, metas e parâmetros padrão? Os registros dos dias não são apagados.')) { CFG = JSON.parse(JSON.stringify(DEF)); put('config', CFG); renderConfig(); renderHeader(); } };
+  }
+
+  /* ---------- CABEÇALHO MINTO (fixo, atualiza com os dados) ---------- */
+  function renderHeader() {
+    const today = REAL(), wS = iso(sunday(new Date())), nd = rangeDays(wS, today).length;
+    const pwS = iso(addD(ymd(wS), -7)), pwE = iso(addD(ymd(pwS), nd - 1));
+    // 1. Hábitos
+    const a = adherence(wS < START ? START : wS, today), p = adherence(pwS < START ? START : pwS, pwE);
+    const gw = goalsList().filter(([, g]) => g.per === 'week').map(([, g]) => { const r = goalWeek(g, wS, today); return {g, r, ok: r.n >= g.target, onTrack: r.n + r.left >= g.target}; });
+    const weakest = habitsActive().map(([id, h]) => ({h, ...a.per[id]})).filter(x => x.tot).sort((x, y) => x.ok / x.tot - y.ok / y.tot)[0];
+    const hp = a.pct == null ? null : Math.round(a.pct * 100), hd = a.pct != null && p.pct != null ? Math.round((a.pct - p.pct) * 100) : null;
+    const hSt = hp == null ? 'na' : hp >= 80 ? 'ok' : hp >= 60 ? 'att' : 'bad';
+    // 2. Saúde e treino
+    const sc = NOW.overall, sPrev = evaluate(addD(TODAY, -7)).overall, sd = sc != null && sPrev != null ? sc - sPrev : null;
+    const exD = rangeDays(wS, today).filter(exerciseDay).length, exG = (goalsList().find(([, g]) => g.metric === 'exercise_days') || [, {target: 5}])[1].target;
+    const worstCat = CATS.map(c => ({c, s: NOW.cats[c.id].score})).filter(x => x.s != null).sort((x, y) => x.s - y.s)[0];
+    const sSt = sc == null ? 'na' : ST(sc).k;
+    // 3. Recuperação · Esforço · Sono
+    const R = (D.rss && D.rss.days) || [], L = R[R.length - 1] || {};
+    const r7 = avg(R.slice(-7).map(x => x.recovery)), rp7 = avg(R.slice(-14, -7).map(x => x.recovery)), sp7 = avg(R.slice(-7).map(x => x.perf));
+    const rSt = r7 == null ? 'na' : r7 >= 67 ? 'ok' : r7 >= 34 ? 'att' : 'bad';
+    const C = {ok: '#16977A', att: '#C98A00', bad: '#D43F55', na: '#8F959E'}, E = {ok: '🟢', att: '🟡', bad: '🔴', na: '⚪'};
+    const arrow = (v, unit = '') => v == null || Math.abs(v) < 1 ? '<span class="mt-tr">→ estável</span>' : `<span class="mt-tr ${v > 0 ? 'up' : 'down'}">${v > 0 ? '▲' : '▼'} ${Math.abs(Math.round(v))}${unit}</span>`;
+    const pillars = [
+      {k: 'hab', st: hSt, t: '📓 Hábitos', big: hp == null ? '–' : hp + '%', sub: 'cumpridos na semana', tr: arrow(hd, ' p.p.'),
+        pts: [gw.length ? `Metas semanais: ${gw.filter(x => x.ok).length}/${gw.length} batidas · ${gw.filter(x => !x.ok && x.onTrack).length} no ritmo` : 'Sem metas semanais',
+          weakest && weakest.tot ? `Ponto fraco: ${weakest.h.i} ${weakest.h.n} (${weakest.ok}/${weakest.tot})` : 'Registre o check-in para medir'],
+        lever: weakest ? weakest.h.n : 'registrar os hábitos'},
+      {k: 'sau', st: sSt, t: '🩺 Saúde e treino', big: sc == null ? '–' : sc + '/100', sub: 'check-up 7 dias', tr: arrow(sd, ' pts'),
+        pts: [`Exercício: ${exD}/${exG} dias na semana`, worstCat ? `Menor área: ${worstCat.c.i} ${worstCat.c.n} (${worstCat.s})` : '—'],
+        lever: worstCat ? worstCat.c.n.toLowerCase() : 'saúde'},
+      {k: 'rss', st: rSt, t: '⚡ Recuperação · Esforço · Sono', big: L.recovery != null ? nf(L.recovery) + '%' : '–', sub: `recuperação hoje${L.band ? ' · ' + L.band : ''}`, tr: arrow(r7 != null && rp7 != null ? r7 - rp7 : null, ' pts'),
+        pts: [`Média 7 dias: ${nf(r7)}% · sono ${nf(sp7)}% da necessidade`, L.target ? `Esforço de hoje ${nf(L.strain, 1)} · meta ${nf(L.target[0], 0)}–${nf(L.target[1], 0)}` : '—'],
+        lever: sp7 != null && sp7 < 85 ? 'sono' : 'recuperação'},
+    ];
+    const rank = {bad: 0, att: 1, na: 2, ok: 3}, okN = pillars.filter(x => x.st === 'ok').length, worst = pillars.slice().sort((x, y) => rank[x.st] - rank[y.st])[0];
+    const main = okN === 3 ? `Tudo em dia nas 3 frentes: manter o ritmo e proteger o sono.`
+      : `${okN} de 3 frentes em dia · prioridade da semana: <b>${worst.t.replace(/^\S+\s/, '')}</b>, atacando <b>${esc(worst.lever)}</b>.`;
+    $('#minto').innerHTML = `<div class="mt-main"><span class="mt-lbl">Resumo</span><span class="mt-msg">${main}</span><button type="button" class="mt-more" aria-expanded="${!$('#minto').classList.contains('closed')}" aria-controls="minto">detalhes</button></div>
+      <div class="mt-p">${pillars.map(x => `<div class="mt-c" style="--mc:${C[x.st]}"><div class="mt-h">${x.t}</div>
+        <div class="mt-b"><b class="num" style="color:${C[x.st]}">${E[x.st]} ${x.big}</b><span>${x.sub}</span>${x.tr}</div>
+        <ul>${x.pts.map(t => `<li>${t}</li>`).join('')}</ul></div>`).join('')}</div>`;
+    $('#minto .mt-more').onclick = () => { $('#minto').classList.toggle('closed'); renderHeader(); };
+    fixSticky();
+  }
+  function fixSticky() { const h = $('#minto').offsetHeight; document.documentElement.style.setProperty('--mh', h + 'px'); }
+  window.addEventListener('resize', fixSticky);
+  if (innerWidth < 640) $('#minto').classList.add('closed');
+
+  /* ---------- sub-abas do diário ---------- */
+  const RENDER = {hoje: renderHoje, habitos: renderHabitos, medidas: renderMedidas, config: renderConfig};
+  function show(k) {
+    sub = k; document.querySelectorAll('#djSubs button').forEach(b => { b.classList.toggle('on', b.dataset.dj === k); b.setAttribute('aria-pressed', b.dataset.dj === k); });
+    for (let i = CHARTS.length - 1; i >= 0; i--) if (CHARTS[i][0].closest && CHARTS[i][0].closest('#djBody')) CHARTS.splice(i, 1);
+    RENDER[k]();
+  }
+  document.querySelectorAll('#djSubs button').forEach(b => b.addEventListener('click', () => show(b.dataset.dj)));
+  const busy = () => { const a = document.activeElement; return a && a.closest && a.closest('#djBody') && /INPUT|TEXTAREA|SELECT/.test(a.tagName); };
+  document.addEventListener('focusout', () => setTimeout(() => { if (pendingRender && !busy()) { pendingRender = false; show(sub); renderHeader(); } }, 50));
+  // dados ao vivo vindos do Firebase (outros aparelhos)
+  window.__diarioSet = v => {
+    DB = v || {}; if (!CFG && DB.config) CFG = null;
+    if (!DB.config && window.__fbWrite && !window.__cfgInit) { window.__cfgInit = true; put('config', JSON.parse(JSON.stringify(DEF))); }
+    if (busy()) { pendingRender = true; renderHeader(); return; }
+    show(sub); renderHeader();
+  };
+  window.__diarioErr = msg => { $('#djBody').insertAdjacentHTML('afterbegin', `<div class="card" style="border-color:#D43F55;margin-bottom:10px">⚠️ ${esc(msg)}</div>`); };
+  show('hoje'); renderHeader();
+})();
+
 } // fim BOOT
 </script>
 
@@ -2287,7 +2800,7 @@ desempenho  = dormido / necessidade`)}`;
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyBQhpRhJNuA81avroCq7sxoVnGFgLBKOZ4",
@@ -2324,6 +2837,19 @@ async function load(uid, force) {
   await idbSet(key, out);
   return out;
 }
+
+// v4 · une o diário aos dados do Garmin antes dos cálculos
+function mergeDiario(fb, dj) {
+  const dias = (dj && dj.dias) || {};
+  const acts = fb.activities || {};
+  const BJJ = /jiu|jj|bjj|jitsu/i, MMA = ['mixed_martial_arts', 'martial_arts'];
+  Object.entries(dias).forEach(([ds, d]) => {
+    const rpe = d && d.n && d.n.rpe;
+    if (rpe) Object.values(acts).forEach(a => { if (a && String(a.startTimeLocal || '').slice(0, 10) === ds && (BJJ.test(a.activityName || '') || MMA.includes(a.type))) a.activityName = 'Jiu-Jitsu ' + rpe; });
+    const kg = d && d.med && d.med.peso;
+    if (kg) { fb.weight = fb.weight || {}; fb.weight[ds] = {kg}; }
+  });
+}
 let booted = false;
 async function start(u) {
   const force = sessionStorage.getItem('gforce') === '1'; sessionStorage.removeItem('gforce');
@@ -2335,12 +2861,23 @@ async function start(u) {
     else gate('Não foi possível carregar os dados.', {login: false, msg: (e.code || e.message) + ' · recarregue a página.'});
     return;
   }
+  // diário: leitura inicial (o histórico pessoal entra nos cálculos: nota do Jiu-Jitsu e peso)
+  let diario = {}, diarioErr = null;
+  try { diario = (await get(ref(db, 'diario'))).val() || {}; }
+  catch (e) { diarioErr = 'O diário ainda não tem permissão de leitura/gravação. Publique as novas regras do Firebase (passo 1 da v4).'; }
+  try { mergeDiario(fb, diario); } catch (e) { console.error(e); }
+  window.__diarioInit = diario;
+  window.__fbWrite = (path, val) => update(ref(db), {[path]: val});
   gate('Calculando…', {spin: true});
   await new Promise(r => setTimeout(r, 30));
   try {
     const D = GarminCore.build(fb);
     $g('gate').hidden = true; $g('app').hidden = false;
-    if (!booted) { booted = true; BOOT(D); }
+    if (!booted) {
+      booted = true; BOOT(D);
+      if (diarioErr) window.__diarioErr && window.__diarioErr(diarioErr);
+      else onValue(ref(db, 'diario'), snap => window.__diarioSet && window.__diarioSet(snap.val() || {}), e => window.__diarioErr && window.__diarioErr('Sincronização do diário interrompida: ' + e.code));
+    }
   } catch (e) { console.error(e); gate('Erro ao montar o painel.', {msg: e.message}); }
 }
 $g('gIn').addEventListener('click', async () => { $g('gMsg').textContent = ''; try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch (e) { $g('gMsg').textContent = 'Falha no login: ' + e.code; } });
