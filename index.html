@@ -694,7 +694,7 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
 
 <script>
 /* =====================================================================
-   Núcleo de dados · Diário de Treino v2
+   Núcleo de dados · Diário de Treino v7
    Converte o banco do Firebase (Garmin Personal API) no formato do
    dashboard original e recalcula Recuperação · Esforço · Sono e as
    Descobertas, com as mesmas fórmulas documentadas na tela.
@@ -2472,7 +2472,14 @@ desempenho  = dormido / necessidade`)}`;
   }
   const touched = ds => { const d = day(ds); return !!(d.m || d.n || d.h || d.agua != null || d.med); };
   // valor do hábito no dia: {v: true|false|null, how: 'auto'|'manual'|'ajuste'}
+  // v7: dia passado ou hoje sem marcação = não cumprido (não existe mais "vazio")
+  const inRange = ds => ds >= START && ds <= REAL();
   function hv(id, ds) {
+    const r = hvRaw(id, ds);
+    if (r.v == null && inRange(ds)) return {v: false, how: r.how || 'manual'};
+    return r;
+  }
+  function hvRaw(id, ds) {
     const h = cfg().habits[id]; if (!h) return {v: null};
     const d = day(ds), ov = d.h ? d.h[id] : undefined;
     if (ov === true || ov === false) return {v: ov, how: h.src === 'auto' ? 'ajuste' : 'manual'};
@@ -2635,7 +2642,7 @@ desempenho  = dormido / necessidade`)}`;
       const id = b.dataset.hab, h = cfg().habits[id], ds = selDay, ov = day(ds).h ? day(ds).h[id] : undefined, cur = hv(id, ds).v;
       let nv;
       if (h.src === 'auto') nv = ov === undefined ? !cur : null;              // ajusta o automático ou volta ao Garmin
-      else nv = ov === true ? false : ov === false ? null : true;            // ✅ → ❌ → vazio
+      else nv = cur ? false : true;                                          // ✅ ↔ ❌
       put(`dias/${ds}/h/${id}`, nv); stamp('n'); renderHoje();
     });
     B.querySelectorAll('[data-water]').forEach(b => b.onclick = () => {
@@ -2668,20 +2675,20 @@ desempenho  = dormido / necessidade`)}`;
       const st = streak(id, today), a30 = adherence(iso(addD(new Date(), -29)) < START ? START : iso(addD(new Date(), -29)), today).per[id] || {ok: 0, tot: 0};
       return `<tr><th scope="row"><span class="dj-hi">${h.i}</span> ${esc(h.n)}${h.src === 'auto' ? ' <small class="dj-src">🤖</small>' : ''}</th>
         ${ds.map(d => { const r = hv(id, d); const fut = d > today || d < START;
-          return `<td><button type="button" class="dj-cell ${r.v === true ? 'y' : r.v === false ? 'n' : ''} ${r.how === 'ajuste' ? 'aj' : ''}" ${fut ? 'disabled' : ''} data-cell="${id}|${d}" aria-label="${esc(h.n)} em ${d}">${fut ? '' : r.v === true ? '✓' : r.v === false ? '✕' : ''}</button></td>`; }).join('')}
+          return `<td><button type="button" class="dj-cell ${fut ? '' : r.v === true ? 'y' : r.v === false ? 'n' : ''} ${!fut && r.how === 'ajuste' ? 'aj' : ''}" ${fut ? 'disabled' : ''} data-cell="${id}|${d}" aria-label="${esc(h.n)} em ${d}">${fut ? '' : r.v === true ? '✓' : r.v === false ? '✕' : ''}</button></td>`; }).join('')}
         <td class="num">${a30.tot ? Math.round(a30.ok / a30.tot * 100) + '%' : '–'}</td><td class="num">${st.cur}</td><td class="num">${st.best}</td></tr>`;
     }).join('');
     const ad = adherence(wS, ds[6] > today ? today : ds[6]);
     $('#djBody').innerHTML = `
-    <div class="card"><div class="head"><div><h3>Hábitos da semana</h3><p class="q">Toque para marcar. Manuais: ✓ → ✕ → vazio. 🤖 Automáticos vêm do Garmin; tocar ajusta (borda tracejada) e tocar de novo volta ao Garmin. Preenchimento disponível desde ${fdy(ymd(START))}.</p></div>
+    <div class="card"><div class="head"><div><h3>Hábitos da semana</h3><p class="q">Toque para alternar ✓/✕. Sem marcação conta como não cumprido. 🤖 Automáticos vêm do Garmin; tocar ajusta (borda tracejada) e tocar de novo volta ao Garmin. Preenchimento disponível desde ${fdy(ymd(START))}.</p></div>
       <div class="dj-nav"><button type="button" class="chip" data-wk="-1" ${prevOk ? '' : 'disabled'} aria-label="semana anterior">‹</button><b>${fd(ymd(wS))} – ${fd(ymd(ds[6]))}</b><button type="button" class="chip" data-wk="1" ${nextOk ? '' : 'disabled'} aria-label="próxima semana">›</button><span id="djSave" class="dj-save" aria-live="polite"></span></div></div>
       <div class="tablewrap"><table class="dj-grid"><thead><tr><th></th>${ds.map(d => `<th>${DOW[ymd(d).getDay()]}<br><span class="num">${ymd(d).getDate()}</span></th>`).join('')}<th title="Cumprimento nos últimos 30 dias">30 d</th><th title="Sequência atual">Seq.</th><th title="Maior sequência desde 01/09">Recorde</th></tr></thead>
       <tbody>${rows}</tbody></table></div>
-      <p class="q" style="margin-top:8px">Cumprimento nesta semana: <b>${ad.pct == null ? '–' : Math.round(ad.pct * 100) + '%'}</b> (${ad.ok} de ${ad.tot} marcações). Dias sem nenhum registro ficam fora da conta.</p></div>`;
+      <p class="q" style="margin-top:8px">Cumprimento nesta semana: <b>${ad.pct == null ? '–' : Math.round(ad.pct * 100) + '%'}</b> (${ad.ok} de ${ad.tot} hábitos·dia). Sem marcação conta como não cumprido.</p></div>`;
     $('#djBody').querySelectorAll('[data-wk]').forEach(b => b.onclick = () => { gridWeek = iso(addD(ymd(gridWeek), 7 * +b.dataset.wk)); renderHabitos(); });
     $('#djBody').querySelectorAll('[data-cell]').forEach(b => b.onclick = () => {
       const [id, d] = b.dataset.cell.split('|'), h = cfg().habits[id], ov = day(d).h ? day(d).h[id] : undefined, cur = hv(id, d).v;
-      const nv = h.src === 'auto' || h.rule === 'water' ? (ov === undefined ? !cur : null) : (ov === true ? false : ov === false ? null : true);
+      const nv = h.src === 'auto' || h.rule === 'water' ? (ov === undefined ? !cur : null) : !cur;
       put(`dias/${d}/h/${id}`, nv); renderHabitos();
     });
   }
@@ -2919,7 +2926,7 @@ desempenho  = dormido / necessidade`)}`;
   }
   function monthHeat(P) {
     const ds = rangeDays(P.a, P.b), t = REAL();
-    return `<div class="card"><h3>Mapa do mês</h3><p class="q">Verde = cumprido · vermelho = não cumprido · vazio = sem registro.</p><div class="tablewrap"><table class="dj-grid dj-heat"><tr><th></th>${ds.map(d => `<th>${ymd(d).getDate()}</th>`).join('')}</tr>
+    return `<div class="card"><h3>Mapa do mês</h3><p class="q">Verde = cumprido · vermelho = não cumprido (inclui dias sem marcação).</p><div class="tablewrap"><table class="dj-grid dj-heat"><tr><th></th>${ds.map(d => `<th>${ymd(d).getDate()}</th>`).join('')}</tr>
       ${habitsActive().map(([id, h]) => `<tr><th scope="row">${h.i} ${esc(h.n)}</th>${ds.map(d => { const v = d > t || d < START ? null : hv(id, d).v; return `<td><i class="${v === true ? 'y' : v === false ? 'n' : ''}" title="${esc(h.n)} · ${fd(ymd(d))}"></i></td>`; }).join('')}</tr>`).join('')}</table></div></div>`;
   }
   function yearTable(y) {
@@ -3034,7 +3041,7 @@ desempenho  = dormido / necessidade`)}`;
   const exAlvo = () => { const c = cfg(); if (c.exAlvo != null) return clampN(+c.exAlvo, 0, 7); const g = goalsList().find(([, x]) => x.metric === 'exercise_days'); return g ? clampN(+g[1].target, 0, 7) : 5; };
   function evoItems() {
     const out = habitsActive().filter(([, h]) => !EXR.includes(h.rule)).map(([id, h]) => ({id, n: h.n, i: h.i, rule: h.rule, alvo: alvoOf(id, h), val: ds => hv(id, ds).v}));
-    out.push({id: '_ex', n: 'Exercício', i: '🏋️', rule: '_ex', alvo: exAlvo(), val: ds => (dayMap[ds] || sleepMap[ds] || actsOn(ds).length || touched(ds)) ? exerciseDay(ds) : null});
+    out.push({id: '_ex', n: 'Exercício', i: '🏋️', rule: '_ex', alvo: exAlvo(), val: ds => inRange(ds) ? exerciseDay(ds) : null});
     return out;
   }
   function indicators(rs) {
