@@ -432,6 +432,7 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
 .dj-cell.y{background:#16977A;border-color:#16977A;color:#fff}.dj-cell.n{background:#FDECEE;border-color:#F3C3CB;color:#B3263C}
 .dj-cell.aj{border-style:dashed;border-width:2px}
 .dj-cell:disabled{opacity:.25;cursor:default}
+.dj-cell.op{background:#FFF4D6;border-color:#F0D68A;color:#8A5A00}
 .dj-cfg{border-collapse:collapse;width:100%;font-size:13px}
 .dj-cfg th{font-size:11.5px;color:var(--muted);font-weight:600;padding:4px}
 .dj-cfg td{padding:3px 4px!important}
@@ -758,7 +759,7 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
 
 <script>
 /* =====================================================================
-   Núcleo de dados · Diário de Treino v10
+   Núcleo de dados · Diário de Treino v11
    Converte o banco do Firebase (Garmin Personal API) no formato do
    dashboard original e recalcula Recuperação · Esforço · Sono e as
    Descobertas, com as mesmas fórmulas documentadas na tela.
@@ -2748,6 +2749,7 @@ desempenho  = dormido / necessidade`)}`;
       cuidado: {n: 'Cuidado pessoal', i: '🧴', src: 'manual', o: 8},
       vitam: {n: 'Tomar vitaminas', i: '💊', src: 'manual', o: 9},
       sono7: {n: 'Dormir no mínimo 7 h', i: '😴', src: 'auto', rule: 'sleep7', o: 10},
+      passos: {n: '6 mil passos', i: '👟', src: 'auto', rule: 'steps', target: 6000, o: 11},
     },
     goals: {
       g_sono: {n: '7 h de sono', per: 'day', metric: 'sleep_h', target: 7, o: 1},
@@ -2758,7 +2760,7 @@ desempenho  = dormido / necessidade`)}`;
     },
   };
   const RULES = {wake: 'Acordar no horário (sono do Garmin)', sleep7: 'Dormir 7 h ou mais', str: 'Musculação registrada', runswim: 'Corrida ou natação registrada',
-    bjj: 'Jiu-Jitsu registrado', walk20: 'Caminhada de 20 min ou mais', anyex: 'Qualquer exercício do dia', water: 'Litros de água (meta)'};
+    bjj: 'Jiu-Jitsu registrado', walk20: 'Caminhada de 20 min ou mais', anyex: 'Qualquer exercício do dia', water: 'Litros de água (meta)', steps: 'Passos do dia (meta)'};
   const METRICS = {sleep_h: 'Horas de sono', steps: 'Passos', exercise_days: 'Dias com exercício'};
 
   /* ---------- estado ---------- */
@@ -2790,6 +2792,7 @@ desempenho  = dormido / necessidade`)}`;
       case 'bjj': return acts.some(a => a.sport === 'bjj');
       case 'walk20': return acts.some(a => a.sport === 'walk' && a.duration >= 1200);
       case 'anyex': return acts.some(isExercise);
+      case 'steps': { const x = dayMap[ds]; return x && x.steps != null ? x.steps >= ((h && h.target) || 6000) : null; }
       default: return null;
     }
   }
@@ -2797,7 +2800,9 @@ desempenho  = dormido / necessidade`)}`;
   // valor do hábito no dia: {v: true|false|null, how: 'auto'|'manual'|'ajuste'}
   // v7: dia passado ou hoje sem marcação = não cumprido (não existe mais "vazio")
   const inRange = ds => ds >= START && ds <= REAL();
+  const stepsOpen = (id, ds) => { const h = cfg().habits[id]; return h && h.rule === 'steps' && ds === REAL() && !(day(ds).h && typeof day(ds).h[id] === 'boolean'); };
   function hv(id, ds) {
+    if (stepsOpen(id, ds)) { const r0 = hvRaw(id, ds); if (r0.v !== true) return {v: null, how: 'auto', open: true}; }
     const r = hvRaw(id, ds);
     if (r.v == null && inRange(ds)) return {v: false, how: r.how || 'manual'};
     return r;
@@ -2912,6 +2917,8 @@ desempenho  = dormido / necessidade`)}`;
           <span class="dj-water"><button type="button" data-water="-0.5" aria-label="menos meio litro">−</button><b>${nf(l, 1)} L</b><button type="button" data-water="0.5" aria-label="mais meio litro">+</button></span>
           <span class="dj-tick">${tick(r2.v)}</span></div>`;
       }
+      if (r2.open) { const st = (dayMap[ds] || {}).steps || 0, tg = h.target || 6000;
+        return `<button type="button" class="dj-hab dj-tog" data-hab="${id}" aria-pressed="false"><span class="dj-hi">${h.i}</span><span class="dj-hn">${esc(h.n)}<small class="dj-src">🤖 Garmin · ⏳ ${nf(st)} de ${nf(tg)} (${nf(Math.min(100, st / tg * 100))}%)</small></span><span class="dj-tick">⏳</span></button>`; }
       const tag = h.src === 'auto' ? (r2.how === 'ajuste' ? '<small class="dj-src aj">✋ ajustado</small>' : '<small class="dj-src">🤖 Garmin</small>') : '';
       return `<button type="button" class="dj-hab dj-tog ${r2.v ? 'done' : ''}" data-hab="${id}" aria-pressed="${!!r2.v}"><span class="dj-hi">${h.i}</span><span class="dj-hn">${esc(h.n)}${tag}</span><span class="dj-tick">${tick(r2.v)}</span></button>`;
     }).join('');
@@ -2998,7 +3005,7 @@ desempenho  = dormido / necessidade`)}`;
       const st = streak(id, today), a30 = adherence(iso(addD(new Date(), -29)) < START ? START : iso(addD(new Date(), -29)), today).per[id] || {ok: 0, tot: 0};
       return `<tr><th scope="row"><span class="dj-hi">${h.i}</span> ${esc(h.n)}${h.src === 'auto' ? ' <small class="dj-src">🤖</small>' : ''}</th>
         ${ds.map(d => { const r = hv(id, d); const fut = d > today || d < START;
-          return `<td><button type="button" class="dj-cell ${fut ? '' : r.v === true ? 'y' : r.v === false ? 'n' : ''} ${!fut && r.how === 'ajuste' ? 'aj' : ''}" ${fut ? 'disabled' : ''} data-cell="${id}|${d}" aria-label="${esc(h.n)} em ${d}">${fut ? '' : r.v === true ? '✓' : r.v === false ? '✕' : ''}</button></td>`; }).join('')}
+          return `<td><button type="button" class="dj-cell ${fut ? '' : r.open ? 'op' : r.v === true ? 'y' : r.v === false ? 'n' : ''} ${!fut && r.how === 'ajuste' ? 'aj' : ''}" ${fut ? 'disabled' : ''} data-cell="${id}|${d}" aria-label="${esc(h.n)} em ${d}">${fut ? '' : r.open ? '⏳' : r.v === true ? '✓' : r.v === false ? '✕' : ''}</button></td>`; }).join('')}
         <td class="num">${a30.tot ? Math.round(a30.ok / a30.tot * 100) + '%' : '–'}</td><td class="num">${st.cur}</td><td class="num">${st.best}</td></tr>`;
     }).join('');
     const ad = adherence(wS, ds[6] > today ? today : ds[6]);
@@ -3054,7 +3061,7 @@ desempenho  = dormido / necessidade`)}`;
         <td><input data-f="n" value="${esc(h.n)}" maxlength="40" aria-label="nome"></td>
         <td><select data-f="src" aria-label="origem"><option value="manual" ${h.src !== 'auto' ? 'selected' : ''}>✋ Manual</option><option value="auto" ${h.src === 'auto' ? 'selected' : ''}>🤖 Garmin</option></select></td>
         <td><select data-f="rule" aria-label="regra"><option value="">—</option>${Object.entries(RULES).map(([k, l]) => `<option value="${k}" ${h.rule === k ? 'selected' : ''}>${l}</option>`).join('')}</select></td>
-        <td>${h.rule === 'water' ? `<input data-f="target" type="number" min="0.5" max="8" step="0.5" value="${h.target || 3}" style="width:64px" aria-label="litros"> L` : '–'}</td>
+        <td>${h.rule === 'water' ? `<input data-f="target" type="number" min="0.5" max="8" step="0.5" value="${h.target || 3}" style="width:64px" aria-label="litros"> L` : h.rule === 'steps' ? `<input data-f="target" type="number" min="1000" max="40000" step="500" value="${h.target || 6000}" style="width:80px" aria-label="passos"> passos` : '–'}</td>
         <td>${EXR.includes(h.rule) ? '<small style="color:var(--muted)">no 🏋️ Exercício</small>' : `<input data-f="alvo" type="number" min="0" max="7" step="1" value="${alvoOf(id, h)}" style="width:58px" aria-label="alvo em dias por semana">`}</td>
         <td><button type="button" class="chip" data-mv="-1" ${i ? '' : 'disabled'} aria-label="subir">↑</button><button type="button" class="chip" data-mv="1" ${i < hs.length - 1 ? '' : 'disabled'} aria-label="descer">↓</button></td>
         <td><button type="button" class="chip" data-arch="1">${h.arch ? 'Restaurar' : 'Arquivar'}</button></td></tr>`).join('')}</table></div>
@@ -3527,6 +3534,10 @@ desempenho  = dormido / necessidade`)}`;
   // dados ao vivo vindos do Firebase (outros aparelhos)
   window.__diarioSet = v => {
     DB = v || {}; if (!CFG && DB.config) CFG = null;
+    if (DB.config && DB.config.habits && !DB.config.habits.passos && !DB.config.passosV11 && window.__fbWrite && !window.__passosInit) {
+      window.__passosInit = true; const C = JSON.parse(JSON.stringify(DB.config)); const mo = Math.max(0, ...Object.values(C.habits).map(h => h.o || 0));
+      C.habits.passos = {...DEF.habits.passos, o: mo + 1}; C.passosV11 = true; put('config', C);
+    }
     if (!DB.config && window.__fbWrite && !window.__cfgInit) { window.__cfgInit = true; put('config', JSON.parse(JSON.stringify(DEF))); }
     if (busy()) { pendingRender = true; renderHeader(); return; }
     show(sub); renderHeader();
