@@ -477,6 +477,51 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
 .dj-wts input{font:14px Inter,system-ui,sans-serif;border:1px solid var(--line);border-radius:9px;padding:6px 8px;background:var(--card);color:var(--ink);min-width:0;width:100%}
 @media (max-width:900px){.evo-g{grid-template-columns:minmax(0,1fr)}.dj-wts{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:640px){#insights.g3,.evo-disc{grid-template-columns:minmax(0,1fr)!important}.evo-row{grid-template-columns:78px 1fr}}
+/* ===== v8 ===== */
+.trust-n{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap;background:var(--bg);border-radius:12px;padding:9px 12px;margin:6px 0 10px}
+.trust-n span{font-size:12px;color:var(--muted);display:block}
+.trust-n b{font-size:28px;font-weight:700}.trust-n b small{font-size:13px;color:var(--muted);font-weight:500}
+.trust-x{font-size:12px;color:var(--ink2);text-align:right;line-height:1.5}
+.trust-w{font-size:12.5px;line-height:1.5;color:var(--ink2);background:#FFF4D6;border-radius:10px;padding:8px 10px;margin:10px 0 0}
+.rng{display:flex;flex-direction:column;gap:8px}
+.rng-r{display:grid;grid-template-columns:minmax(170px,1.1fr) 2fr 60px;gap:12px;align-items:center;padding:4px 0;border-bottom:1px solid var(--soft)}
+.rng-r:last-child{border-bottom:0}
+.rng-l>b{font-size:13px;display:block}.rng-l>span{font-size:12px;color:var(--muted)}.rng-l>span b{font-weight:700}
+.rng-bar{position:relative;height:8px;border-radius:999px;background:linear-gradient(90deg,#FDECEE,#F5F4EF 50%,#E6F5EF)}
+.rng-bar.rev{background:linear-gradient(90deg,#E6F5EF,#F5F4EF 50%,#FDECEE)}
+.rng-bar i{position:absolute;top:50%;transform:translate(-50%,-50%)}
+.rng-bar i.mean{width:2px;height:16px;background:var(--ink2)}
+.rng-bar i.now{width:13px;height:13px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.rng-s{display:flex;justify-content:space-between;font:11px var(--mono);color:var(--muted);margin-top:4px}
+.rng-n{font:11px var(--mono);color:var(--muted);text-align:right}
+@media (max-width:640px){.rng-r{grid-template-columns:minmax(0,1fr)}.rng-n{text-align:left}}
+.todo{margin-top:10px;background:#EEF1FC;border-left:4px solid var(--str);border-radius:10px;padding:8px 10px;font-size:13.5px;line-height:1.5}
+.todo span{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--str);margin-bottom:2px}
+.act-day{display:flex;justify-content:space-between;gap:8px;align-items:baseline;padding:10px 2px 4px;border-bottom:2px solid var(--line);font-size:13px}
+.act-day:first-child{padding-top:0}.act-day span{font-size:12px;color:var(--muted)}
+.fnd-v{grid-column:1/-1;background:var(--bg);border-radius:10px;padding:7px 10px;font-size:13.5px}
+.fnd-v span{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.fnd{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
+.fnd-c{border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--card)}
+.fnd-h{display:flex;gap:6px;align-items:center;font-size:12.5px;font-weight:600;color:var(--ink)}
+.fnd-h i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.fnd-b{font-size:19px;font-weight:700;margin:3px 0 2px;color:var(--ink)}
+.fnd-l{font-size:11.5px;color:var(--muted);line-height:1.4}
+.act .det .fnd-v,.act .det .fnd-c div{color:var(--ink)}
+.act .det .fnd-v b{display:inline;font:600 13.5px Inter,system-ui,sans-serif;color:var(--ink)}
+.act .det .fnd-v span{color:var(--muted)}
+.act .det .fnd-h{font-size:12.5px;color:var(--ink)}
+.act .det .fnd-b{font-size:19px;font-family:var(--mono);color:var(--ink)}
+.act .det .fnd-l{font-size:11.5px;color:var(--muted)}
+.warnbox{background:#FFF4D6;border:1px solid #F0D68A;border-radius:12px;padding:8px 12px;font-size:13px;line-height:1.5;color:var(--ink2);margin-bottom:10px}
+.cnts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.cnt{background:var(--bg);border-radius:10px;padding:7px 10px;display:flex;flex-direction:column;gap:1px}
+.cnt span{font-size:11.5px;color:var(--muted)}.cnt b{font-size:18px}.cnt small{font-size:11px;color:var(--muted)}
+.cnt.w{background:#FFF4D6}
+@media (max-width:900px){.cnts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.rv-cmp{margin-top:8px;font-size:13px;background:var(--bg);border-radius:10px;padding:7px 10px}
+.dj-params select{font:14px Inter,system-ui,sans-serif;border:1px solid var(--line);border-radius:9px;padding:6px 8px;background:var(--card);color:var(--ink);min-width:0;width:100%}
+.dj-params{grid-template-columns:repeat(3,minmax(0,220px))}
 </style>
 </head>
 <body>
@@ -574,6 +619,7 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
     <div class="head"><div><h3>Pontuação ao longo do tempo</h3><p class="q">Estou melhorando? Cada ponto avalia os 7 dias anteriores àquela data.</p></div><div class="ctrls" id="histRange"></div></div>
     <div class="chart" id="cScore"></div>
   </div>
+  <div class="card" style="margin-top:10px"><div class="head"><div><h3>📏 Você dentro da sua própria faixa</h3><p class="q">Média dos últimos 7 dias posicionada entre o seu menor e o seu maior valor dos últimos 12 meses. Traço = sua média; ponto = agora.</p></div></div><div id="cuRange" class="rng"></div></div>
   <details class="card more" style="margin-top:10px"><summary>Como a pontuação é calculada</summary><div class="method" id="method"></div></details>
   <p class="note">⚕️ Este painel organiza seus dados com referências públicas, mas <b>não é diagnóstico médico</b>. Relógios estimam as fases do sono com menos precisão que um exame de laboratório, então a tendência vale mais que uma noite isolada. Sinais 🔴 que persistem por mais de uma semana, principalmente FC de repouso alta junto com respiração alterada, merecem conversa com um médico.</p>
 </section>
@@ -610,6 +656,11 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
     <div class="card"><h3>Horário de dormir e acordar</h3><p class="q">Últimos 90 dias com relógio. Horários regulares ajudam a qualidade do sono.</p><div class="chart" id="cBed"></div>
       <div class="legend"><span><i style="background:var(--sleep);width:8px;height:8px;border-radius:50%"></i>dormiu</span><span><i style="background:var(--stress);width:8px;height:8px;border-radius:50%"></i>acordou</span></div></div>
   </div>
+  <div class="grid g2" style="margin-top:10px">
+    <div class="card" id="sqTrust"></div>
+    <div class="card"><h3>Profundo e REM, noite a noite</h3><p class="q" id="sqVarNote">Últimas 30 noites completas. A faixa sombreada é o seu normal (do percentil 25 ao 75 de todo o histórico): variações dentro dela são ruído.</p><div class="chart" id="cVar"></div>
+      <div class="legend"><span><i style="background:var(--deep)"></i>profundo</span><span><i style="background:var(--rem)"></i>REM</span><span><i style="background:rgba(59,47,158,.18);width:10px;height:10px"></i>seu normal (profundo)</span><span><i style="background:rgba(197,189,250,.35);width:10px;height:10px"></i>seu normal (REM)</span></div></div>
+  </div>
 </section>
 
 </div>
@@ -633,6 +684,11 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
   <h2>Esta semana</h2>
   <h3>Esta semana contra as 4 anteriores</h3>
   <p class="q" id="weekNote"></p>
+  <div class="grid g2" style="margin-bottom:10px">
+    <div class="card read" id="weekText"></div>
+    <div class="card"><div class="head"><div><h3>Condicionamento × fadiga</h3><p class="q">Calculado pelo painel com a sua carga diária: condicionamento = média de 42 dias, fadiga = média de 7 dias, forma = condicionamento − fadiga. Não são números da Garmin.</p></div></div><div class="chart" id="cFit"></div>
+      <div class="legend"><span><i style="background:var(--str)"></i>condicionamento (42d)</span><span><i style="background:var(--hr)"></i>fadiga (7d)</span><span><i style="background:var(--walk)"></i>forma</span></div></div>
+  </div>
   <div class="grid g2">
     <div class="card tablewrap"><table id="weekTable"></table></div>
     <div class="card">
@@ -694,7 +750,7 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
 
 <script>
 /* =====================================================================
-   Núcleo de dados · Diário de Treino v7
+   Núcleo de dados · Diário de Treino v8
    Converte o banco do Firebase (Garmin Personal API) no formato do
    dashboard original e recalcula Recuperação · Esforço · Sono e as
    Descobertas, com as mesmas fórmulas documentadas na tela.
@@ -759,7 +815,7 @@ function convert(fb, now) {
       date: k, total: x.sleepTimeSeconds, deep: x.deepSleepSeconds ?? null, light: x.lightSleepSeconds ?? null, rem: x.remSleepSeconds ?? null,
       awake: x.awakeSleepSeconds ?? null, score: x.score ?? null, start: tsLocal(x.sleepStartTimestampLocal), end: tsLocal(x.sleepEndTimestampLocal),
       restingHR: x.restingHeartRate ?? null, avgStress: x.avgSleepStress ?? null, bbChange: null, nap: x.napTimeSeconds || 0,
-      spo2: x.averageSpO2Value ?? null, resp: x.averageRespirationValue ?? null,
+      spo2: x.averageSpO2Value ?? null, resp: x.averageRespirationValue ?? null, unmeas: x.unmeasurableSleepSeconds ?? 0,
     };
   });
   const activities = Object.values(fb.activities || {}).filter(a => a && a.startTimeLocal && a.activityId).map(a => {
@@ -812,6 +868,16 @@ function computeRSS(D, ndays = 90) {
     SL[s.date] = s;
   });
   const fullNights = Object.values(SL).filter(s => s.total);
+  // v8: base de sono = mediana das suas noites completas até a véspera (ou valor fixo do Configurar)
+  const fixedBase = ok(+D.sleepBaseCfg) && +D.sleepBaseCfg >= 4 && +D.sleepBaseCfg <= 12 ? +D.sleepBaseCfg * 3600 : null;
+  const nightsByDate = fullNights.slice().sort((a, b) => a.date < b.date ? -1 : 1);
+  const baseCache = {};
+  const baseFor = k => {
+    if (k in baseCache) return baseCache[k];
+    if (fixedBase) return (baseCache[k] = {s: fixedBase, n: null, mode: 'fixa'});
+    const v = nightsByDate.filter(x => x.date < k).map(x => x.total);
+    return (baseCache[k] = v.length >= 14 ? {s: median(v), n: v.length, mode: 'mediana'} : {s: 8 * 3600, n: v.length, mode: 'padrão'});
+  };
   const hrs = fullNights.map(s => s.total / 3600);
   // atividades por dia, com carga
   const byDay = {};
@@ -853,11 +919,12 @@ function computeRSS(D, ndays = 90) {
     const ys = y.strain ?? strainOf(0);
     // débito: 0,35 × Σ falta vs 8 h nas 3 noites anteriores (máx 1h30)
     let short = 0, dn = 0;
-    for (let i = 1; i <= 3; i++) { const s = SL[addS(k, -i)]; if (s && s.total) { dn++; short += Math.max(0, P.baseSleepH * 3600 - s.total); } }
+    const bs = baseFor(k);
+    for (let i = 1; i <= 3; i++) { const s = SL[addS(k, -i)]; if (s && s.total) { dn++; short += Math.max(0, bs.s - s.total); } }
     const debt = Math.min(0.35 * short, 1.5 * 3600);
     const s = SL[k];
     const napS = s && s.nap ? s.nap : 0;
-    const need = {base: P.baseSleepH * 3600, strain: needStrain(ys), strainYesterday: ys, debt, debtNights: dn, naps: napS};
+    const need = {base: bs.s, baseMode: bs.mode, baseN: bs.n, strain: needStrain(ys), strainYesterday: ys, debt, debtNights: dn, naps: napS};
     need.total = need.base + need.strain + need.debt - need.naps;
     const slept = s && s.total ? s.total : null;
     const perf = slept != null ? r1(slept / need.total * 100) : null;
@@ -883,18 +950,19 @@ function computeRSS(D, ndays = 90) {
       recovery14: m14.rec, band, target, load, strain: strain ?? (daily[k] ? strainOf(0) : null), acts, need, sleep: sl, perf});
   }
   const last = days[days.length - 1] || {};
+  P.baseSleepH = last.need ? last.need.base / 3600 : 8; P.baseMode = last.need ? last.need.baseMode : 'padrão';
   const base = {hrv: {n: 0}, rhr30: last.rhrBase30 || {n: 0}, rhr14: last.rhrBase14 || {n: 0},
     sleep: {n: fullNights.length, naps, median: median(hrs), p75: quant(hrs, 0.75)}};
   // checagem de honestidade
   const comp = fullNights.filter(s => ok(s.deep) && ok(s.light) && ok(s.rem));
   const recon = comp.slice(-30).sort(() => 0.5 - Math.random()).slice(0, 3).map(s => {
-    const st = s.deep + s.light + s.rem; return {date: s.date, stages: st, total: s.total, diff: st - s.total, awake: s.awake, hist: s.total};
+    const st = s.deep + s.light + s.rem; return {date: s.date, stages: st, unmeas: s.unmeas || 0, total: s.total, diff: st - s.total, awake: s.awake, hist: s.total};
   });
   const pc = k => comp.filter(s => s.total).map(s => s[k] / s.total * 100);
   const dp = pc('deep'), rp = pc('rem');
   const noHRall = D.activities.filter(a => !ok(a.averageHR) && isBjj(a)).map(a => ({date: a.startTimeLocal.slice(0, 10), name: a.activityName || a.type}));
   const noHR90 = days.flatMap(d => d.acts.filter(a => a.src !== 'fc').map(a => ({date: d.date, name: a.name, src: a.src})));
-  const honesty = {recon, reconAll: [comp.filter(s => Math.abs(s.deep + s.light + s.rem - s.total) <= 60).length, comp.length], hypnogram: false,
+  const honesty = {recon, reconAll: [comp.filter(s => Math.abs(s.deep + s.light + s.rem - s.total) <= 60 || Math.abs(s.deep + s.light + s.rem + (s.unmeas || 0) - s.total) <= 60).length, comp.length], unmeasN: comp.filter(s => s.unmeas > 0).length, hypnogram: false,
     deep: {min: dp.length ? Math.min(...dp) : null, max: dp.length ? Math.max(...dp) : null, n: dp.length},
     rem: {min: rp.length ? Math.min(...rp) : null, max: rp.length ? Math.max(...rp) : null, n: rp.length}, noHRall, noHR90};
   return {days, base, params: P, honesty};
@@ -986,6 +1054,7 @@ function computeInsights(D) {
 
 function build(fb, now = new Date()) {
   const D = convert(fb, now);
+  D.sleepBaseCfg = fb.sleepBase;
   D.rss = computeRSS(D);
   D.insights = computeInsights(D);
   return D;
@@ -1259,11 +1328,11 @@ const row = (name, val, color) => `<div class="r"><span>${color ? `<span class="
 /* ---------- SVG ---------- */
 function el(tag, attrs = {}, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
 function nice(lo, hi, n = 4) {
-  if (lo === hi) { lo -= 1; hi += 1; }
+  if (!(hi - lo > 1e-9)) { lo -= 1; hi += 1; }   // v8: valores quase iguais travavam o eixo
   const step0 = (hi - lo) / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
   const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= step0) || 10 * mag;
   const a = Math.floor(lo / step) * step, b = Math.ceil(hi / step) * step, t = [];
-  for (let v = a; v <= b + step / 2; v += step) t.push(+v.toFixed(6));
+  for (let v = a, i = 0; v <= b + step / 2 && i < 50; v += step, i++) t.push(+v.toFixed(6));
   return t;
 }
 
@@ -1315,6 +1384,11 @@ function drawChart(box, o) {
   });
   // rótulos x
   // faixas de referência (zona saudável) atrás das séries
+  (o.vbands || []).forEach(b => {
+    const i0 = Math.max(0, b.from), i1 = Math.min(n - 1, b.to);
+    if (i1 > i0) { el('rect', {x: X(i0), width: X(i1) - X(i0), y: m.t, height: ih, fill: b.color || 'rgba(109,88,214,.16)'}, svg);
+      if (b.label) { const t = el('text', {x: X(i0) + 4, y: m.t + 11, 'font-size': 10.5, fill: b.text || '#B8AEF5', 'font-family': 'Inter'}, svg); t.textContent = b.label; } }
+  });
   (o.zones || []).forEach(z => {
     const a = Math.max(lo, Math.min(hi, z.from)), b = Math.max(lo, Math.min(hi, z.to));
     if (b > a) el('rect', {x: m.l, width: iw, y: Y(b), height: Y(a) - Y(b), fill: z.color || 'rgba(22,151,122,.10)'}, svg);
@@ -1424,6 +1498,59 @@ function chips(box, items, cur, cb, cls = '') {
   $('#foot').innerHTML = `Dados da Garmin Personal API (oficial) · robô na nuvem 4×/dia · acesso privado por login · atualizado em ${fdy(TODAY)}`;
 })();
 
+
+/* ===== v8 · você dentro da sua faixa · semana em texto · condicionamento × fadiga ===== */
+(function v8extras() {
+  // carga diária longa (para condicionamento × fadiga e achados por treino)
+  const RL = GarminCore.computeRSS(D, 420).days;
+  D.rssLong = {days: RL};
+  // ---- faixa pessoal (Check-up)
+  const from = addD(TODAY, -365), base = DAYS.filter(d => pd(d.date) >= from), last7 = DAYS.filter(d => pd(d.date) > addD(TODAY, -7));
+  const nightsY = SLEEP.filter(s => s.total >= 4 * 3600 && pd(s.date) >= from), n7 = SLEEP.filter(s => s.total >= 4 * 3600 && pd(s.date) > addD(TODAY, -7));
+  const R = [
+    ['❤️ FC de repouso', base.map(d => d.rhr), last7.map(d => d.rhr), -1, v => nf(v) + ' bpm', 'dias'],
+    ['🔋 Body Battery máximo', base.map(d => d.bbMax), last7.map(d => d.bbMax), 1, v => nf(v), 'dias'],
+    ['😴 Sono por noite', nightsY.map(s => s.total / 3600), n7.map(s => s.total / 3600), 1, v => hm(v * 3600), 'noites'],
+    ['😌 Estresse médio', base.map(d => d.stress), last7.map(d => d.stress), -1, v => nf(v), 'dias'],
+  ];
+  $('#cuRange').innerHTML = R.map(([l, b, c, dir, fmt, unit]) => {
+    b = b.filter(v => v != null && !isNaN(v)); const cur = avg(c);
+    if (b.length < 14 || cur == null) return `<div class="rng-r"><div class="rng-l"><b>${l}</b><span>dados insuficientes</span></div></div>`;
+    const lo = Math.min(...b), hi = Math.max(...b), mean = avg(b), span = hi - lo || 1, p = v => Math.max(0, Math.min(100, (v - lo) / span * 100));
+    const better = Math.round(b.filter(v => dir > 0 ? v < cur : v > cur).length / b.length * 100);
+    const col = better >= 60 ? '#16977A' : better >= 35 ? '#C98A00' : '#D43F55';
+    return `<div class="rng-r"><div class="rng-l"><b>${l}</b><span>7 dias: <b style="color:${col}">${fmt(cur)}</b> · melhor que ${better}% ${unit === 'noites' ? 'das suas noites' : 'dos seus dias'}</span></div>
+      <div class="rng-t"><div class="rng-bar ${dir < 0 ? 'rev' : ''}"><i class="mean" style="left:${p(mean)}%"></i><i class="now" style="left:${p(cur)}%;background:${col}"></i></div>
+      <div class="rng-s"><span>${dir < 0 ? 'melhor ' : ''}${fmt(dir < 0 ? lo : lo)}</span><span>média ${fmt(mean)}</span><span>${fmt(hi)}${dir > 0 ? ' melhor' : ''}</span></div></div>
+      <div class="rng-n">${nf(b.length)} ${unit}</div></div>`;
+  }).join('');
+  // ---- condicionamento × fadiga
+  let ctl = 0, atl = 0; const fit = RL.map(d => { const L = d.load || 0; const tsb = ctl - atl; ctl += (L - ctl) / 42; atl += (L - atl) / 7; return {date: d.date, ctl, atl, tsb, load: L}; });
+  const show = fit.slice(-120), F = fit[fit.length - 1], F28 = fit[fit.length - 29] || fit[0];
+  chart($('#cFit'), {x: show.map(f => pd(f.date)), height: 210, tipExtra: i => row('Carga do dia', nf(show[i].load, 1)),
+    series: [{name: 'Forma', color: css('--walk'), values: show.map(f => f.tsb), type: 'line', width: 1.6, opacity: .8, fmt: v => nf(v, 1)},
+      {name: 'Condicionamento', color: css('--str'), values: show.map(f => f.ctl), type: 'line', width: 2.6, fmt: v => nf(v, 1)},
+      {name: 'Fadiga', color: css('--hr'), values: show.map(f => f.atl), type: 'line', width: 2, fmt: v => nf(v, 1)}],
+    refLine: {v: 0, label: 'forma 0', color: '#8F959E'}});
+  // ---- a semana em texto
+  const L7 = RL.slice(-7), L28 = RL.slice(-35, -7), load7 = sum(L7.map(d => d.load || 0)), load4 = sum(L28.map(d => d.load || 0)) / 4;
+  const a7 = ACTS.filter(a => a.d > addD(TODAY, -7)), days7 = new Set(a7.map(a => iso(a.d))).size;
+  const sp = {}; a7.forEach(a => { sp[a.sport] = (sp[a.sport] || 0) + 1; });
+  const spTxt = Object.entries(sp).sort((x, y) => y[1] - x[1]).map(([k, n]) => `${n} de ${SPORTS[k].n.toLowerCase()}`).join(', ');
+  const dCtl = F28 && F28.ctl ? (F.ctl - F28.ctl) / F28.ctl * 100 : null;
+  const R7 = (D.rss.days || []).slice(-7), rec7 = avg(R7.map(d => d.recovery)), perf7 = avg(R7.map(d => d.perf)), Ld = D.rss.days[D.rss.days.length - 1] || {};
+  const tsb = F.ctl - F.atl;
+  const tsbTxt = tsb > 5 ? 'você está <b>descansado</b> (forma positiva): bom momento para um treino forte' : tsb >= -10 ? 'a carga está <b>equilibrada</b> com o que o corpo está acostumado' : tsb >= -30 ? 'você está em <b>fase de construção</b>: a fadiga está acima do condicionamento, o que é produtivo se o sono acompanhar' : 'a fadiga está <b>bem acima</b> do condicionamento: risco de sobrecarga se continuar assim';
+  const p1 = `Nos últimos 7 dias você treinou em <b>${days7} dia${days7 === 1 ? '' : 's'}</b>${spTxt ? ` (${spTxt})` : ''}, com carga de <b>${nf(load7)}</b> contra uma média semanal de ${nf(load4)} nas 4 semanas anteriores (${load4 ? (load7 >= load4 ? '+' : '−') + nf(Math.abs(load7 / load4 - 1) * 100) + '%' : '–'}). Seu condicionamento está em <b>${nf(F.ctl, 1)}</b>${dCtl != null ? `, ${Math.abs(dCtl) < 3 ? 'estável' : dCtl > 0 ? `<b>subindo</b> ${nf(dCtl)}%` : `<b>caindo</b> ${nf(-dCtl)}%`} em relação a 4 semanas atrás` : ''}, e a fadiga em <b>${nf(F.atl, 1)}</b>.`;
+  const p2 = `Com forma de <b>${nf(tsb, 1)}</b>, ${tsbTxt}. A recuperação média da semana foi de <b>${nf(rec7)}%</b> e o sono cobriu <b>${nf(perf7)}%</b> da necessidade${perf7 != null && perf7 < 85 ? ', o principal freio da semana' : ''}.`;
+  let todo;
+  if (Ld.band && Ld.target) {
+    const [t0, t1] = Ld.target, st = Ld.strain || 0;
+    todo = `Recuperação de hoje: <b>${nf(Ld.recovery)}% (${Ld.band})</b>. Mire um esforço entre <b>${nf(t0, 1)} e ${nf(t1, 1)}</b>; até agora: ${nf(st, 1)}. ` +
+      (st >= t1 ? 'Meta do dia já atingida: o resto do dia é para recuperar.' : Ld.band === 'verde' ? (tsb < -30 ? 'Mesmo verde, a fadiga acumulada pede o limite inferior da meta.' : 'Cabe um treino forte, como Jiu-Jitsu com rolas ou um treino intervalado.') : Ld.band === 'amarelo' ? 'Treino moderado: técnica, musculação leve ou corrida fácil.' : 'Dia de descanso ativo: caminhada, mobilidade e dormir mais cedo.');
+  } else todo = 'Sem recuperação calculada para hoje ainda: aguarde a próxima sincronização.';
+  $('#weekText').innerHTML = `<h3 style="margin-bottom:6px">📝 A semana em texto</h3><p style="margin:0 0 8px">${p1}</p><p style="margin:0">${p2}</p><div class="todo"><span>👉 O que fazer hoje</span>${todo}</div>`;
+})();
 /* ---------- relógio ---------- */
 function latest(arr, key) { for (let i = arr.length - 1; i >= 0; i--) if (arr[i][key] != null) return arr[i]; return null; }
 function ringSVG(frac, color, big, small, dark = true) {
@@ -1502,9 +1629,24 @@ function ringSVG(frac, color, big, small, dark = true) {
     let last = null; for (let i = 0; i < N; i++) { if (bb[i] != null) last = bb[i]; else if (last != null && i < N && (dd.bb || []).some(([t]) => t > start + i * STEP)) bb[i] = last; }
     const x = Array.from({length: N}, (_, i) => i);
     const hrs = hr.filter(v => v != null);
-    $('#dayStats').innerHTML = `Repouso <b class="num">${nf(dd.rhr)}</b> · mín <b class="num">${nf(hrs.length ? Math.min(...hrs) : dd.hrMin)}</b> · máx <b class="num">${nf(hrs.length ? Math.max(...hrs) : dd.hrMax)}</b> bpm` + (dd.rhr7 ? ` · repouso 7d <b class="num">${nf(dd.rhr7)}</b>` : '');
+    // v8: faixa do sono (noite que terminou hoje e a que começa hoje) + FC mínima durante o sono
+    const utcIdx = ts => { const t = new Date(ts); return Math.floor((t.getUTCHours() * 60 + t.getUTCMinutes()) / 2); };
+    const utcDay = ts => new Date(ts).toISOString().slice(0, 10);
+    const vb = []; let sMin = null, sAt = null;
+    const addNight = (sl, lbl) => {
+      if (!sl || !sl.start || !sl.end) return;
+      const i0 = utcDay(sl.start) < cur ? 0 : utcDay(sl.start) > cur ? null : utcIdx(sl.start);
+      const i1 = utcDay(sl.end) > cur ? N - 1 : utcDay(sl.end) < cur ? null : utcIdx(sl.end);
+      if (i0 == null || i1 == null || i1 <= i0) return;
+      vb.push({from: i0, to: i1, label: lbl});
+      for (let i = i0; i <= i1; i++) if (hr[i] != null && (sMin == null || hr[i] < sMin)) { sMin = hr[i]; sAt = i; }
+    };
+    addNight(sleepMap[cur], '😴 sono');
+    addNight(sleepMap[iso(addD(pd(cur), 1))], '😴 sono');
+    const clk = i => `${String(Math.floor(i * 2 / 60)).padStart(2, '0')}:${String(i * 2 % 60).padStart(2, '0')}`;
+    $('#dayStats').innerHTML = `Repouso <b class="num">${nf(dd.rhr)}</b> · mín <b class="num">${nf(hrs.length ? Math.min(...hrs) : dd.hrMin)}</b> · máx <b class="num">${nf(hrs.length ? Math.max(...hrs) : dd.hrMax)}</b> bpm` + (dd.rhr7 ? ` · repouso 7d <b class="num">${nf(dd.rhr7)}</b>` : '') + (sMin != null ? ` · <span style="color:#B8AEF5">FC mín. no sono <b class="num">${sMin}</b> às ${clk(sAt)}</span>` : '');
     const box = $('#cDay'); const idx = CHARTS.findIndex(c => c[0] === box); if (idx >= 0) CHARTS.splice(idx, 1);
-    chart(box, {x, kind: 'time', height: 230, dark: true, yMin: 0, yMax: Math.max(110, ...hrs) + 5,
+    chart(box, {x, kind: 'time', height: 230, dark: true, yMin: 0, yMax: Math.max(110, ...hrs) + 5, vbands: vb,
       xLabel: i => `${String(Math.floor(i * 2 / 60)).padStart(2, '0')}h`,
       tipTitle: i => `${fd(pd(cur))} · ${String(Math.floor(i * 2 / 60)).padStart(2, '0')}:${String(i * 2 % 60).padStart(2, '0')}`,
       series: [
@@ -1775,11 +1917,58 @@ function ringSVG(frac, color, big, small, dark = true) {
 /* ---------- treinos ---------- */
 (function list() {
   const box = $('#acts'); let shown = 10, filt = 'all';
+  /* v8: achados por treino (comparação com o seu próprio padrão no esporte) */
+  const zShare = a => { const z = [1, 2, 3, 4, 5].map(k => a['hrTimeInZone_' + k] || 0), t = sum(z); return t > 60 ? z.map(v => v / t) : null; };
+  const findings = a => {
+    const prev = ACTS.filter(x => x.sport === a.sport && x.d < a.d).slice(-20), F = [];
+    const L = LMAP[a.activityId], load = L ? L.load : null;
+    const pl = prev.map(x => (LMAP[x.activityId] || {}).load).filter(v => v != null && v > 0);
+    if (load != null && pl.length >= 3) {
+      const m = avg(pl), r = load / m;
+      F.push(r > 1.3 ? {t: 'att', h: 'Treino mais pesado que o seu normal', b: nf(r, 1) + '×', l: `Carga ${nf(load)} contra a sua média de ${nf(m)} nos últimos ${pl.length} treinos de ${SPORTS[a.sport].n.toLowerCase()}.`}
+        : r < 0.7 ? {t: 'info', h: 'Treino mais leve que o seu normal', b: nf(r, 1) + '×', l: `Carga ${nf(load)} contra a sua média de ${nf(m)}. Bom para dias de recuperação.`}
+        : {t: 'good', h: 'Carga dentro do seu normal', b: nf(r, 1) + '×', l: `Carga ${nf(load)} contra a sua média de ${nf(m)} no esporte.`});
+    }
+    const zs = zShare(a), pz = prev.map(zShare).filter(Boolean);
+    if (zs && pz.length >= 3) {
+      const hiNow = zs[3] + zs[4], hiAvg = avg(pz.map(z => z[3] + z[4])), d = (hiNow - hiAvg) * 100;
+      if (Math.abs(d) >= 8) F.push({t: d > 0 ? 'att' : 'info', h: d > 0 ? 'Mais tempo em alta intensidade' : 'Menos tempo em alta intensidade', b: nf(hiNow * 100) + '%',
+        l: `Zonas 4–5 ocuparam ${nf(hiNow * 100)}% do treino, contra ${nf(hiAvg * 100)}% no seu padrão (${pz.length} treinos).`});
+      else F.push({t: 'good', h: 'Distribuição de zonas habitual', b: nf(hiNow * 100) + '%', l: `Zonas 4–5 em ${nf(hiNow * 100)}% do treino, perto do seu padrão (${nf(hiAvg * 100)}%).`});
+    }
+    if (a.sport === 'run' && a.distance > 1000) {
+      const pr = prev.filter(x => x.distance > 1000).slice(-5), sp = x => (x.movingDuration || x.duration) / (x.distance / 1000);
+      if (pr.length >= 3) { const d = sp(a) - avg(pr.map(sp));
+        F.push({t: d <= -5 ? 'good' : d >= 10 ? 'bad' : 'info', h: d <= -5 ? 'Ritmo mais rápido que as últimas corridas' : d >= 10 ? 'Ritmo mais lento que as últimas corridas' : 'Ritmo estável', b: pace(a.movingDuration || a.duration, a.distance),
+          l: `${nf(Math.abs(d))} s/km ${d < 0 ? 'mais rápido' : 'mais lento'} que a média das ${pr.length} corridas anteriores.`}); }
+      const pc = pr.map(x => x.averageRunningCadenceInStepsPerMinute).filter(Boolean);
+      if (a.averageRunningCadenceInStepsPerMinute && pc.length >= 3) { const d = a.averageRunningCadenceInStepsPerMinute - avg(pc);
+        if (Math.abs(d) >= 3) F.push({t: d > 0 ? 'good' : 'info', h: d > 0 ? 'Cadência maior' : 'Cadência menor', b: nf(a.averageRunningCadenceInStepsPerMinute) + ' spm', l: `${nf(Math.abs(d))} passos/min ${d > 0 ? 'acima' : 'abaixo'} da média das corridas anteriores.`}); }
+    }
+    if (a.aerobicTrainingEffect != null) { const te = a.aerobicTrainingEffect;
+      F.push({t: te >= 4 ? 'att' : te >= 2 ? 'good' : 'info', h: te >= 4 ? 'Efeito aeróbico alto' : te >= 3 ? 'Melhora o condicionamento aeróbico' : te >= 2 ? 'Mantém o condicionamento aeróbico' : 'Efeito de recuperação', b: nf(te, 1),
+        l: `Training Effect aeróbico da Garmin (0–5)${a.anaerobicTrainingEffect ? `; anaeróbico ${nf(a.anaerobicTrainingEffect, 1)}` : ''}.`}); }
+    if (a.sport === 'bjj') {
+      const pn = prev.map(x => x.rpe).filter(v => v != null);
+      if (a.rpe != null && pn.length >= 3) { const d = a.rpe - avg(pn);
+        F.push({t: d >= 1.5 ? 'att' : 'good', h: d >= 1.5 ? 'Treino mais duro que o habitual' : d <= -1.5 ? 'Treino mais leve que o habitual' : 'Esforço habitual', b: nf(a.rpe, a.rpe % 1 ? 1 : 0) + '/10', l: `Sua nota média nos últimos ${pn.length} treinos é ${nf(avg(pn), 1)}.`}); }
+      else if (a.rpe == null) F.push({t: 'bad', h: 'Sem nota de esforço', b: '–', l: 'Renomeie a atividade no Garmin Connect, por exemplo “Jiu-Jitsu 7”, para a carga entrar no Esforço.'});
+    }
+    if (!F.length) return '';
+    const rank = {bad: 0, att: 1, good: 2, info: 3}, top = F.slice().sort((x, y) => rank[x.t] - rank[y.t])[0];
+    const C = {good: '#16977A', att: '#C98A00', bad: '#D43F55', info: '#3157E0'};
+    return `<div class="fnd-v"><span>Veredito</span><b>${top.h}.</b></div><div class="fnd">${F.map(f => `<div class="fnd-c"><div class="fnd-h"><i style="background:${C[f.t]}"></i>${f.h}</div><div class="fnd-b num">${f.b}</div><div class="fnd-l">${f.l}</div></div>`).join('')}</div>`;
+  };
   const icon = s => `<div class="ico" style="background:var(${SPORTS[s].c})">${SPORTS[s].i}</div>`;
   const ZC = ['#9AA3AF', '#18A8CF', '#16977A', '#EF9F0A', '#E2445C'];
+  const LMAP = {}; ((D.rssLong || D.rss).days || []).forEach(x => x.acts.forEach(a => { LMAP[a.id] = a; }));
   const render = () => {
     const list = ACTS.filter(a => filt === 'all' || a.sport === filt).slice().reverse();
+    let lastDay = null;
     box.innerHTML = list.slice(0, shown).map(a => {
+      const dk = iso(a.d), same = list.filter(x => iso(x.d) === dk);
+      const head = dk !== lastDay ? `<div class="act-day"><b>${DOW[a.d.getDay()]}, ${fdy(a.d)}</b><span>${same.length} treino${same.length > 1 ? 's' : ''} · ${hm(sum(same.map(x => x.duration)))}</span></div>` : '';
+      lastDay = dk;
       const z = [1, 2, 3, 4, 5].map(k => a['hrTimeInZone_' + k] || 0), zt = sum(z);
       const dist = a.distance > 50 ? `${nf(km(a.distance), 2)} km` : '';
       const main = [hm(a.duration), dist].filter(Boolean).join(' · ');
@@ -1798,10 +1987,10 @@ function ringSVG(frac, color, big, small, dark = true) {
       const zones = zt ? `<div class="zones">${z.map((v, i) => `<div title="Zona ${i + 1}: ${hm(v)}" style="width:${v / zt * 100}%;background:${ZC[i]}"></div>`).join('')}</div>
         <div class="sets" style="color:var(--muted)">${z.map((v, i) => v ? `Z${i + 1} ${hm(v)}` : '').filter(Boolean).join(' · ')}</div>` : '';
       const sets = (a.sets || []).filter(s => s.cat && s.cat !== 'UNKNOWN').map(s => `<span>${s.cat.toLowerCase().replace(/_/g, ' ')} · ${s.sets}×${s.reps ? Math.round(s.reps / Math.max(1, s.sets)) : '?'}</span>`).join('');
-      return `<details class="act"><summary>${icon(a.sport)}<div><div class="t">${nameOf(a)}</div>
-        <div class="m">${DOW[a.d.getDay()]}, ${fdy(a.d)} · ${a.startTimeLocal.slice(11, 16)} · ${a.sport === 'bjj' ? (a.rpe != null ? 'esforço ' + nf(a.rpe, a.rpe % 1 ? 1 : 0) : '<span style="color:var(--hr)">sem nota de esforço</span>') : typeOf(a)}</div></div>
+      return head + `<details class="act"><summary>${icon(a.sport)}<div><div class="t">${nameOf(a)}</div>
+        <div class="m">${a.startTimeLocal.slice(11, 16)} · ${a.sport === 'bjj' ? (a.rpe != null ? 'esforço ' + nf(a.rpe, a.rpe % 1 ? 1 : 0) : '<span style="color:var(--hr)">sem nota de esforço</span>') : typeOf(a)}</div></div>
         <div class="s">${main}${a.averageHR ? `<div style="color:var(--hr);font-size:12px">♥ ${nf(a.averageHR)}</div>` : ''}</div></summary>
-        <div class="det">${det}${zones}${sets ? `<div class="sets">${sets}</div>` : ''}</div></details>`;
+        <div class="det">${findings(a)}${det}${zones}${sets ? `<div class="sets">${sets}</div>` : ''}</div></details>`;
     }).join('') || '<div class="empty">Nenhum treino</div>';
     $('#more').style.display = list.length > shown ? '' : 'none';
   };
@@ -1950,6 +2139,30 @@ function ringSVG(frac, color, big, small, dark = true) {
       <div class="ph-r">faixa típica ${lo}–${hi}%${k === 'awake' ? ' do tempo na cama' : ' do sono'}</div></div>`;
   }).join('');
   $('#phNote').textContent = `Média de ${use.length} noite(s). A faixa verde marca o intervalo típico de adultos saudáveis (Ohayon et al., 2004).`;
+  // v8: quanto confiar nas fases + o número que importa + variação noite a noite
+  (function trust() {
+    const full = SLEEP.filter(s => s.total >= 4 * 3600 && s.deep != null && s.rem != null);
+    if (full.length < 5) { $('#sqTrust').innerHTML = '<h3>🔎 Quanto confiar nas fases</h3><div class="empty">Poucas noites completas ainda.</div>'; return; }
+    const dp = s => s.deep / s.total * 100, rp = s => s.rem / s.total * 100;
+    const byD = full.slice().sort((a, b) => dp(a) - dp(b)), lo = byD[0], hi = byD[byD.length - 1];
+    const rs = full.map(rp), ds = full.map(dp), q = (a, p) => { const x = [...a].sort((u, v) => u - v), i = (x.length - 1) * p, f = Math.floor(i); return x[f] + (x[Math.min(f + 1, x.length - 1)] - x[f]) * (i - f); };
+    const zero = full.filter(s => s.deep === 0).length;
+    $('#sqTrust').innerHTML = `<h3>🔎 Quanto confiar nas fases</h3>
+      <div class="trust-n"><div><span>Distância entre a sua melhor e a sua pior noite de sono profundo</span><b class="num">${nf(dp(hi) - dp(lo), 1)}<small> p.p.</small></b></div>
+        <div class="trust-x"><div>🔝 ${nf(dp(hi), 1)}% · ${fdy(pd(hi.date))}</div><div>🔻 ${nf(dp(lo), 1)}% · ${fdy(pd(lo.date))}</div></div></div>
+      <table class="tin"><tr><th>Fase</th><th>Menor</th><th>Maior</th><th>Seu normal (p25–p75)</th></tr>
+        <tr><td>Profundo</td><td>${nf(Math.min(...ds), 1)}%</td><td>${nf(Math.max(...ds), 1)}%</td><td>${nf(q(ds, .25), 1)}–${nf(q(ds, .75), 1)}%</td></tr>
+        <tr><td>REM</td><td>${nf(Math.min(...rs), 1)}%</td><td>${nf(Math.max(...rs), 1)}%</td><td>${nf(q(rs, .25), 1)}–${nf(q(rs, .75), 1)}%</td></tr></table>
+      <p class="trust-w">⚠️ <b>As fases são uma estimativa, não uma medição.</b> Uma fase do sono é definida pela atividade do cérebro e pelo movimento dos olhos, e o relógio não mede nenhum dos dois: ele deduz a fase pela frequência cardíaca e pelo movimento. A prova está nos seus próprios números: em ${nf(full.length)} noites completas, o profundo variou de ${nf(Math.min(...ds), 1)}% a ${nf(Math.max(...ds), 1)}%${zero ? `, incluindo ${zero} noite(s) com 0 min de profundo (provável falha de leitura)` : ''}. Olhe a tendência de várias noites, não uma noite isolada.</p>`;
+    const last = full.slice(-30);
+    chart($('#cVar'), {x: last.map(s => pd(s.date)), height: 200, yMin: 0, yFmt: v => nf(v) + '%',
+      tipExtra: i => row('Total', hm(last[i].total)),
+      series: [
+        {name: 'normal profundo', color: css('--deep'), values: last.map(() => [q(ds, .25), q(ds, .75)]), type: 'band', opacity: .14, noTip: true},
+        {name: 'normal REM', color: css('--rem'), values: last.map(() => [q(rs, .25), q(rs, .75)]), type: 'band', opacity: .3, noTip: true},
+        {name: 'Profundo', color: css('--deep'), values: last.map(dp), type: 'line', width: 2.2, fmt: v => nf(v, 1) + '%'},
+        {name: 'REM', color: '#8E80F0', values: last.map(rp), type: 'line', width: 2.2, fmt: v => nf(v, 1) + '%'}]});
+  })();
   // horários
   const bedN = nights.filter(s => s.start && s.end && pd(s.date) > addD(TODAY, -90));
   if (!bedN.length) { $('#cBed').innerHTML = '<div class="empty">Sem noites nos últimos 90 dias</div>'; return; }
@@ -2090,7 +2303,11 @@ function ringSVG(frac, color, big, small, dark = true) {
     const f1 = v => v == null ? '–' : nf(v, 1), f0 = v => v == null ? '–' : nf(v, 0);
     const P = R.params, B = R.base;
     const W0 = P.weights;
-    $('#rssBase').innerHTML = `<b>Bases e amostras (impressas para conferência)</b><br>
+    const nRhr = DAYS.filter(x => x.rhr != null).length, nStg = SLEEP.filter(x => x.total >= 4 * 3600 && x.deep != null).length, d0 = DAYS.length ? DAYS[0].date : null;
+    const cnt = (ic, l, v, sub, warn) => `<div class="cnt ${warn ? 'w' : ''}"><span>${ic} ${l}</span><b class="num">${v}</b><small>${sub}</small></div>`;
+    $('#rssBase').innerHTML = `<div class="cnts">${cnt('❤️', 'Dias com FC de repouso', nf(nRhr), `desde ${d0 ? fdy(pd(d0)) : '–'} · base 30d: ${B.rhr30.n} dias`, B.rhr30.n < 14)}${cnt('😴', 'Noites com fases', nf(nStg), `${B.sleep.naps} cochilos fora da base`, nStg < 14)}${cnt('💓', 'Noites com VFC', nf(B.hrv.n), 'o Forerunner 245 não mede VFC', true)}${cnt('🛏️', 'Base de sono', hm(P.baseSleepH * 3600), P.baseMode === 'mediana' ? `sua mediana · ${nf(B.sleep.n)} noites` : P.baseMode === 'fixa' ? 'valor fixo (Configurar)' : 'padrão 8h (menos de 14 noites)', false)}</div>
+      ${B.rhr30.n < 14 ? '<p class="warnbox" style="margin:8px 0">⚠️ Base de FC de repouso curta (menos de 14 dias): a recuperação vai oscilar mais até completar duas semanas.</p>' : ''}
+      <b>Bases e amostras (impressas para conferência)</b><br>
       💓 VFC (HRV): <b>${B.hrv.n} noites</b>${B.hrv.n < 14 ? ' — sem base; o peso da VFC é redistribuído' : ''} ·
       ❤️ FC de repouso: média ${f1(B.rhr30.mean)} ± ${f1(B.rhr30.sd)} bpm (<b>${B.rhr30.n} dias</b>, 30 dias) · base de 14 dias: ${f1(B.rhr14.mean)} ± ${f1(B.rhr14.sd)} (${B.rhr14.n} dias) ·
       😴 Sono: mediana ${hm(B.sleep.median * 3600)}, percentil 75 ${hm(B.sleep.p75 * 3600)} (<b>${nf(B.sleep.n)} noites</b>; ${B.sleep.naps} noites com menos de 4 h tratadas como cochilo e fora da base) ·
@@ -2099,9 +2316,9 @@ function ringSVG(frac, color, big, small, dark = true) {
     const Hn = R.honesty;
     if (Hn) $('#rssHonest').innerHTML = `<summary><b>Checagem de honestidade</b> (refeita a cada atualização)</summary>
       <p><b>1. Fases x total de sono</b> em 3 noites sorteadas da resposta bruta:</p>
-      <table class="tin"><tr><th>Noite</th><th>Profundo + leve + REM</th><th>Total (sleepTimeSeconds)</th><th>Diferença</th></tr>
-      ${Hn.recon.map(x => `<tr><td>${fdy(pd(x.date))}</td><td>${hm(x.stages)}</td><td>${hm(x.total)}</td><td>${x.diff >= 0 ? '+' : ''}${x.diff} s</td></tr>`).join('')}</table>
-      <p>Histórico inteiro: <b>${nf(Hn.reconAll[0])} de ${nf(Hn.reconAll[1])}</b> noites fecham em até 1 minuto. Hipnograma minuto a minuto (<code>sleepLevels</code>): <b>não disponível</b> na Personal API, então a numeração das fases (0 = profundo, 1 = leve, 2 = REM, 3 = acordado) não pôde ser verificada e nenhum gráfico depende dela.</p>
+      <table class="tin"><tr><th>Noite</th><th>Profundo + leve + REM</th><th>Não medido</th><th>Total (sleepTimeSeconds)</th><th>Diferença</th></tr>
+      ${Hn.recon.map(x => `<tr><td>${fdy(pd(x.date))}</td><td>${hm(x.stages)}</td><td>${x.unmeas ? hm(x.unmeas) : '0'}</td><td>${hm(x.total)}</td><td>${x.diff >= 0 ? '+' : ''}${x.diff} s${x.unmeas && Math.abs(x.diff + x.unmeas) <= 60 ? ' <small>(fecha com o não medido)</small>' : ''}</td></tr>`).join('')}</table>
+      <p>Histórico inteiro: <b>${nf(Hn.reconAll[0])} de ${nf(Hn.reconAll[1])}</b> noites fecham em até 1 minuto (considerando o tempo não medido quando ele existe; ${nf(Hn.unmeasN || 0)} noite(s) têm tempo não medido). Hipnograma minuto a minuto (<code>sleepLevels</code>): <b>não disponível</b> na Personal API, então a numeração das fases (0 = profundo, 1 = leve, 2 = REM, 3 = acordado) não pôde ser verificada e nenhum gráfico depende dela.</p>
       <p><b>2. Faixa observada em noites completas</b> (${nf(Hn.deep.n)} noites): sono profundo de <b>${nf(Hn.deep.min, 1)}% a ${nf(Hn.deep.max, 1)}%</b> · REM de <b>${nf(Hn.rem.min, 1)}% a ${nf(Hn.rem.max, 1)}%</b>.</p>
       <p><b>3. Amostras das bases:</b> VFC ${B.hrv.n} noites · FC de repouso ${B.rhr30.n} dias (30d) e ${B.rhr14.n} dias (14d) · sono ${nf(B.sleep.n)} noites (${B.sleep.naps} cochilos fora).</p>
       <p><b>4. Dias com atividade e sem FC</b> (histórico inteiro): ${Hn.noHRall.length ? Hn.noHRall.map(x => `${fdy(pd(x.date))} · ${x.name}`).join(' · ') : 'nenhum'}.
@@ -2148,9 +2365,9 @@ function ringSVG(frac, color, big, small, dark = true) {
         : `<b>Corpo pedindo descanso.</b> Mantenha o esforço abaixo de <b>${nf(tgt[1], 1)}</b>: caminhada, mobilidade e dormir mais cedo.`;
       const notes = [];
       if (used.sleep == null) notes.push('Sem a noite registrada, a nota usa <b>só a FC de repouso</b> (peso 100%). Durma com o relógio para a nota ficar completa.');
-      if (d.recovery14 != null && r != null && Math.abs(d.recovery14 - r) >= 8) notes.push(`Com a base de <b>14 dias</b>, a recuperação seria <b>${f0(d.recovery14)}%</b>. Sua FC de repouso vem mudando, então a base de 30 dias ${d.recovery14 < r ? 'favorece' : 'penaliza'} este dia.`);
+      const div = d.recovery14 != null && r != null && Math.abs(d.recovery14 - r) > 10;
       if (d.sleep && d.sleep.resumo) notes.push('Noite lida do resumo histórico (sem resposta bruta salva).');
-      $('#rssBody').innerHTML = `<div class="rv">
+      $('#rssBody').innerHTML = (div ? `<div class="warnbox">⚠️ <b>As duas bases discordam:</b> com a base de 30 dias a recuperação é <b>${f0(r)}%</b>; com a de 14 dias, <b>${f0(d.recovery14)}%</b> (${f0(Math.abs(d.recovery14 - r))} pts de diferença). Sua FC de repouso está em tendência de ${(d.rhrBase14.mean || 0) < (d.rhrBase30.mean || 0) ? 'queda' : 'alta'}, então a base de 30 dias ${d.recovery14 < r ? '<b>favorece</b>' : '<b>penaliza</b>'} o dia. Use a de 14 dias como referência mais atual.</div>` : '') + `<div class="rv">
         <div class="card bigring" id="recRing"></div>
         <div class="card tablewrap"><h3>O que entrou na nota</h3><p class="q">Cada entrada vira uma nota de 0 a 100 comparando com a sua própria base.</p>
           <table class="tin"><tr><th>Entrada</th><th>Valor</th><th>Sua base</th><th>Desvio</th><th>Nota</th><th>Peso usado</th></tr>
@@ -2226,7 +2443,7 @@ Faixas: 0–9 leve · 10–13 moderado · 14–17 alto · 18–21 no limite`)}`;
       $('#rssBody').innerHTML = `<div class="rv">
         <div class="card bigring" id="slRing"></div>
         <div class="card"><h3>De onde vem a necessidade de sono</h3><p class="q">Necessidade da noite que terminou em ${fdy(dd(d))}.</p>
-          <table class="need"><tr><td style="font-family:inherit">Base (adulto)</td><td>${hm(n.base)}</td><td style="text-align:left;font-family:inherit;color:var(--muted);font-size:12px">fixa em 8h · sua mediana ${hm(B.sleep.median * 3600)}, p75 ${hm(B.sleep.p75 * 3600)}</td></tr>
+          <table class="need"><tr><td style="font-family:inherit">Base (${n.baseMode === 'mediana' ? 'sua mediana' : n.baseMode === 'fixa' ? 'valor fixo' : 'padrão'})</td><td>${hm(n.base)}</td><td style="text-align:left;font-family:inherit;color:var(--muted);font-size:12px">${n.baseMode === 'mediana' ? `mediana de ${nf(n.baseN)} noites até a véspera · atualiza todo dia` : n.baseMode === 'fixa' ? 'definida em Diário › Configurar' : `padrão até completar 14 noites (${n.baseN || 0} até agora)`}</td></tr>
           <tr><td style="font-family:inherit">Esforço de ontem (${nf(n.strainYesterday, 1)})</td><td>${mm(n.strain)}</td><td></td></tr>
           <tr><td style="font-family:inherit">Débito das 3 noites anteriores</td><td>${mm(n.debt)}</td><td style="text-align:left;font-family:inherit;color:var(--muted);font-size:12px">${n.debtNights}/3 noites com dado${n.debtNights < 3 ? ' · débito pode estar subestimado' : ''}</td></tr>
           <tr><td style="font-family:inherit">Cochilos</td><td>${n.naps ? '−' + hm(n.naps) : '0'}</td><td></td></tr>
@@ -2244,9 +2461,9 @@ Faixas: 0–9 leve · 10–13 moderado · 14–17 alto · 18–21 no limite`)}`;
             <p class="note">${sl.spo2 ? `SpO2 médio na noite: ${f0(sl.spo2)}% · ` : ''}${sl.resp ? `respiração média: ${f0(sl.resp)} rpm · ` : ''}não entram nas notas.</p>` : '<div class="empty">Noite não registrada</div>'}</div></div>
         ${strip(x => x.perf == null ? '–' : f0(x.perf) + '%', x => pctC(x.perf), 'Desempenho do sono (dormido ÷ necessidade) de cada noite.')}
         ${formula(`necessidade = base + f(esforço_ontem) + débito − cochilos
-base        = 8h00
+base        = ${hm(n.base)} (${n.baseMode === 'mediana' ? 'sua mediana até a véspera' : n.baseMode === 'fixa' ? 'valor fixo' : 'padrão 8h'})
 f(esforço)  = 1,7 / (1 + e^((17 − esforço_ontem) / 3,5))  horas
-débito      = mín(0,35 × Σ falta vs 8h nas 3 noites anteriores, 1h30)
+débito      = mín(0,35 × Σ falta vs base nas 3 noites anteriores, 1h30)
 desempenho  = dormido / necessidade`)}`;
       $('#slRing').appendChild(ringSVG(perf == null ? 0 : Math.min(1, perf / 100), c, perf == null ? '–' : f0(perf) + '%', 'da necessidade', false));
       $('#slRing').insertAdjacentHTML('beforeend', `<div class="lbl" style="color:${c}">${perf == null ? 'Sem noite registrada' : perf >= 100 ? 'Necessidade atendida' : perf >= 85 ? 'Quase lá' : 'Sono abaixo do necessário'}</div>
@@ -2748,7 +2965,10 @@ desempenho  = dormido / necessidade`)}`;
       <label>Altura (cm)<input type="number" id="djH" min="120" max="230" value="${C.height}"></label>
       <label>🏋️ Exercício · alvo (d/sem)<input type="number" id="djEx" min="0" max="7" step="1" value="${C.exAlvo != null ? C.exAlvo : exAlvo()}"></label>
       <label>Acordar até (seg–sex)<input type="time" id="djWd" value="${C.wake.wd}"></label>
-      <label>Acordar até (sáb–dom)<input type="time" id="djWe" value="${C.wake.we}"></label></div>
+      <label>Acordar até (sáb–dom)<input type="time" id="djWe" value="${C.wake.we}"></label>
+      <label>🛏️ Base de sono<select id="djSb"><option value="mediana" ${C.sonoBase == null || C.sonoBase === 'mediana' ? 'selected' : ''}>Minha mediana (atualiza todo dia)</option><option value="fixa" ${typeof C.sonoBase === 'number' ? 'selected' : ''}>Valor fixo</option></select></label>
+      <label>Valor fixo (h)<input type="number" id="djSbH" min="5" max="10" step="0.25" value="${typeof C.sonoBase === 'number' ? C.sonoBase : 8}" ${typeof C.sonoBase === 'number' ? '' : 'disabled'}></label></div>
+      <p class="note">A base de sono entra na necessidade de sono (aba Recuperação · Esforço · Sono). Depois de salvar, clique em ↻ Recarregar para recalcular.</p>
       <h3 style="margin-top:14px">Pesos do ranking “Onde evoluir”</h3><p class="q">Quanto cada indicador pesa no impacto de um hábito (0 desliga · 3 = triplo).</p>
       <div class="dj-wts">${Object.entries(WLAB).map(([k, l]) => `<label>${l}<input type="number" min="0" max="3" step="0.5" data-wt="${k}" value="${pesos()[k]}"></label>`).join('')}</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button type="button" class="chip on" id="djSaveCfg">Salvar configurações</button><button type="button" class="chip" id="djReset">Restaurar padrão</button></div></div>`;
@@ -2757,6 +2977,7 @@ desempenho  = dormido / necessidade`)}`;
       B.querySelectorAll('[data-hid]').forEach(tr => { const h = C.habits[tr.dataset.hid]; tr.querySelectorAll('[data-f]').forEach(i => { h[i.dataset.f] = i.type === 'number' ? +i.value : i.value; }); if (!h.rule) delete h.rule; if (h.src === 'auto' && !h.rule) h.src = 'manual'; });
       B.querySelectorAll('[data-gid]').forEach(tr => { const g = C.goals[tr.dataset.gid]; tr.querySelectorAll('[data-f]').forEach(i => { g[i.dataset.f] = i.type === 'number' ? +i.value : i.value; }); });
       C.height = +$('#djH').value || 178; C.wake = {wd: $('#djWd').value || '06:30', we: $('#djWe').value || '07:30'};
+      C.sonoBase = $('#djSb').value === 'fixa' ? clampN(+$('#djSbH').value || 8, 5, 10) : 'mediana';
       C.exAlvo = clampN(+$('#djEx').value || 0, 0, 7); C.pesos = {}; B.querySelectorAll('[data-wt]').forEach(i => { C.pesos[i.dataset.wt] = clampN(+i.value || 0, 0, 3); });
       Object.values(C.habits).forEach(h => { if (h.alvo != null) h.alvo = clampN(+h.alvo || 0, 0, 7); });
     };
@@ -2769,6 +2990,7 @@ desempenho  = dormido / necessidade`)}`;
     $('#djAddH').onclick = () => { collect(); C.habits['h' + Date.now().toString(36)] = {n: 'Novo hábito', i: '⭐', src: 'manual', o: hs.length + 1}; commit(); };
     $('#djAddG').onclick = () => { collect(); C.goals['g' + Date.now().toString(36)] = {n: 'Nova meta', per: 'week', metric: 'exercise_days', target: 3, o: gs.length + 1}; commit(); };
     $('#djSaveCfg').onclick = () => { collect(); commit(); };
+    $('#djSb').onchange = () => { $('#djSbH').disabled = $('#djSb').value !== 'fixa'; };
     $('#djReset').onclick = () => { if (confirm('Restaurar hábitos, metas e parâmetros padrão? Os registros dos dias não são apagados.')) { CFG = JSON.parse(JSON.stringify(DEF)); put('config', CFG); renderConfig(); renderHeader(); } };
   }
 
@@ -2940,6 +3162,7 @@ desempenho  = dormido / necessidade`)}`;
     return `<div class="card"><h3>Mês a mês</h3><div class="tablewrap"><table class="tin rv-t"><tr><th>Mês</th><th>Hábitos</th><th>Humor</th><th>Sono</th><th>Recup.</th><th>Passos</th><th>Exercício</th><th>Peso</th><th>% G</th></tr>${rows.join('')}</table></div>
       <p class="note">Recuperação disponível só para os últimos 90 dias. Hábitos, humor e medidas começam em ${fdy(ymd(START))}.</p></div>`;
   }
+  const DEEP_MED = (() => { const v = SLEEP.filter(s => s.total >= 4 * 3600 && s.deep != null).map(s => s.deep / s.total * 100).sort((a, b) => a - b); return v.length ? v[v.length >> 1] : null; })();
   function dayView(k) {
     const d = day(k), m = d.m || {}, n = d.n || {}, rf = n.reflexao || {}, sl = sleepMap[k], x = dayMap[k] || {}, r = rssMap()[k];
     const em = (key, v) => v ? `${EMO[key][v - 1]} ${v}/5` : '–';
@@ -2950,7 +3173,7 @@ desempenho  = dormido / necessidade`)}`;
         <tr><td>😴 Sono (Garmin)</td><td>${sl && sl.total ? hm(sl.total) : '–'}</td></tr><tr><td>🔋 Recuperação</td><td>${r && r.recovery != null ? nf(r.recovery) + '%' : '–'}</td></tr>
         <tr><td>👟 Passos</td><td>${x.steps != null ? nf(x.steps) : '–'}</td></tr><tr><td>🏋️ Treinos</td><td>${actsOn(k).map(a => typeOf(a) + (a.sport === 'bjj' && a.rpe != null ? ' (nota ' + nf(a.rpe) + ')' : '')).join(', ') || '–'}</td></tr>
         ${d.med ? `<tr><td>⚖️ Medidas</td><td>${MEDS.filter(([kk]) => d.med[kk] != null).map(([kk, l, u]) => `${l} ${nf(d.med[kk], 1)} ${u}`).join(' · ')}</td></tr>` : ''}
-      </table>${m.intencao ? `<p class="read" style="margin-top:8px">🎯 <b>Intenção:</b> ${esc(m.intencao)}</p>` : ''}
+      </table>${sl && sl.total ? `<p class="read rv-cmp">🛌 <b>Você × relógio:</b> ${m.sono ? `você deu <b>${m.sono}/5</b> para a noite` : 'sem nota sua para a noite'}; o relógio mediu <b>${hm(sl.total)}</b>${sl.deep != null ? `, profundo <b>${nf(sl.deep / sl.total * 100)}%</b> (seu normal ${nf(DEEP_MED)}%)` : ''}${x.hrMin ? `, FC mínima <b>${x.hrMin} bpm</b>` : ''}.</p>` : ''}${m.intencao ? `<p class="read" style="margin-top:8px">🎯 <b>Intenção:</b> ${esc(m.intencao)}</p>` : ''}
       ${rf.r ? `<p class="read" style="margin-top:6px">💭 <b>${esc(rf.q)}</b><br>${esc(rf.r)}</p>` : ''}</div>
       <div class="card"><h3>Hábitos</h3><div class="dj-habs">${habitsActive().map(([id, h]) => { const v = hv(id, k).v; return `<div class="dj-hab ${v ? 'dj-tog done' : ''}"><span class="dj-hi">${h.i}</span><span class="dj-hn">${esc(h.n)}</span><span class="dj-tick">${tick(v)}</span></div>`; }).join('')}</div>
         <button type="button" class="chip" id="rvEdit" style="margin-top:10px">✍️ Editar este dia</button></div></div>`;
@@ -3090,7 +3313,24 @@ desempenho  = dormido / necessidade`)}`;
     }).filter(x => x.n28 >= 7);
     const ranked = items.filter(x => x.espaco > 0).sort((a, b) => b.prio - a.prio || b.impact - a.impact);
     const protect = items.filter(x => x.espaco === 0).sort((a, b) => b.impact - a.impact);
-    const disc = items.flatMap(it => it.eff.filter(x => Math.abs(x.e) >= 0.3).map(x => ({it, ...x}))).sort((a, b) => Math.abs(b.e) - Math.abs(a.e));
+    const disc = items.flatMap(it => it.eff.filter(x => Math.abs(x.e) >= 0.3).map(x => ({it, ...x})));
+    // v8: sua percepção do sono × o que o relógio mediu
+    const pn = all.filter(ds => day(ds).m && day(ds).m.sono && sleepMap[ds] && sleepMap[ds].total >= 4 * 3600);
+    const G = pn.filter(ds => day(ds).m.sono >= 4), Bd = pn.filter(ds => day(ds).m.sono <= 3);
+    if (G.length >= 8 && Bd.length >= 8) {
+      const pi = {i: '🛌', n: 'Sua nota de sono × relógio'};
+      [['deep', 'o sono profundo', ds => sleepMap[ds].deep != null ? sleepMap[ds].deep / sleepMap[ds].total * 100 : null, v => nf(v, 1) + '%', v => nf(v, 1) + ' p.p.'],
+       ['tot', 'o tempo dormindo', ds => sleepMap[ds].total / 3600, v => hm(v * 3600), v => hm(v * 3600)]].forEach(([k, lab, f, fmt, fmtD]) => {
+        const A = G.map(f).filter(v => v != null), Bv = Bd.map(f).filter(v => v != null);
+        if (A.length < 8 || Bv.length < 8) return;
+        const sdx = sdv([...A, ...Bv]); if (!sdx) return;
+        const ma = avg(A), mb = avg(Bv), e = (ma - mb) / sdx;
+        disc.push({it: pi, k: 'sono', lab, e, raw: ma - mb, ma, mb, nA: A.length, nB: Bv.length, fmt, when: '', title: `Sua nota de sono × ${k === 'deep' ? 'profundo' : 'tempo dormindo'}`,
+          text: Math.abs(e) < 0.2 ? `Nas noites que você avaliou com 4 ou 5, ${lab} foi praticamente igual às noites avaliadas com 1 a 3 (${fmt(ma)} vs ${fmt(mb)}): <b>sua percepção não acompanha ${k === 'deep' ? 'a fase estimada' : 'a duração'}</b>.`
+            : `Nas noites que você avaliou com 4 ou 5, ${lab} foi <b>${fmtD(Math.abs(ma - mb))} ${ma > mb ? 'maior' : 'menor'}</b> que nas avaliadas com 1 a 3 (${fmt(ma)} vs ${fmt(mb)}).`, always: true, lblA: 'noites 4–5', lblB: 'noites 1–3'});
+      });
+    }
+    disc.sort((a, b) => Math.abs(b.e) - Math.abs(a.e));
     return {items, ranked, protect, disc};
   }
   function bedtimeTip(it) {
@@ -3120,12 +3360,13 @@ desempenho  = dormido / necessidade`)}`;
   const trTxt = it => it.dTr == null ? '' : it.dTr <= -0.15 ? `<span class="delta down">▼ caindo ${Math.round(-it.dTr * 100)} p.p.</span>` : it.dTr >= 0.15 ? `<span class="delta up">▲ subindo ${Math.round(it.dTr * 100)} p.p.</span>` : '<span class="delta flat">estável</span>';
   const effLine = x => `${WLAB[x.k]} ${x.when}: <b>${x.raw >= 0 ? '+' : '−'}${x.fmt(Math.abs(x.raw))}</b> <small>(${x.nA} com × ${x.nB} sem)</small>`;
   function discText(d) {
+    if (d.text) return d.text;
     const up = d.raw > 0;
     return `Nos dias com <b>${d.it.i} ${esc(d.it.n)}</b>, ${d.lab} ${d.when} fica <b>${d.fmt(Math.abs(d.raw))} ${up ? 'maior' : 'menor'}</b> (${d.fmt(d.ma)} vs ${d.fmt(d.mb)}).`;
   }
   function discCards(list, cls = '') {
-    return list.map(d => `<div class="card insg ${cls}" style="--tc:${d.e > 0 ? '#16977A' : '#D43F55'}"><div class="t"><span>📓</span>${esc(d.it.n)} × ${WLAB[d.k].replace(/^\S+\s/, '')}<span class="vchip" style="background:#3157E01F;color:#3157E0;margin-left:auto">diário</span></div>
-      <p>${discText(d)}</p><div class="n">Base: ${d.nA} dias com × ${d.nB} sem · desde ${fdy(ymd(START))} · associação, não causa</div></div>`).join('');
+    return list.map(d => `<div class="card insg ${cls}" style="--tc:${d.e > 0 ? '#16977A' : '#D43F55'}"><div class="t"><span>📓</span>${esc(d.title || d.it.n + ' × ' + WLAB[d.k].replace(/^\S+\s/, ''))}<span class="vchip" style="background:#3157E01F;color:#3157E0;margin-left:auto">diário</span></div>
+      <p>${discText(d)}</p><div class="n">Base: ${d.nA} ${d.lblA || 'dias com'} × ${d.nB} ${d.lblB || 'sem'} · desde ${fdy(ymd(START))} · associação, não causa</div></div>`).join('');
   }
   function injectInsights(R) {
     const box = document.getElementById('insights'); if (!box) return;
@@ -3238,6 +3479,8 @@ function mergeDiario(fb, dj) {
   const dias = (dj && dj.dias) || {};
   const acts = fb.activities || {};
   const BJJ = /jiu|jj|bjj|jitsu/i, MMA = ['mixed_martial_arts', 'martial_arts'];
+  const sb = dj && dj.config && dj.config.sonoBase;
+  if (typeof sb === 'number') fb.sleepBase = sb;
   Object.entries(dias).forEach(([ds, d]) => {
     const kg = d && d.med && d.med.peso;
     if (kg) { fb.weight = fb.weight || {}; fb.weight[ds] = {kg}; }
