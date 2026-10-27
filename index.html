@@ -661,6 +661,11 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
     <div class="card"><h3>Profundo e REM, noite a noite</h3><p class="q" id="sqVarNote">Últimas 30 noites completas. A faixa sombreada é o seu normal (do percentil 25 ao 75 de todo o histórico): variações dentro dela são ruído.</p><div class="chart" id="cVar"></div>
       <div class="legend"><span><i style="background:var(--deep)"></i>profundo</span><span><i style="background:var(--rem)"></i>REM</span><span><i style="background:rgba(59,47,158,.18);width:10px;height:10px"></i>seu normal (profundo)</span><span><i style="background:rgba(197,189,250,.35);width:10px;height:10px"></i>seu normal (REM)</span></div></div>
   </div>
+  <div class="grid g2" style="margin-top:10px">
+    <div class="card"><h3>❤️ FC durante o sono</h3><p class="q" id="sqHrNote">Últimas 30 noites com resumo. Uma FC mínima mais baixa que o seu normal costuma indicar boa recuperação.</p><div class="chart" id="cNHr"></div>
+      <div class="legend"><span><i style="background:var(--hr)"></i>FC mínima</span><span><i style="background:#F2A0AE"></i>FC média</span></div></div>
+    <div class="card"><h3>🔋 Recarga e oxigenação da noite</h3><p class="q">Quanto o Body Battery subiu durante o sono, e a faixa de SpO₂ e respiração das mesmas noites.</p><div class="chart" id="cNBb"></div><div id="sqOx"></div></div>
+  </div>
 </section>
 
 </div>
@@ -750,7 +755,7 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
 
 <script>
 /* =====================================================================
-   Núcleo de dados · Diário de Treino v8
+   Núcleo de dados · Diário de Treino v9
    Converte o banco do Firebase (Garmin Personal API) no formato do
    dashboard original e recalcula Recuperação · Esforço · Sono e as
    Descobertas, com as mesmas fórmulas documentadas na tela.
@@ -816,6 +821,9 @@ function convert(fb, now) {
       awake: x.awakeSleepSeconds ?? null, score: x.score ?? null, start: tsLocal(x.sleepStartTimestampLocal), end: tsLocal(x.sleepEndTimestampLocal),
       restingHR: x.restingHeartRate ?? null, avgStress: x.avgSleepStress ?? null, bbChange: null, nap: x.napTimeSeconds || 0,
       spo2: x.averageSpO2Value ?? null, resp: x.averageRespirationValue ?? null, unmeas: x.unmeasurableSleepSeconds ?? 0,
+      noite: x.noite || null, spo2Min: x.lowestSpO2Value ?? null, spo2Max: x.highestSpO2Value ?? null,
+      respMin: x.lowestRespirationValue ?? null, respMax: x.highestRespirationValue ?? null,
+      startGMT: tsLocal(x.sleepStartTimestampGMT), endGMT: tsLocal(x.sleepEndTimestampGMT),
     };
   });
   const activities = Object.values(fb.activities || {}).filter(a => a && a.startTimeLocal && a.activityId).map(a => {
@@ -945,7 +953,8 @@ function computeRSS(D, ndays = 90) {
     const band = rec == null ? null : rec >= 67 ? 'verde' : rec >= 34 ? 'amarelo' : 'vermelho';
     const target = band ? {verde: [14.0, 18.0], amarelo: [9.0, 13.5], vermelho: [0.0, 8.0]}[band] : null;
     const sl = s && s.total ? {slept: s.total, deep: s.deep, light: s.light, rem: s.rem, awake: s.awake, inBed: s.total + (s.awake || 0),
-      eff: r1(s.total / (s.total + (s.awake || 0)) * 100), start: s.start, end: s.end, spo2: s.spo2, resp: s.resp, nap: 0, short: false, resumo: false} : null;
+      eff: r1(s.total / (s.total + (s.awake || 0)) * 100), start: s.start, end: s.end, spo2: s.spo2, resp: s.resp, nap: 0, short: false, resumo: false,
+      noite: s.noite || null, spo2Min: s.spo2Min, spo2Max: s.spo2Max, respMin: s.respMin, respMax: s.respMax} : null;
     days.push({date: k, rhr: x.rhr ?? null, rhrBase30: b30, rhrBase14: b14, rhrZ: z30, inputs, weights: m30.w, recovery: rec,
       recovery14: m14.rec, band, target, load, strain: strain ?? (daily[k] ? strainOf(0) : null), acts, need, sleep: sl, perf});
   }
@@ -963,6 +972,8 @@ function computeRSS(D, ndays = 90) {
   const noHRall = D.activities.filter(a => !ok(a.averageHR) && isBjj(a)).map(a => ({date: a.startTimeLocal.slice(0, 10), name: a.activityName || a.type}));
   const noHR90 = days.flatMap(d => d.acts.filter(a => a.src !== 'fc').map(a => ({date: d.date, name: a.name, src: a.src})));
   const honesty = {recon, reconAll: [comp.filter(s => Math.abs(s.deep + s.light + s.rem - s.total) <= 60 || Math.abs(s.deep + s.light + s.rem + (s.unmeas || 0) - s.total) <= 60).length, comp.length], unmeasN: comp.filter(s => s.unmeas > 0).length, hypnogram: false,
+    tz: (() => { const m = {}; let n = 0; fullNights.forEach(s => { if (s.startGMT != null && s.start != null) { const o = Math.round((s.start - s.startGMT) / 60000); m[o] = (m[o] || 0) + 1; n++; } }); return {n, m}; })(),
+    noiteN: fullNights.filter(s => s.noite && s.noite.fcMin != null).length, fullN: fullNights.length,
     deep: {min: dp.length ? Math.min(...dp) : null, max: dp.length ? Math.max(...dp) : null, n: dp.length},
     rem: {min: rp.length ? Math.min(...rp) : null, max: rp.length ? Math.max(...rp) : null, n: rp.length}, noHRall, noHR90};
   return {days, base, params: P, honesty};
@@ -2163,6 +2174,31 @@ function ringSVG(frac, color, big, small, dark = true) {
         {name: 'Profundo', color: css('--deep'), values: last.map(dp), type: 'line', width: 2.2, fmt: v => nf(v, 1) + '%'},
         {name: 'REM', color: '#8E80F0', values: last.map(rp), type: 'line', width: 2.2, fmt: v => nf(v, 1) + '%'}]});
   })();
+  // v9: a noite por dentro (30 noites)
+  (function nightIn() {
+    const nn = SLEEP.filter(s => s.total >= 4 * 3600 && s.noite && (s.noite.fcMin != null || s.noite.bbRecarga != null)).slice(-30);
+    if (!nn.length) { ['#cNHr', '#cNBb'].forEach(id => $(id).innerHTML = '<div class="empty">Sem resumos da noite ainda. Rode o robô com <b>partes = sono</b> para o histórico.</div>'); return; }
+    const x = nn.map(s => pd(s.date)), fm = nn.map(s => s.noite.fcMin ?? null), fa = nn.map(s => s.noite.fcMed ?? null), bb = nn.map(s => s.noite.bbRecarga ?? null);
+    const mFm = avg(fm);
+    $('#sqHrNote').textContent = `Últimas ${nn.length} noites com resumo · sua FC mínima média no sono é ${nf(mFm, 1)} bpm. Abaixo do seu normal costuma indicar boa recuperação.`;
+    chart($('#cNHr'), {x, height: 190, tipExtra: i => nn[i].noite.fcMinHora ? row('Mínima às', nn[i].noite.fcMinHora) : '',
+      zones: mFm ? [{from: mFm - 2, to: mFm + 2, color: 'rgba(226,68,92,.08)'}] : [],
+      series: [{name: 'FC média', color: '#F2A0AE', values: fa, type: 'line', width: 1.8, connect: true, fmt: v => nf(v) + ' bpm'},
+        {name: 'FC mínima', color: css('--hr'), values: fm, type: 'line', width: 2.4, connect: true, fmt: v => nf(v) + ' bpm'},
+        {name: 'mín', color: css('--hr'), values: fm, type: 'dots', r: 2.5, noTip: true}]});
+    const bv = bb.filter(v => v != null);
+    chart($('#cNBb'), {x, kind: 'band', height: 170, yMin: Math.min(0, ...bv), tipTitle: i => fdy(x[i]),
+      tipExtra: i => nn[i].noite.bbIni != null ? row('Body Battery', `${nn[i].noite.bbIni} → ${nn[i].noite.bbFim}`) : '',
+      series: [{name: 'Recarga', color: css('--bb'), values: bb, type: 'bar', fmt: v => (v > 0 ? '+' : '') + nf(v)}]});
+    const all = SLEEP.filter(s => s.total >= 4 * 3600).slice(-30), L = all[all.length - 1] || {};
+    const st = (a, b, c) => { const lo = all.map(s => s[a]).filter(v => v != null), me = all.map(s => s[b]).filter(v => v != null), hi = all.map(s => s[c]).filter(v => v != null);
+      return {lo: lo.length ? Math.min(...lo) : null, me: avg(me), hi: hi.length ? Math.max(...hi) : null}; };
+    const o = st('spo2Min', 'spo2', 'spo2Max'), r = st('respMin', 'resp', 'respMax');
+    $('#sqOx').innerHTML = `<div class="tablewrap"><table class="tin" style="margin-top:8px"><tr><th>Últimas ${all.length} noites</th><th>Menor</th><th>Média</th><th>Maior</th><th>Última noite</th></tr>
+      <tr><td>🫁 SpO₂ (%)</td><td>${nf(o.lo)}</td><td>${nf(o.me, 1)}</td><td>${nf(o.hi)}</td><td>${L.spo2 != null ? `${L.spo2Min != null ? nf(L.spo2Min) + '–' : ''}${nf(L.spo2)}${L.spo2Max != null ? '–' + nf(L.spo2Max) : ''}` : '–'}</td></tr>
+      <tr><td>💨 Respiração (rpm)</td><td>${nf(r.lo)}</td><td>${nf(r.me, 1)}</td><td>${nf(r.hi)}</td><td>${L.resp != null ? `${L.respMin != null ? nf(L.respMin) + '–' : ''}${nf(L.resp)}${L.respMax != null ? '–' + nf(L.respMax) : ''}` : '–'}</td></tr></table></div>
+      <p class="note">SpO₂ medido no pulso é sensível a movimento e posição: olhe a média de várias noites. Quedas repetidas abaixo de 90% merecem conversa com um médico.</p>`;
+  })();
   // horários
   const bedN = nights.filter(s => s.start && s.end && pd(s.date) > addD(TODAY, -90));
   if (!bedN.length) { $('#cBed').innerHTML = '<div class="empty">Sem noites nos últimos 90 dias</div>'; return; }
@@ -2322,7 +2358,9 @@ function ringSVG(frac, color, big, small, dark = true) {
       <p><b>2. Faixa observada em noites completas</b> (${nf(Hn.deep.n)} noites): sono profundo de <b>${nf(Hn.deep.min, 1)}% a ${nf(Hn.deep.max, 1)}%</b> · REM de <b>${nf(Hn.rem.min, 1)}% a ${nf(Hn.rem.max, 1)}%</b>.</p>
       <p><b>3. Amostras das bases:</b> VFC ${B.hrv.n} noites · FC de repouso ${B.rhr30.n} dias (30d) e ${B.rhr14.n} dias (14d) · sono ${nf(B.sleep.n)} noites (${B.sleep.naps} cochilos fora).</p>
       <p><b>4. Dias com atividade e sem FC</b> (histórico inteiro): ${Hn.noHRall.length ? Hn.noHRall.map(x => `${fdy(pd(x.date))} · ${x.name}`).join(' · ') : 'nenhum'}.
-      ${Hn.noHR90.length ? `<br>Nos últimos 90 dias: ${Hn.noHR90.map(x => `${fd(pd(x.date))} ${x.name} (${x.src === 'estimado' ? 'estimado pela nota' : 'conta 0'})`).join(' · ')}.` : ''}</p>`;
+      ${Hn.noHR90.length ? `<br>Nos últimos 90 dias: ${Hn.noHR90.map(x => `${fd(pd(x.date))} ${x.name} (${x.src === 'estimado' ? 'estimado pela nota' : 'conta 0'})`).join(' · ')}.` : ''}</p>
+      <p><b>5. Fuso pelo GMT</b> (horário local − horário GMT do início do sono, sem biblioteca de fuso): ${Hn.tz && Hn.tz.n ? Object.entries(Hn.tz.m).sort((a, b) => b[1] - a[1]).map(([o, c]) => `<b>${+o > 0 ? '+' : '−'}${nf(Math.abs(+o) / 60, Math.abs(+o) % 60 ? 1 : 0)} h</b> em ${nf(c)} noite(s)`).join(' · ') + ` (${nf(Hn.tz.n)} noites com horário GMT). É esse deslocamento que alinha a FC e o Body Battery com a noite.` : 'horário GMT do sono ainda não sincronizado: rode o robô com <b>partes = sono</b> para o histórico.'}</p>
+      <p><b>6. Resumo da noite</b> (FC e Body Battery dentro do sono): <b>${nf(Hn.noiteN || 0)} de ${nf(Hn.fullN || 0)}</b> noites completas.</p>`;
     const segs = [['rec', '🔋 Recuperação'], ['str', '⚡ Esforço'], ['sleep', '😴 Sono']];
     const seg = $('#rssViews');
     seg.innerHTML = segs.map(([k, n]) => `<button type="button" data-v="${k}" class="${k === view ? 'on' : ''}">${n}</button>`).join('');
@@ -2336,6 +2374,22 @@ function ringSVG(frac, color, big, small, dark = true) {
           return `<button class="cell ${i === sel ? 'on' : ''}" data-i="${i}" type="button"><div class="d">${i === last ? 'hoje' : dlab(d)}</div><div class="v" style="color:${c}">${v}</div><div class="b" style="background:${c}"></div></button>`; }).join('')}</div></div>`;
     };
     const bindStrip = () => document.querySelectorAll('#rssBody .cell').forEach(c => c.onclick = () => { sel = +c.dataset.i; render(); });
+    // v9: a noite por dentro (FC e Body Battery entre o início e o fim do sono)
+    const nightCard = (d, sl) => {
+      if (!sl) return '';
+      const N = sl.noite || {}, i = days.indexOf(d), prev = days.slice(Math.max(0, i - 30), i).map(x => x.sleep && x.sleep.noite).filter(Boolean);
+      const base = k => avg(prev.map(x => x[k]));
+      const dl = (v, b, inv, u = '') => v == null || b == null ? '' : (() => { const x = v - b; return Math.abs(x) < 0.5 ? '<span class="delta flat">=</span>' : `<span class="delta ${(x < 0) === !!inv ? 'up' : 'down'}">${x > 0 ? '+' : '−'}${nf(Math.abs(x), 0)}${u}</span>`; })();
+      const rng = (a, m, b, u) => m == null ? '–' : `${a != null ? nf(a) + '–' : ''}<b>${nf(m)}</b>${b != null ? '–' + nf(b) : ''}${u}`;
+      const kp = (l, v, sub) => `<div class="kpi"><div class="l" style="margin:0 0 2px">${l}</div><div class="v num" style="font-size:21px">${v}</div><div class="l">${sub || ''}</div></div>`;
+      return `<div class="card" style="margin-top:10px"><h3>🌙 A noite por dentro</h3><p class="q">FC e Body Battery recortados entre o início e o fim do sono (horário GMT da Garmin). Comparação com a média das ${prev.length} noites anteriores.</p>
+        ${N.fcMin != null || N.bbRecarga != null ? `<div class="grid g4" style="gap:10px">
+          ${kp('❤️ FC mínima no sono', N.fcMin != null ? `${N.fcMin}<small>bpm</small> ${dl(N.fcMin, base('fcMin'), true)}` : '–', N.fcMinHora ? `às ${N.fcMinHora} · média ${nf(base('fcMin'), 1)}` : '')}
+          ${kp('❤️ FC média no sono', N.fcMed != null ? `${nf(N.fcMed)}<small>bpm</small> ${dl(N.fcMed, base('fcMed'), true)}` : '–', base('fcMed') != null ? `média ${nf(base('fcMed'), 1)}` : '')}
+          ${kp('🔋 Recarga na noite', N.bbRecarga != null ? `${N.bbRecarga > 0 ? '+' : ''}${N.bbRecarga} ${dl(N.bbRecarga, base('bbRecarga'), false)}` : '–', N.bbIni != null ? `${N.bbIni} → ${N.bbFim} · média ${nf(base('bbRecarga'))}` : '')}
+          ${kp('🫁 SpO₂ · respiração', `${rng(sl.spo2Min, sl.spo2, sl.spo2Max, '%')}`, `respiração ${rng(sl.respMin, sl.resp, sl.respMax, ' rpm')}`)}
+        </div>` : '<div class="empty">Resumo desta noite ainda não calculado. Para o histórico, rode o robô com <b>partes = sono</b>.</div>'}</div>`;
+    };
     const formula = (txt) => `<details class="card more" style="margin-top:10px"><summary>Ver a fórmula usada</summary><div class="formula">${txt}</div></details>`;
 
     function render() {
@@ -2459,6 +2513,7 @@ Faixas: 0–9 leve · 10–13 moderado · 14–17 alto · 18–21 no limite`)}`;
             <div class="kpi"><div class="v num" style="font-size:24px">${f0(sl.eff)}%</div><div class="l">eficiência (dormindo ÷ na cama)</div></div>
             <div class="kpi"><div class="v num" style="font-size:24px">${sl.start ? hhmm(minOfDay(sl.start)) + '–' + hhmm(minOfDay(sl.end)) : '–'}</div><div class="l">horário</div></div></div>
             <p class="note">${sl.spo2 ? `SpO2 médio na noite: ${f0(sl.spo2)}% · ` : ''}${sl.resp ? `respiração média: ${f0(sl.resp)} rpm · ` : ''}não entram nas notas.</p>` : '<div class="empty">Noite não registrada</div>'}</div></div>
+        ${nightCard(d, sl)}
         ${strip(x => x.perf == null ? '–' : f0(x.perf) + '%', x => pctC(x.perf), 'Desempenho do sono (dormido ÷ necessidade) de cada noite.')}
         ${formula(`necessidade = base + f(esforço_ontem) + débito − cochilos
 base        = ${hm(n.base)} (${n.baseMode === 'mediana' ? 'sua mediana até a véspera' : n.baseMode === 'fixa' ? 'valor fixo' : 'padrão 8h'})
@@ -3173,7 +3228,7 @@ desempenho  = dormido / necessidade`)}`;
         <tr><td>😴 Sono (Garmin)</td><td>${sl && sl.total ? hm(sl.total) : '–'}</td></tr><tr><td>🔋 Recuperação</td><td>${r && r.recovery != null ? nf(r.recovery) + '%' : '–'}</td></tr>
         <tr><td>👟 Passos</td><td>${x.steps != null ? nf(x.steps) : '–'}</td></tr><tr><td>🏋️ Treinos</td><td>${actsOn(k).map(a => typeOf(a) + (a.sport === 'bjj' && a.rpe != null ? ' (nota ' + nf(a.rpe) + ')' : '')).join(', ') || '–'}</td></tr>
         ${d.med ? `<tr><td>⚖️ Medidas</td><td>${MEDS.filter(([kk]) => d.med[kk] != null).map(([kk, l, u]) => `${l} ${nf(d.med[kk], 1)} ${u}`).join(' · ')}</td></tr>` : ''}
-      </table>${sl && sl.total ? `<p class="read rv-cmp">🛌 <b>Você × relógio:</b> ${m.sono ? `você deu <b>${m.sono}/5</b> para a noite` : 'sem nota sua para a noite'}; o relógio mediu <b>${hm(sl.total)}</b>${sl.deep != null ? `, profundo <b>${nf(sl.deep / sl.total * 100)}%</b> (seu normal ${nf(DEEP_MED)}%)` : ''}${x.hrMin ? `, FC mínima <b>${x.hrMin} bpm</b>` : ''}.</p>` : ''}${m.intencao ? `<p class="read" style="margin-top:8px">🎯 <b>Intenção:</b> ${esc(m.intencao)}</p>` : ''}
+      </table>${sl && sl.total ? `<p class="read rv-cmp">🛌 <b>Você × relógio:</b> ${m.sono ? `você deu <b>${m.sono}/5</b> para a noite` : 'sem nota sua para a noite'}; o relógio mediu <b>${hm(sl.total)}</b>${sl.deep != null ? `, profundo <b>${nf(sl.deep / sl.total * 100)}%</b> (seu normal ${nf(DEEP_MED)}%)` : ''}${(sl.noite && sl.noite.fcMin) || x.hrMin ? `, FC mínima ${sl.noite && sl.noite.fcMin ? 'no sono' : 'do dia'} <b>${(sl.noite && sl.noite.fcMin) || x.hrMin} bpm</b>${sl.noite && sl.noite.bbRecarga != null ? `, recarga de <b>${sl.noite.bbRecarga > 0 ? '+' : ''}${sl.noite.bbRecarga}</b> no Body Battery` : ''}` : ''}.</p>` : ''}${m.intencao ? `<p class="read" style="margin-top:8px">🎯 <b>Intenção:</b> ${esc(m.intencao)}</p>` : ''}
       ${rf.r ? `<p class="read" style="margin-top:6px">💭 <b>${esc(rf.q)}</b><br>${esc(rf.r)}</p>` : ''}</div>
       <div class="card"><h3>Hábitos</h3><div class="dj-habs">${habitsActive().map(([id, h]) => { const v = hv(id, k).v; return `<div class="dj-hab ${v ? 'dj-tog done' : ''}"><span class="dj-hi">${h.i}</span><span class="dj-hn">${esc(h.n)}</span><span class="dj-tick">${tick(v)}</span></div>`; }).join('')}</div>
         <button type="button" class="chip" id="rvEdit" style="margin-top:10px">✍️ Editar este dia</button></div></div>`;
