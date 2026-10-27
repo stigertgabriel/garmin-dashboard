@@ -522,6 +522,9 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
 .rv-cmp{margin-top:8px;font-size:13px;background:var(--bg);border-radius:10px;padding:7px 10px}
 .dj-params select{font:14px Inter,system-ui,sans-serif;border:1px solid var(--line);border-radius:9px;padding:6px 8px;background:var(--card);color:var(--ink);min-width:0;width:100%}
 .dj-params{grid-template-columns:repeat(3,minmax(0,220px))}
+/* ===== v10 ===== */
+.fitc{grid-column:1/-1}
+.act .det .fitc .chart{margin-top:4px}
 </style>
 </head>
 <body>
@@ -755,7 +758,7 @@ table td,table th{padding-top:5px!important;padding-bottom:5px!important}
 
 <script>
 /* =====================================================================
-   Núcleo de dados · Diário de Treino v9
+   Núcleo de dados · Diário de Treino v10
    Converte o banco do Firebase (Garmin Personal API) no formato do
    dashboard original e recalcula Recuperação · Esforço · Sono e as
    Descobertas, com as mesmas fórmulas documentadas na tela.
@@ -829,6 +832,7 @@ function convert(fb, now) {
   const activities = Object.values(fb.activities || {}).filter(a => a && a.startTimeLocal && a.activityId).map(a => {
     const o = {...a};
     o.type = a.type || 'other';
+    const fz = (fb.fit || {})[String(a.activityId)]; o.fit = fz && Array.isArray(fz.hr1m) ? fz : null;
     const ex = a.exerciseSets || a.summarizedExerciseSets;
     if (Array.isArray(ex) && ex.length) o.sets = ex.map(s => ({cat: s.category || s.cat || 'UNKNOWN', reps: s.reps ?? 0, sets: s.sets ?? 0, maxWeight: s.maxWeight ?? 0}));
     delete o.exerciseSets; delete o.summarizedExerciseSets;
@@ -864,7 +868,9 @@ function computeRSS(D, ndays = 90) {
   const daily = D.daily, sleepRaw = D.sleep;
   // FC máxima: maior FC de atividade nos últimos 90 dias, sem picos isolados (> 20 bpm acima da 2ª maior)
   const recentMax = [...Object.values(daily).filter(x => x.date > addS(today, -90) && ok(x.hrMax)).map(x => x.hrMax),
-    ...D.activities.filter(a => a.startTimeLocal.slice(0, 10) > addS(today, -90) && ok(a.maxHR)).map(a => a.maxHR)].sort((a, b) => b - a);
+    ...D.activities.filter(a => a.startTimeLocal.slice(0, 10) > addS(today, -90) && ok(a.fit ? a.fit.hrMaxF : a.maxHR)).map(a => a.fit ? a.fit.hrMaxF : a.maxHR)].sort((a, b) => b - a);
+  const fit90 = D.activities.filter(a => a.fit && a.startTimeLocal.slice(0, 10) > addS(today, -90));
+  P.fitSpikes = fit90.reduce((s, a) => s + (a.fit.picos || 0), 0); P.fitN = D.activities.filter(a => a.fit).length;
   let spikes = 0; while (recentMax.length > 1 && recentMax[0] - recentMax[1] > 20) { recentMax.shift(); spikes++; }
   const prof = (D.profile.hrZones || []).find(z => z && z.maxHeartRateUsed);
   P.hrMaxProfile = prof ? prof.maxHeartRateUsed : null;
@@ -894,6 +900,11 @@ function computeRSS(D, ndays = 90) {
     const min = (a.duration || 0) / 60, bjj = isBjj(a);
     const base = {id: a.activityId, name: a.activityName || a.type, type: a.type, time: a.startTimeLocal.slice(11, 16), dur: a.duration || 0,
       avgHR: a.averageHR ?? null, maxHR: a.maxHR ?? null, bjj};
+    if (a.fit && a.fit.hr1m.some(v => v > 0)) {
+      const r0 = ok(rhr) ? rhr : 60, ms = a.fit.hr1m.filter(v => v > 0);
+      const load = ms.reduce((s, v) => s + trimpExp(1, clamp((v - r0) / (P.hrMax - r0), 0, 1)), 0);
+      return {...base, load: r1(load), src: 'fc1m', mins: ms.length, hrr: r1(clamp((avg(ms) - r0) / (P.hrMax - r0), 0, 1) * 100) / 100};
+    }
     if (ok(a.averageHR) && a.averageHR > 0) {
       const r0 = ok(rhr) ? rhr : 60, h = clamp((a.averageHR - r0) / (P.hrMax - r0), 0, 1);
       return {...base, load: r1(trimpExp(min, h) * P.hrStreamAdj), src: 'fc', hrr: r1(h * 100) / 100};
@@ -970,7 +981,8 @@ function computeRSS(D, ndays = 90) {
   const pc = k => comp.filter(s => s.total).map(s => s[k] / s.total * 100);
   const dp = pc('deep'), rp = pc('rem');
   const noHRall = D.activities.filter(a => !ok(a.averageHR) && isBjj(a)).map(a => ({date: a.startTimeLocal.slice(0, 10), name: a.activityName || a.type}));
-  const noHR90 = days.flatMap(d => d.acts.filter(a => a.src !== 'fc').map(a => ({date: d.date, name: a.name, src: a.src})));
+  const noHR90 = days.flatMap(d => d.acts.filter(a => a.src !== 'fc' && a.src !== 'fc1m').map(a => ({date: d.date, name: a.name, src: a.src})));
+  const n90 = days.flatMap(d => d.acts); P.load90 = {fc1m: n90.filter(a => a.src === 'fc1m').length, fc: n90.filter(a => a.src === 'fc').length};
   const honesty = {recon, reconAll: [comp.filter(s => Math.abs(s.deep + s.light + s.rem - s.total) <= 60 || Math.abs(s.deep + s.light + s.rem + (s.unmeas || 0) - s.total) <= 60).length, comp.length], unmeasN: comp.filter(s => s.unmeas > 0).length, hypnogram: false,
     tz: (() => { const m = {}; let n = 0; fullNights.forEach(s => { if (s.startGMT != null && s.start != null) { const o = Math.round((s.start - s.startGMT) / 60000); m[o] = (m[o] || 0) + 1; n++; } }); return {n, m}; })(),
     noiteN: fullNights.filter(s => s.noite && s.noite.fcMin != null).length, fullN: fullNights.length,
@@ -1965,12 +1977,38 @@ function ringSVG(frac, color, big, small, dark = true) {
         F.push({t: d >= 1.5 ? 'att' : 'good', h: d >= 1.5 ? 'Treino mais duro que o habitual' : d <= -1.5 ? 'Treino mais leve que o habitual' : 'Esforço habitual', b: nf(a.rpe, a.rpe % 1 ? 1 : 0) + '/10', l: `Sua nota média nos últimos ${pn.length} treinos é ${nf(avg(pn), 1)}.`}); }
       else if (a.rpe == null) F.push({t: 'bad', h: 'Sem nota de esforço', b: '–', l: 'Renomeie a atividade no Garmin Connect, por exemplo “Jiu-Jitsu 7”, para a carga entrar no Esforço.'});
     }
+    // v10: achados do arquivo FIT
+    const fz = a.fit;
+    if (fz) {
+      const mm = fz.hr1m.filter(v => v > 0), cont = ['run', 'walk', 'bike'].includes(a.sport) || /swim/.test(a.type || '');
+      if (cont && mm.length >= 20) {
+        const w = mm.slice(5), h1 = avg(w.slice(0, w.length >> 1)), h2 = avg(w.slice(w.length >> 1)), dr = (h2 / h1 - 1) * 100;
+        F.push({t: dr <= 5 ? 'good' : dr <= 10 ? 'att' : 'bad', h: dr <= 5 ? 'FC estável ao longo do treino' : 'Deriva cardíaca', b: (dr >= 0 ? '+' : '−') + nf(Math.abs(dr), 1) + '%',
+          l: `FC média da 2ª metade ${nf(h2)} bpm contra ${nf(h1)} na 1ª (sem os 5 min iniciais). Acima de 5% costuma indicar calor, desidratação ou ritmo acima do sustentável.`});
+      }
+      const z4 = ((D.profile.hrZones || []).find(z => z && z.zone4Floor) || {}).zone4Floor;
+      if (z4 && fz.cv && fz.cv.length) {
+        const sec = fz.cv.filter(p => p[1] >= z4).length * (fz.cs || 1), tot = fz.cv.length * (fz.cs || 1);
+        if (sec >= 60) F.push({t: sec / tot > 0.3 ? 'att' : 'info', h: 'Tempo acima do limiar', b: hm(sec),
+          l: `${nf(sec / tot * 100)}% do treino com FC a partir de ${z4} bpm (início da zona 4 no seu perfil Garmin).`});
+      }
+      if (fz.picos) F.push({t: 'info', h: 'Picos do sensor removidos', b: String(fz.picos), l: `Leituras 20 bpm ou mais acima da vizinhança (±15 s) foram descartadas. FC máxima real ${fz.hrMaxF} bpm (bruta ${fz.hrMaxRaw}).`});
+      const at = (fz.sets || []).filter(x => x.a), rs = (fz.sets || []).filter(x => !x.a && x.d);
+      if (at.length) {
+        const rest = avg(rs.map(x => x.d));
+        F.push({t: rest != null && rest < 45 ? 'att' : 'good', h: 'Séries registradas', b: `${at.length} séries`,
+          l: `${nf(sum(at.map(x => x.r || 0)))} repetições${rest != null ? ` · descanso médio ${mmss(rest)}` : ''}${rest != null && rest < 45 ? ' (curto para força: 1–3 min costuma render mais)' : ''}.`});
+      }
+    }
     if (!F.length) return '';
     const rank = {bad: 0, att: 1, good: 2, info: 3}, top = F.slice().sort((x, y) => rank[x.t] - rank[y.t])[0];
     const C = {good: '#16977A', att: '#C98A00', bad: '#D43F55', info: '#3157E0'};
     return `<div class="fnd-v"><span>Veredito</span><b>${top.h}.</b></div><div class="fnd">${F.map(f => `<div class="fnd-c"><div class="fnd-h"><i style="background:${C[f.t]}"></i>${f.h}</div><div class="fnd-b num">${f.b}</div><div class="fnd-l">${f.l}</div></div>`).join('')}</div>`;
   };
   const icon = s => `<div class="ico" style="background:var(${SPORTS[s].c})">${SPORTS[s].i}</div>`;
+  const mmss = x => `${Math.floor(x / 60)}:${String(Math.round(x % 60)).padStart(2, '0')}`;
+  const fitSets = a => { const ss = (a.fit && a.fit.sets) || []; if (!ss.some(x => x.a)) return '';
+    let n = 0; return `<div class="sets"><b style="display:inline;font:600 12px Inter,sans-serif;color:var(--muted)">Séries do relógio:</b> ${ss.map((x, i) => x.a ? `<span>${++n}. ${x.r != null ? x.r + ' rep' : '?'}${x.w ? ' · ' + nf(x.w, x.w % 1 ? 1 : 0) + ' kg' : ''}${x.d ? ' · ' + x.d + 's' : ''}${ss[i + 1] && !ss[i + 1].a && ss[i + 1].d ? ` <i style="font-style:normal;color:var(--muted)">↳ ${mmss(ss[i + 1].d)}</i>` : ''}</span>` : '').join('')}</div>`; };
   const ZC = ['#9AA3AF', '#18A8CF', '#16977A', '#EF9F0A', '#E2445C'];
   const LMAP = {}; ((D.rssLong || D.rss).days || []).forEach(x => x.acts.forEach(a => { LMAP[a.id] = a; }));
   const render = () => {
@@ -1991,7 +2029,8 @@ function ringSVG(frac, color, big, small, dark = true) {
         a.distance > 50 && (a.sport === 'run' || a.sport === 'walk') && ['Ritmo', pace(a.movingDuration || a.duration, a.distance)],
         a.elevationGain && ['Subida', `${nf(a.elevationGain)} m`], a.calories && ['Calorias', nf(a.calories)],
         a.aerobicTrainingEffect && ['Efeito aeróbico', nf(a.aerobicTrainingEffect, 1)], a.anaerobicTrainingEffect && ['Efeito anaeróbico', nf(a.anaerobicTrainingEffect, 1)],
-        a.load && [LOAD_EST ? 'Carga (TRIMP)' : 'Carga', nf(a.load)], a.vO2MaxValue && ['VO2 Max', nf(a.vO2MaxValue)],
+        LMAP[a.activityId] && LMAP[a.activityId].src === 'fc1m' && ['Carga (FC min. a min.)', nf(LMAP[a.activityId].load, 1)],
+        a.load && [LOAD_EST ? 'TRIMP por zonas (Saúde)' : 'Carga', nf(a.load)], a.vO2MaxValue && ['VO2 Max', nf(a.vO2MaxValue)],
         a.totalSets && ['Séries', nf(a.totalSets)], a.totalReps && ['Repetições', nf(a.totalReps)],
         a.averageRunningCadenceInStepsPerMinute && ['Cadência', `${nf(a.averageRunningCadenceInStepsPerMinute)} spm`],
       ].filter(Boolean).map(([l, v]) => `<div>${l}<b>${v}</b></div>`).join('');
@@ -2001,9 +2040,19 @@ function ringSVG(frac, color, big, small, dark = true) {
       return head + `<details class="act"><summary>${icon(a.sport)}<div><div class="t">${nameOf(a)}</div>
         <div class="m">${a.startTimeLocal.slice(11, 16)} · ${a.sport === 'bjj' ? (a.rpe != null ? 'esforço ' + nf(a.rpe, a.rpe % 1 ? 1 : 0) : '<span style="color:var(--hr)">sem nota de esforço</span>') : typeOf(a)}</div></div>
         <div class="s">${main}${a.averageHR ? `<div style="color:var(--hr);font-size:12px">♥ ${nf(a.averageHR)}</div>` : ''}</div></summary>
-        <div class="det">${findings(a)}${det}${zones}${sets ? `<div class="sets">${sets}</div>` : ''}</div></details>`;
+        <div class="det">${findings(a)}${a.fit ? `<div class="fitc"><div class="fnd-v"><span>Frequência cardíaca do treino</span></div><div class="chart" data-fit="${a.activityId}"></div></div>` : ''}${det}${zones}${sets ? `<div class="sets">${sets}</div>` : ''}${fitSets(a)}</div></details>`;
     }).join('') || '<div class="empty">Nenhum treino</div>';
     $('#more').style.display = list.length > shown ? '' : 'none';
+    box.querySelectorAll('details.act').forEach(dt => dt.addEventListener('toggle', () => {
+      const c = dt.querySelector('[data-fit]'); if (!dt.open || !c || c.dataset.done) return;
+      c.dataset.done = 1; const a = ACTS.find(x => String(x.activityId) === c.dataset.fit); if (!a) return;
+      for (let i = CHARTS.length - 1; i >= 0; i--) if (!CHARTS[i][0].isConnected) CHARTS.splice(i, 1);
+      const z4 = ((D.profile.hrZones || []).find(z => z && z.zone4Floor) || {}).zone4Floor;
+      const t0 = a.d.getTime() + (+a.startTimeLocal.slice(11, 13) * 60 + +a.startTimeLocal.slice(14, 16)) * 60000;
+      chart(c, {x: a.fit.cv.map(p => p[0]), height: 160, xLabel: v => `${Math.floor(v / 60)}′`, tipTitle: i => `${Math.floor(a.fit.cv[i][0] / 60)} min ${a.fit.cv[i][0] % 60}s`,
+        zones: z4 ? [{from: z4, to: 250, color: 'rgba(226,68,92,.08)'}] : [], refLine: z4 ? {v: z4, label: 'zona 4', color: '#E2445C'} : null,
+        series: [{name: 'FC', color: css('--hr'), values: a.fit.cv.map(p => p[1]), type: 'line', width: 2, area: true, fmt: v => v + ' bpm'}]});
+    }));
   };
   chips($('#actFilter'), [['all', 'Todos'], ...usedSports.map(s => [s, SPORTS[s].n])], 'all', k => { filt = k; shown = 15; render(); });
   $('#more').onclick = () => { shown += 20; render(); };
@@ -2347,7 +2396,7 @@ function ringSVG(frac, color, big, small, dark = true) {
       💓 VFC (HRV): <b>${B.hrv.n} noites</b>${B.hrv.n < 14 ? ' — sem base; o peso da VFC é redistribuído' : ''} ·
       ❤️ FC de repouso: média ${f1(B.rhr30.mean)} ± ${f1(B.rhr30.sd)} bpm (<b>${B.rhr30.n} dias</b>, 30 dias) · base de 14 dias: ${f1(B.rhr14.mean)} ± ${f1(B.rhr14.sd)} (${B.rhr14.n} dias) ·
       😴 Sono: mediana ${hm(B.sleep.median * 3600)}, percentil 75 ${hm(B.sleep.p75 * 3600)} (<b>${nf(B.sleep.n)} noites</b>; ${B.sleep.naps} noites com menos de 4 h tratadas como cochilo e fora da base) ·
-      🏃 FC máxima: <b>${f0(P.hrMax)} bpm</b> (maior valor dos últimos 90 dias após filtrar ${P.spikes} pico(s) do sensor; perfil Garmin: ${f0(P.hrMaxProfile)}) · carga dos treinos pela FC média, com ajuste de +6% calibrado no cálculo segundo a segundo da versão anterior.`;
+      🏃 FC máxima: <b>${f0(P.hrMax)} bpm</b> (maior valor dos últimos 90 dias após filtrar ${P.spikes} pico(s) isolado(s) e ${nf(P.fitSpikes || 0)} leitura(s) com pico no arquivo FIT; perfil Garmin: ${f0(P.hrMaxProfile)}) · carga dos treinos (90 dias): <b>${nf(P.load90.fc1m)}</b> pela FC minuto a minuto do arquivo FIT · <b>${nf(P.load90.fc)}</b> pela FC média (+6%, sem FIT) · ${nf(P.fitN || 0)} treinos com FIT no histórico.`;
 
     const Hn = R.honesty;
     if (Hn) $('#rssHonest').innerHTML = `<summary><b>Checagem de honestidade</b> (refeita a cada atualização)</summary>
@@ -2449,7 +2498,7 @@ Faixas: 67–100 verde · 34–66 amarelo · 0–33 vermelho`)}`;
       const s = d.strain, [bn, bc] = sBand(s), tgt = d.target;
       const recent = days.slice(Math.max(0, sel - 13), sel + 1).flatMap(x => x.acts.map(a => ({...a, date: x.date}))).reverse();
       const noHR = days.flatMap(x => x.acts.filter(a => a.src === 'sem_fc').map(a => ({...a, date: x.date}))).reverse();
-      const srcTag = a => a.src === 'fc' ? '<span class="tag" style="background:#E6F5EF;color:#0F7A5F">FC medida</span>'
+      const srcTag = a => a.src === 'fc1m' ? `<span class="tag" style="background:#E6F5EF;color:#0F7A5F">FC minuto a minuto · ${a.mins} min</span>` : a.src === 'fc' ? '<span class="tag" style="background:#EEF1FC;color:#2346B8">FC média (+6%)</span>'
         : a.src === 'estimado' ? `<span class="tag estim">estimado pela nota ${a.rpe != null ? nf(a.rpe, a.rpe % 1 ? 1 : 0) : `(sem nota, assumido ${P.rpeDefault})`}</span>`
         : '<span class="tag" style="background:#FDECEE;color:#B3263C">sem FC · conta 0</span>';
       const estToday = d.acts.some(a => a.src === 'estimado');
@@ -2475,6 +2524,8 @@ TRIMPexp: razão = (FC − FC_repouso) / (FC_máx − FC_repouso)
           trimp = Σ por minuto de  razão × 0,64 × e^(1,92 × razão)
           FC_máx = ${f0(P.hrMax)} bpm (picos >20 bpm da mediana local removidos)
 
+Com arquivo FIT: FC média de cada minuto (picos removidos) → soma minuto a minuto
+Sem arquivo FIT: FC média do treino × duração × 1,06 (ajuste de calibração)
 Jiu-Jitsu sem FC (estimado): razão = %FC de reserva pela nota (ACSM)
           trimp = minutos × razão × 0,64 × e^(1,92 × razão)
 
@@ -3517,12 +3568,12 @@ const idbSet = async (k, v) => { try { const d = await idb(); await new Promise(
 const idbClear = () => new Promise(res => { try { const r = indexedDB.deleteDatabase(IDB); r.onsuccess = r.onerror = r.onblocked = () => res(); } catch { res(); } });
 
 async function load(uid, force) {
-  const key = 'fb_' + uid;
+  const key = 'fb10_' + uid;
   gate('Verificando atualizações…', {spin: true});
   const meta = (await get(ref(db, 'garmin/meta'))).val() || {};
   const cache = force ? null : await idbGet(key);
   if (cache && cache.meta && cache.meta.ultimaExecucao === meta.ultimaExecucao) { cache.meta = meta; return cache; }
-  const parts = ['daily', 'sleep', 'activities', 'intraday', 'profile', 'weight'], out = {meta};
+  const parts = ['daily', 'sleep', 'activities', 'intraday', 'profile', 'weight', 'fit'], out = {meta};
   let n = 0;
   await Promise.all(parts.map(async p => { out[p] = (await get(ref(db, 'garmin/' + p))).val() || {}; gate(`Baixando dados… ${++n}/${parts.length}`, {spin: true}); }));
   await idbSet(key, out);
