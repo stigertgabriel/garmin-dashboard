@@ -581,6 +581,11 @@ button.nt-hab:hover{border-color:var(--ink2)}
 #tab-hoje .dj-rate,#tab-hoje .dj-meds{margin-top:4px}
 @media (max-width:1000px){.hj-g{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
 @media (max-width:640px){.hj-g{grid-template-columns:minmax(0,1fr)}.hj-sum b{font-size:17px}}
+/* ===== v16 ===== */
+.hj-rs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.hj-rs .chip{padding:5px 11px}
+#hjReflSt{font-size:12px;color:#0F7A5F;font-weight:600}
+.rv-refl{border-left:4px solid var(--sleep)}
 </style>
 </head>
 <body>
@@ -823,7 +828,7 @@ button.nt-hab:hover{border-color:var(--ink2)}
 
 <script>
 /* =====================================================================
-   Núcleo de dados · Diário de Treino v15
+   Núcleo de dados · Diário de Treino v16
    Converte o banco do Firebase (Garmin Personal API) no formato do
    dashboard original e recalcula Recuperação · Esforço · Sono e as
    Descobertas, com as mesmas fórmulas documentadas na tela.
@@ -2866,6 +2871,14 @@ desempenho  = dormido / necessidade`)}`;
     }
   }
   const touched = ds => { const d = day(ds); return !!(d.m || d.n || d.h || d.agua != null || d.med); };
+  // v16: horário em que acordou (fim do sono do Garmin) e o limite do dia
+  const p2w = n => String(n).padStart(2, '0');
+  function wakeInfo(ds) {
+    const sl = sleepMap[ds]; if (!sl || !sl.end) return null;
+    const e = new Date(sl.end), wd = ymd(ds).getDay(), we = wd === 0 || wd === 6;
+    return {t: p2w(e.getUTCHours()) + ':' + p2w(e.getUTCMinutes()), lim: we ? cfg().wake.we : cfg().wake.wd, we};
+  }
+  const wakeTxt = (ds, h) => { if (!h || h.rule !== 'wake') return ''; const w = wakeInfo(ds); return w ? `acordou ${w.t} · limite ${w.lim}${w.we ? ' (fim de semana)' : ''}` : 'sem horário de acordar'; };
   // valor do hábito no dia: {v: true|false|null, how: 'auto'|'manual'|'ajuste'}
   // v7: dia passado ou hoje sem marcação = não cumprido (não existe mais "vazio")
   const inRange = ds => ds >= START && ds <= REAL();
@@ -2997,7 +3010,7 @@ desempenho  = dormido / necessidade`)}`;
       }
       if (r2.open) { const st = (dayMap[ds] || {}).steps || 0, tg = h.target || 6000;
         return `<button type="button" class="dj-hab dj-tog" data-hab="${id}" aria-pressed="false"><span class="dj-hi">${h.i}</span><span class="dj-hn">${esc(h.n)}<small class="dj-src">🤖 Garmin · ⏳ ${nf(st)} de ${nf(tg)} (${nf(Math.min(100, st / tg * 100))}%)</small></span><span class="dj-tick">⏳</span></button>`; }
-      const stx = h.rule === 'steps' && x.steps != null ? ` · ${nf(x.steps)} de ${nf(h.target || 6000)} (${nf(x.steps / (h.target || 6000) * 100)}%)` : '';
+      const stx = h.rule === 'steps' && x.steps != null ? ` · ${nf(x.steps)} de ${nf(h.target || 6000)} (${nf(x.steps / (h.target || 6000) * 100)}%)` : h.rule === 'wake' ? ` · ${wakeTxt(ds, h)}` : '';
       const tag = h.src === 'auto' ? (r2.how === 'ajuste' ? `<small class="dj-src aj">✋ ajustado${stx}</small>` : `<small class="dj-src">🤖 Garmin${stx}</small>`) : '';
       return `<button type="button" class="dj-hab dj-tog ${r2.v ? 'done' : ''}" data-hab="${id}" aria-pressed="${!!r2.v}"><span class="dj-hi">${h.i}</span><span class="dj-hn">${esc(h.n)}${tag}</span><span class="dj-tick">${tick(r2.v)}</span></button>`;
     }).join('');
@@ -3084,7 +3097,7 @@ desempenho  = dormido / necessidade`)}`;
       const st = streak(id, today), a30 = adherence(iso(addD(new Date(), -29)) < START ? START : iso(addD(new Date(), -29)), today).per[id] || {ok: 0, tot: 0};
       return `<tr><th scope="row"><span class="dj-hi">${h.i}</span> ${esc(h.n)}${h.src === 'auto' ? ' <small class="dj-src">🤖</small>' : ''}</th>
         ${ds.map(d => { const r = hv(id, d); const fut = d > today || d < START;
-          return `<td><button type="button" class="dj-cell ${fut ? '' : r.open ? 'op' : r.v === true ? 'y' : r.v === false ? 'n' : ''} ${!fut && r.how === 'ajuste' ? 'aj' : ''}" ${fut ? 'disabled' : ''} data-cell="${id}|${d}" title="${h.rule === 'steps' && dayMap[d] && dayMap[d].steps != null ? nf(dayMap[d].steps) + ' de ' + nf(h.target || 6000) + ' passos' : ''}" aria-label="${esc(h.n)} em ${d}">${fut ? '' : r.open ? '⏳' : r.v === true ? '✓' : r.v === false ? '✕' : ''}</button></td>`; }).join('')}
+          return `<td><button type="button" class="dj-cell ${fut ? '' : r.open ? 'op' : r.v === true ? 'y' : r.v === false ? 'n' : ''} ${!fut && r.how === 'ajuste' ? 'aj' : ''}" ${fut ? 'disabled' : ''} data-cell="${id}|${d}" title="${h.rule === 'steps' && dayMap[d] && dayMap[d].steps != null ? nf(dayMap[d].steps) + ' de ' + nf(h.target || 6000) + ' passos' : h.rule === 'wake' ? wakeTxt(d, h) : ''}" aria-label="${esc(h.n)} em ${d}">${fut ? '' : r.open ? '⏳' : r.v === true ? '✓' : r.v === false ? '✕' : ''}</button></td>`; }).join('')}
         <td class="num">${a30.tot ? Math.round(a30.ok / a30.tot * 100) + '%' : '–'}</td><td class="num">${st.cur}</td><td class="num">${st.best}</td></tr>`;
     }).join('');
     const ad = adherence(wS, ds[6] > today ? today : ds[6]);
@@ -3333,6 +3346,11 @@ desempenho  = dormido / necessidade`)}`;
       return `<tr><td>${h.i} ${esc(h.n)}</td><td>${pa == null ? '–' : Math.round(pa * 100) + '% <small style="color:var(--muted)">' + a.ok + '/' + a.tot + '</small>'}</td><td>${pb == null ? '–' : Math.round(pb * 100) + '%'}</td><td>${d == null ? '' : `<span class="delta ${Math.abs(d) < 1 ? 'flat' : d > 0 ? 'up' : 'down'}">${Math.abs(d) < 1 ? '=' : (d > 0 ? '+' : '') + d + ' p.p.'}</span>`}</td>${upto && upto >= START ? `<td>${(() => { const F = forca(d2 => hv(id, d2).v, upto).f; return F == null ? '–' : Math.round(F * 100) + '%'; })()}</td>` : upto ? '<td>–</td>' : ''}</tr>`;
     }).join('')}</table></div>`;
   }
+  function reflList(a, b) {
+    const ds = rangeDays(a < START ? START : a, b).filter(d => { const r = day(d).n && day(d).n.reflexao; return r && r.r; }).reverse();
+    return `<div class="card"><h3>💭 Reflexões do período <small style="color:var(--muted);font-weight:500">${ds.length} resposta${ds.length === 1 ? '' : 's'}</small></h3>
+      ${ds.length ? `<ul class="ins">${ds.map(d => { const r = day(d).n.reflexao; return `<li><span class="e">${(THEMES.find(t => t[0] === r.t) || [, '💭'])[1]}</span><span><b>${DOW[ymd(d).getDay()]}, ${fd(ymd(d))} · ${esc(r.q)}</b><br>${esc(r.r)}</span></li>`; }).join('')}</ul>` : '<p class="q" style="margin:6px 0 0">Nenhuma pergunta do dia respondida neste período.</p>'}</div>`;
+  }
   function qBlock(t, k) {
     if (!RQ[t]) return '';
     const r = revOf(t, k);
@@ -3367,9 +3385,10 @@ desempenho  = dormido / necessidade`)}`;
         <tr><td>👟 Passos</td><td>${x.steps != null ? nf(x.steps) : '–'}</td></tr><tr><td>🏋️ Treinos</td><td>${actsOn(k).map(a => typeOf(a) + (a.sport === 'bjj' && a.rpe != null ? ' (nota ' + nf(a.rpe) + ')' : '')).join(', ') || '–'}</td></tr>
         ${d.med ? `<tr><td>⚖️ Medidas</td><td>${MEDS.filter(([kk]) => d.med[kk] != null).map(([kk, l, u]) => `${l} ${nf(d.med[kk], 1)} ${u}`).join(' · ')}</td></tr>` : ''}
       </table>${sl && sl.total ? `<p class="read rv-cmp">🛌 <b>Você × relógio:</b> ${m.sono ? `você deu <b>${m.sono}/5</b> para a noite` : 'sem nota sua para a noite'}; o relógio mediu <b>${hm(sl.total)}</b>${sl.deep != null ? `, profundo <b>${nf(sl.deep / sl.total * 100)}%</b> (seu normal ${nf(DEEP_MED)}%)` : ''}${(sl.noite && sl.noite.fcMin) || x.hrMin ? `, FC mínima ${sl.noite && sl.noite.fcMin ? 'no sono' : 'do dia'} <b>${(sl.noite && sl.noite.fcMin) || x.hrMin} bpm</b>${sl.noite && sl.noite.bbRecarga != null ? `, recarga de <b>${sl.noite.bbRecarga > 0 ? '+' : ''}${sl.noite.bbRecarga}</b> no Body Battery` : ''}` : ''}.</p>` : ''}${m.intencao ? `<p class="read" style="margin-top:8px">🎯 <b>Intenção:</b> ${esc(m.intencao)}</p>` : ''}
-      ${rf.r ? `<p class="read" style="margin-top:6px">💭 <b>${esc(rf.q)}</b><br>${esc(rf.r)}</p>` : ''}</div>
+      </div>
       <div class="card"><h3>Hábitos</h3><div class="dj-habs">${habitsActive().map(([id, h]) => { const v = hv(id, k).v; return `<div class="dj-hab ${v ? 'dj-tog done' : ''}"><span class="dj-hi">${h.i}</span><span class="dj-hn">${esc(h.n)}</span><span class="dj-tick">${tick(v)}</span></div>`; }).join('')}</div>
-        <button type="button" class="chip" id="rvEdit" style="margin-top:10px">✍️ Editar este dia</button></div></div>`;
+        <button type="button" class="chip" id="rvEdit" style="margin-top:10px">✍️ Editar este dia</button></div></div>
+      <div class="card rv-refl"><h3>💭 Reflexão do dia</h3>${rf.r ? `<p class="dj-q" style="margin:6px 0 4px">${(THEMES.find(t => t[0] === rf.t) || [, '💭'])[1]} ${esc(rf.q)}</p><p class="read" style="margin:0">${esc(rf.r)}</p>` : rf.pulada ? '<p class="q" style="margin:6px 0 0">Pergunta pulada neste dia.</p>' : '<p class="q" style="margin:6px 0 0">Sem resposta neste dia. Use ✍️ Editar este dia para responder.</p>'}</div>`;
   }
   function cmpPreset(k) {
     const t = REAL(), td = ymd(t);
@@ -3421,6 +3440,7 @@ desempenho  = dormido / necessidade`)}`;
         <div class="card"><h3>Resumo × ${labB.toLowerCase()}</h3>${P.b > t ? `<p class="q">Período em andamento: comparado com os mesmos ${el} primeiros dias do anterior.</p>` : ''}${cmpTable(A, B, 'Período', labB)}${goals}</div>
         <div class="card"><h3>Hábitos no período</h3>${habTable(A, B, RV_O.forca ? (end < iso(addD(ymd(REAL()), -1)) ? end : iso(addD(ymd(REAL()), -1))) : null)}<h3 style="margin-top:12px">Destaques</h3>${highlights(A, B) || '<p class="q">Sem registros de hábitos no período.</p>'}</div></div>
         ${rv.t === 'mes' ? monthHeat(P) : rv.t === 'ano' ? yearTable(+rv.k) : ''}
+        ${reflList(P.a, end)}
         ${qBlock(rv.t, rv.k)}`;
     }
     RV_T.innerHTML = head + nav + `<div class="rv-body">${body}</div>`;
@@ -3628,7 +3648,7 @@ desempenho  = dormido / necessidade`)}`;
   window.__diarioErr = msg => { $('#djBody').insertAdjacentHTML('afterbegin', `<div class="card" style="border-color:#D43F55;margin-bottom:10px">⚠️ ${esc(msg)}</div>`); };
   window.__DJ = {START, REAL, ymd, sunday, rangeDays, esc, clampN, cfg, day, habitsActive, goalsList, hv, hvRaw, stepsOpen, inRange, exerciseDay, goalDay, goalWeek, adherence, put,
     analyze, renderEvo, renderConfig, medWeeks, MEDS, navy, EMO, tick, DEF, alvoOf, exAlvo, evoItems, EXR, WLAB, pesos, actsOn, discCards, forca, PERS, perOfH, actionOf, effLine,
-    getDB: () => DB, setCfg: c => { CFG = c; }, stats, pendingReviews, perOf, revOf, RTN, renderRevisoes, setRv: o => { rv = o; }, getRv: () => rv, rate, question, THEMES};
+    wakeInfo, wakeTxt, getDB: () => DB, setCfg: c => { CFG = c; }, stats, pendingReviews, perOf, revOf, RTN, renderRevisoes, setRv: o => { rv = o; }, getRv: () => rv, rate, question, THEMES};
   window.__djRefresh = () => { if (!busy()) { show(sub); renderHeader(); } };
   show('hoje'); renderHeader();
 })();
@@ -3734,6 +3754,7 @@ desempenho  = dormido / necessidade`)}`;
       const fchip = F == null ? '' : `<span class="nt-f" style="--fc:${forcaCol(F, ap)}" title="Força do hábito">${Math.round(F * 100)}%</span>`;
       let sub = '';
       if (h.rule === 'steps') { const sp = x.steps, tg = h.target || 6000; sub = sp != null ? `${r.open ? '⏳ ' : r.how === 'ajuste' ? '✋ ' : ''}${nf(sp)} de ${nf(tg)} (${nf(sp / tg * 100)}%)` : 'sem passos registrados'; }
+      else if (h.rule === 'wake') sub = `${r.how === 'ajuste' ? '✋ ' : '🤖 '}${DJ.wakeTxt(ds, h)}`;
       else if (h.src === 'auto') sub = r.how === 'ajuste' ? '✋ ajustado' : '🤖 Garmin';
       if (h.rule === 'water') {
         const l = d.agua || 0;
@@ -3763,8 +3784,9 @@ desempenho  = dormido / necessidade`)}`;
     const a30 = DJ.adherence(iso(addD(ymd(today), -29)) < START ? START : iso(addD(ymd(today), -29)), today).per;
     const cell = (id, h, d) => {
       const fut = d > today || d < START, r = fut ? {} : DJ.hv(id, d), sp = h.rule === 'steps' && dayMap[d] ? dayMap[d].steps : null;
-      const k = sp != null ? `<i>${sp >= 10000 ? nf(sp / 1000, 0) : nf(sp / 1000, 1)}k</i>` : '';
-      return `<td><button type="button" class="dj-cell ${fut ? '' : r.open ? 'op' : r.v === true ? 'y' : 'n'} ${!fut && r.how === 'ajuste' ? 'aj' : ''}" ${fut ? 'disabled' : ''} data-cell="${id}|${d}" title="${sp != null ? nf(sp) + ' de ' + nf(h.target || 6000) + ' passos' : ''}" aria-label="${esc(h.n)} em ${d}">${fut ? '' : r.open ? '⏳' : r.v === true ? '✓' : '✕'}${fut ? '' : k}</button></td>`;
+      const wk = h.rule === 'wake' ? DJ.wakeInfo(d) : null;
+      const k = sp != null ? `<i>${sp >= 10000 ? nf(sp / 1000, 0) : nf(sp / 1000, 1)}k</i>` : wk ? `<i>${wk.t}</i>` : '';
+      return `<td><button type="button" class="dj-cell ${fut ? '' : r.open ? 'op' : r.v === true ? 'y' : 'n'} ${!fut && r.how === 'ajuste' ? 'aj' : ''}" ${fut ? 'disabled' : ''} data-cell="${id}|${d}" title="${sp != null ? nf(sp) + ' de ' + nf(h.target || 6000) + ' passos' : wk ? DJ.wakeTxt(d, h) : ''}" aria-label="${esc(h.n)} em ${d}">${fut ? '' : r.open ? '⏳' : r.v === true ? '✓' : '✕'}${fut ? '' : k}</button></td>`;
     };
     const frow = (F, ap) => F == null ? '–' : `<span class="nt-f" style="--fc:${forcaCol(F, ap)}">${Math.round(F * 100)}%</span>`;
     const rows = DJ.PERS.map(([k, l]) => {
@@ -3779,7 +3801,7 @@ desempenho  = dormido / necessidade`)}`;
     const exRow = ex ? `<tr class="nt-gh"><th colspan="${ds.length + 3}">Resumo</th></tr><tr><th scope="row"><span class="dj-hi">🏋️</span> Exercício <small class="dj-src">dias com treino</small></th>${ds.map(d => { const fut = d > today || d < START; const v = fut ? null : DJ.exerciseDay(d); return `<td><span class="dj-cell ${fut ? '' : v ? 'y' : 'n'}" style="display:inline-grid;place-items:center;cursor:default;${fut ? 'opacity:.25' : ''}">${fut ? '' : v ? '✓' : '✕'}</span></td>`; }).join('')}
       <td class="num">${(() => { const v = DJ.rangeDays(iso(addD(ymd(today), -29)) < START ? START : iso(addD(ymd(today), -29)), today).map(ex.val).filter(z => z != null); return v.length ? Math.round(v.filter(Boolean).length / v.length * 100) + '%' : '–'; })()}</td><td>${frow(exF, ex.alvo / 7)}</td></tr>` : '';
     const ad = DJ.adherence(wS < START ? START : wS, ds[6] > today ? today : ds[6]);
-    B.innerHTML = `<div class="card"><div class="head"><div><h3>Hábitos da semana</h3><p class="q">Toque para alternar ✓/✕ (dias passados desde ${fdy(ymd(START))}). 👟 Passos mostram o total do dia. Colunas: cumprimento nos últimos 30 dias e força atual.</p></div>
+    B.innerHTML = `<div class="card"><div class="head"><div><h3>Hábitos da semana</h3><p class="q">Toque para alternar ✓/✕ (dias passados desde ${fdy(ymd(START))}). 👟 Passos mostram o total do dia e ⏰ o horário em que você acordou. Colunas: cumprimento nos últimos 30 dias e força atual.</p></div>
       <div class="dj-nav"><button type="button" class="chip" data-wk="-1" ${prevOk ? '' : 'disabled'} aria-label="semana anterior">‹</button><b>${fd(ymd(wS))} – ${fd(ymd(ds[6]))}</b><button type="button" class="chip" data-wk="1" ${nextOk ? '' : 'disabled'} aria-label="próxima semana">›</button><span class="dj-save" aria-live="polite"></span></div></div>
       <div class="tablewrap"><table class="dj-grid nt-grid"><thead><tr><th></th>${ds.map(d => `<th>${DOW[ymd(d).getDay()]}<br><span class="num">${ymd(d).getDate()}</span></th>`).join('')}<th title="Cumprimento nos últimos 30 dias">30 d</th><th title="Força do hábito">Força</th></tr></thead>
       <tbody>${rows}${exRow}</tbody></table></div>
@@ -4086,7 +4108,8 @@ desempenho  = dormido / necessidade`)}`;
   try { const s = JSON.parse(sessionStorage.getItem('ntState2') || '{}'); if (s.rv) st.rv = s.rv; if (s.hjAll) st.hjAll = true; } catch (e) {}
   const saveSt2 = () => { try { sessionStorage.setItem('ntState2', JSON.stringify({rv: st.rv, hjAll: st.hjAll})); } catch (e) {} };
   const goHoje = ds => { st.hjDay = ds; window.__showTab && window.__showTab('hoje'); window.scrollTo(0, 0); };
-  const goReview = (t, k) => { st.rv = t; saveSt2(); DJ.setRv({t, k}); window.__showTab && window.__showTab('revisoes'); };
+  let rvFresh = false, rvKeep = false;
+  const goReview = (t, k) => { st.rv = t; saveSt2(); DJ.setRv({t, k}); rvKeep = true; window.__showTab && window.__showTab('revisoes'); };
   function rvData() {
     const today = REAL(), wS = iso(DJ.sunday(new Date())), nd = DJ.rangeDays(wS, today).length;
     const pwS = iso(addD(ymd(wS), -7)), pwE = iso(addD(ymd(pwS), nd - 1));
@@ -4167,6 +4190,7 @@ desempenho  = dormido / necessidade`)}`;
     $('#rvTop2').querySelectorAll('[data-rvgo]').forEach(b => b.onclick = () => { const [t, k] = b.dataset.rvgo.split('|'); goReview(t, k); });
     $('#rvNav2').innerHTML = subNav([['dia', '🗓️ Dia'], ['sem', '📅 Semana'], ['mes', '🗓 Mês'], ['ano', '📆 Ano'], ['cmp', '⚖️ Comparar'], ['check', '🩺 Check-up']], st.rv);
     $('#rvNav2').querySelectorAll('[data-k]').forEach(b => b.onclick = () => { st.rv = b.dataset.k; saveSt2(); if (st.rv !== 'check') DJ.setRv({t: st.rv, k: null}); renderRev(); });
+    if (rvFresh) { rvFresh = false; if (st.rv !== 'check' && !rvKeep) DJ.setRv({t: st.rv, k: null}); rvKeep = false; }
     if (st.rv === 'check') rvCheck(B);
     else { if (DJ.getRv().t !== st.rv) DJ.setRv({t: st.rv, k: null}); DJ.renderRevisoes(B, {noHead: true, forca: true, edit: goHoje, again: renderRev}); }
     $('#rvDisc2').innerHTML = rvDisc(S);
@@ -4224,10 +4248,16 @@ desempenho  = dormido / necessidade`)}`;
         <span class="dj-water"><button type="button" data-water="-0.5" aria-label="menos meio litro">−</button><b>${nf(l, 1)} L</b><button type="button" data-water="0.5" aria-label="mais meio litro">+</button></span>${fc}<span class="dj-tick">${DJ.tick(r.v)}</span></div>`; }
     let sub = '';
     if (h.rule === 'steps') sub = x.steps != null ? `${r.open ? '⏳ ' : ''}${nf(x.steps)} de ${nf(h.target || 6000)} (${nf(x.steps / (h.target || 6000) * 100)}%)` : 'sem passos ainda';
+    else if (h.rule === 'wake') sub = `${r.how === 'ajuste' ? '✋ ' : '🤖 '}${DJ.wakeTxt(ds, h)}`;
     else if (h.src === 'auto') sub = r.how === 'ajuste' ? '✋ ajustado' : '🤖 Garmin';
     return `<button type="button" class="nt-hab ${r.v ? 'done' : ''} ${r.open ? 'open' : ''}" data-hab="${id}" aria-pressed="${!!r.v}"><span class="dj-hi">${h.i}</span><span class="dj-hn">${esc(h.n)}${sub ? `<small>${sub}</small>` : ''}</span>${fc}<span class="dj-tick">${r.open ? '⏳' : DJ.tick(r.v)}</span></button>`;
   }
   const habsOf = (H, per) => H.res.filter(o => DJ.perOfH(o.id, o.h) === per);
+  let reflT = null, reflPend = null;
+  const flushRefl = () => { if (reflPend) { const f = reflPend; reflPend = null; f(); } };
+  document.addEventListener('visibilitychange', () => { if (document.hidden) flushRefl(); });
+  window.addEventListener('pagehide', flushRefl);
+  document.getElementById('tabs').addEventListener('pointerdown', flushRefl, true);
   function blkManha(H) {
     const {ds, d, sl, r} = H, m = d.m || {}, med = d.med || {}, N = (sl && sl.noite) || {}, sunday = ymd(ds).getDay() === 0, hasCm = DJ.MEDS.slice(1).some(([k]) => med[k] != null);
     const inp = ([k, l, u, a, b, s]) => `<label><span>${l} (${u})</span><input type="number" inputmode="decimal" min="${a}" max="${b}" step="${s}" data-med="${k}" value="${med[k] ?? ''}" placeholder="–"></label>`;
@@ -4268,7 +4298,8 @@ desempenho  = dormido / necessidade`)}`;
         ${DJ.rate('dias/' + ds + '/n/estresse', 'estresse', n.estresse, 'Estresse percebido')}
         <div class="dj-refl"><div class="dj-rh"><span class="vchip" style="background:var(--soft)">${q.i} ${esc(q.t)}</span>
           <span><button type="button" class="dj-link" data-q="next">Outra pergunta</button> · <button type="button" class="dj-link" data-q="skip">${refl.pulada ? 'Desfazer pular' : 'Pular'}</button></span></div>
-          ${refl.pulada ? '<p class="q" style="margin:6px 0 0">Pergunta pulada hoje.</p>' : `<p class="dj-q">${esc(q.q)}</p><textarea maxlength="280" rows="2" data-refl="1" placeholder="Resposta curta (até 280 caracteres)">${esc(refl.r)}</textarea>`}</div></div>
+          ${refl.pulada ? '<p class="q" style="margin:6px 0 0">Pergunta pulada hoje.</p>' : `<p class="dj-q">${esc(q.q)}</p><textarea maxlength="280" rows="3" data-refl="1" placeholder="Resposta curta (até 280 caracteres)">${esc(refl.r)}</textarea>
+          <div class="hj-rs"><button type="button" class="chip on" id="hjReflSave">Salvar resposta</button><span id="hjReflSt" aria-live="polite">${refl.r ? `✓ resposta salva${refl.at ? ' às ' + (() => { const t = new Date(refl.at); return String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0'); })() : ''} · aparece em 📊 Revisões › Dia` : ''}</span></div>`}</div></div>
       ${hb.length ? `<div class="card"><h3>Hábitos da noite <small class="hj-c">${hb.filter(o => o.r.v === true).length}/${hb.length}</small></h3><div class="nt-habs">${hb.map(o => hjHab(o, H)).join('')}</div></div>` : ''}
       <div class="card hj-close ${H.fechado ? 'on' : ''}"><h3>${H.fechado ? '✅ Dia fechado' : '🔒 Fechar o dia'}</h3>
         <div class="hj-sum"><div><b class="num">${H.done.length}</b><span>de ${H.res.length} hábitos</span></div><div><b class="num">${pc(H.res.length ? H.done.length / H.res.length : null)}</b><span>do dia</span></div><div><b class="num" style="color:${F1 != null && F0 != null && F1 >= F0 ? COL.ok : COL.bad}">${F1 != null && F0 != null ? (F1 >= F0 ? '+' : '−') + nf(Math.abs(F1 - F0) * 100, 1) : '–'}</b><span>p.p. na força média</span></div></div>
@@ -4303,16 +4334,28 @@ desempenho  = dormido / necessidade`)}`;
       i.setCustomValidity(''); DJ.put(`dias/${ds}/med/${k}`, v); stamp('m');
     });
     B.querySelectorAll('[data-txt]').forEach(i => i.onchange = () => { DJ.put(i.dataset.txt, i.value.trim() || null); stamp('m'); });
-    const ta = B.querySelector('[data-refl]'); let tt;
-    const saveRefl = () => { const d = DJ.day(ds), cur = (d.n && d.n.reflexao) || {}, q = DJ.question(ds, cur.s || 0);
-      DJ.put(`dias/${ds}/n/reflexao`, ta.value.trim() ? {t: cur.t || q.t, q: cur.q || q.q, r: ta.value.trim(), s: cur.s || 0} : (cur.s ? {s: cur.s} : null)); stamp('n'); };
-    if (ta) { ta.oninput = () => { clearTimeout(tt); tt = setTimeout(saveRefl, 900); }; ta.onchange = () => { clearTimeout(tt); saveRefl(); }; }
+    const ta = B.querySelector('[data-refl]'), rst = B.querySelector('#hjReflSt');
+    const saveRefl = () => {
+      if (!ta || !ta.isConnected) return; clearTimeout(reflT); reflPend = null;
+      const v = ta.value.trim(), d = DJ.day(ds), cur = (d.n && d.n.reflexao) || {};
+      if (v === (cur.r || '')) return;
+      const q = cur.q ? {t: cur.t, q: cur.q} : DJ.question(ds, cur.s || 0), at = Date.now();
+      DJ.put(`dias/${ds}/n/reflexao`, v ? {t: q.t, q: q.q, r: v, s: cur.s || 0, at} : (cur.s ? {s: cur.s} : null)); stamp('n');
+      if (rst) rst.textContent = v ? `✓ resposta salva às ${String(new Date(at).getHours()).padStart(2, '0')}:${String(new Date(at).getMinutes()).padStart(2, '0')} · aparece em 📊 Revisões › Dia` : 'resposta apagada';
+    };
+    if (ta) {
+      ta.oninput = () => { if (rst) rst.textContent = 'digitando… (salva sozinho)'; clearTimeout(reflT); reflPend = saveRefl; reflT = setTimeout(saveRefl, 600); };
+      ta.onchange = ta.onblur = saveRefl;
+      const bs = B.querySelector('#hjReflSave'); if (bs) bs.onclick = saveRefl;
+    }
     B.querySelectorAll('[data-q]').forEach(b => b.onclick = () => { const d = DJ.day(ds), cur = (d.n && d.n.reflexao) || {};
       if (b.dataset.q === 'skip') DJ.put(`dias/${ds}/n/reflexao`, cur.pulada ? null : {pulada: true, s: cur.s || 0}); else DJ.put(`dias/${ds}/n/reflexao`, {s: (cur.s || 0) + 1}); renderHoje(); });
     const cl = B.querySelector('#hjClose'); if (cl) cl.onclick = () => { DJ.put(`dias/${ds}/fechado`, H.fechado ? null : Date.now()); renderHoje(); };
   }
+  let hjLastReal = REAL();
   function renderHoje() {
     const T = document.getElementById('tab-hoje'); if (!T || T.hidden) return;
+    if (REAL() !== hjLastReal) { if (st.hjDay === hjLastReal) st.hjDay = REAL(); hjLastReal = REAL(); }
     const B = $('#hjBody'); purge(T);
     if (st.hjDay < START) st.hjDay = START; if (st.hjDay > REAL()) st.hjDay = REAL();
     const H = hjData(st.hjDay), all = st.hjAll || !H.isToday;
@@ -4340,7 +4383,7 @@ desempenho  = dormido / necessidade`)}`;
     if (visible('tab-revisoes') && !busyIn($('#tab-revisoes'))) renderRev();
   };
   (window.__djL = window.__djL || []).push(rerender);
-  window.__onTab = t => { if (t === 'habitos') renderHab(); else if (t === 'corpo') renderCorpo(); else if (t === 'hoje') renderHoje(); else if (t === 'revisoes') renderRev(); else if (t === 'diario' && window.__djRefresh) window.__djRefresh(); };
+  window.__onTab = t => { if (t === 'habitos') renderHab(); else if (t === 'corpo') renderCorpo(); else if (t === 'hoje') renderHoje(); else if (t === 'revisoes') { rvFresh = true; renderRev(); } else if (t === 'diario' && window.__djRefresh) window.__djRefresh(); };
   { const h = location.hash.slice(1), t = h === 'recuperacao' ? 'rss' : ['hoje', 'habitos', 'corpo', 'revisoes', 'diario', 'saude'].includes(h) ? h : 'hoje'; window.__showTab && window.__showTab(t); }
   window.__nt = {renderHab, renderCorpo, renderHoje, renderRev, st};
 })();
