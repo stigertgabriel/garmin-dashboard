@@ -562,6 +562,25 @@ button.nt-hab:hover{border-color:var(--ink2)}
 .nt-meds{grid-template-columns:repeat(5,minmax(0,1fr))}
 @media (max-width:900px){.nt-pers{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:640px){.tab-sep{display:none}.nt-grid .dj-cell{width:32px}}
+/* ===== v15 · Hoje e Revisões ===== */
+.hj-nav{margin:2px 0 10px}
+.hj-mom{background:#EEF1FC;color:#2346B8}
+.hj-blk{margin-top:6px}
+.hj-blk+.hj-blk{margin-top:16px}
+.hj-h{margin:0 0 8px}
+.hj-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:start}
+.hj-c{font:600 12px var(--mono);color:var(--muted);float:right}
+.hj-g .kpi .v{font-size:22px}
+.hj-close.on{background:#E6F5EF;border-color:#BFE6D7}
+.hj-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:6px 0}
+.hj-sum>div{background:var(--bg);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column}
+.hj-sum b{font-size:20px}.hj-sum span{font-size:11px;color:var(--muted)}
+.hj-close.on .hj-sum>div{background:#fff}
+.nt-link{border:0;background:none;color:var(--str);font:600 inherit;font-size:inherit;cursor:pointer;padding:0;text-align:left}
+.nt-link:hover{text-decoration:underline}
+#tab-hoje .dj-rate,#tab-hoje .dj-meds{margin-top:4px}
+@media (max-width:1000px){.hj-g{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media (max-width:640px){.hj-g{grid-template-columns:minmax(0,1fr)}.hj-sum b{font-size:17px}}
 </style>
 </head>
 <body>
@@ -591,18 +610,22 @@ button.nt-hab:hover{border-color:var(--ink2)}
     <button class="pill btn" id="outBtn" type="button">Sair</button>
   </div>
 </header>
-<div id="minto" aria-live="polite"></div>
+<div id="minto" aria-live="polite" hidden></div>
 <nav class="tabs" id="tabs">
+  <button class="tab nt on" data-tab="hoje" type="button">☀️ Hoje</button>
   <button class="tab nt" data-tab="habitos" type="button">✅ Hábitos</button>
   <button class="tab nt" data-tab="corpo" type="button">📈 Corpo</button>
+  <button class="tab nt" data-tab="revisoes" type="button">📊 Revisões</button>
   <span class="tab-sep" aria-hidden="true">versão atual</span>
-  <button class="tab on" data-tab="diario" type="button">📓 Diário</button>
+  <button class="tab" data-tab="diario" type="button">📓 Diário</button>
   <button class="tab" data-tab="saude" type="button">🩺 Saúde e treino</button>
   <button class="tab" data-tab="rss" type="button">⚡ Recuperação · Esforço · Sono</button>
 </nav>
+<div id="tab-hoje"><div id="hjTop"></div><div id="hjNav"></div><div id="hjBody"></div><div id="hjDisc"></div></div>
+<div id="tab-revisoes" hidden><div id="rvTop2"></div><div id="rvNav2"></div><div id="rvBody2"></div><div id="rvDisc2"></div></div>
 <div id="tab-habitos" hidden><div id="hbTop"></div><div id="hbNav"></div><div id="hbBody"></div><div id="hbDisc"></div></div>
 <div id="tab-corpo" hidden><div id="cpTop"></div><div id="cpNav"></div><div id="cpBody"></div><div id="cpDisc"></div></div>
-<div id="tab-diario">
+<div id="tab-diario" hidden>
   <nav class="subtabs" id="djSubs" aria-label="Diário"><button type="button" data-dj="hoje">✍️ Hoje</button><button type="button" data-dj="habitos">✅ Hábitos</button><button type="button" data-dj="medidas">📏 Medidas</button><button type="button" data-dj="revisoes">📊 Revisões</button><button type="button" data-dj="config">⚙️ Configurar</button></nav>
   <div id="djBody"></div>
 </div>
@@ -800,7 +823,7 @@ button.nt-hab:hover{border-color:var(--ink2)}
 
 <script>
 /* =====================================================================
-   Núcleo de dados · Diário de Treino v13
+   Núcleo de dados · Diário de Treino v15
    Converte o banco do Firebase (Garmin Personal API) no formato do
    dashboard original e recalcula Recuperação · Esforço · Sono e as
    Descobertas, com as mesmas fórmulas documentadas na tela.
@@ -2409,18 +2432,17 @@ function ringSVG(frac, color, big, small, dark = true) {
   let built = false;
   const show = t => {
     tabs.forEach(b => b.classList.toggle('on', b.dataset.tab === t));
-    ['saude', 'rss', 'diario', 'habitos', 'corpo'].forEach(k => { $('#tab-' + k).hidden = t !== k; });
-    const novo = t === 'habitos' || t === 'corpo'; $('#minto').hidden = novo;
+    ['saude', 'rss', 'diario', 'habitos', 'corpo', 'hoje', 'revisoes'].forEach(k => { $('#tab-' + k).hidden = t !== k; });
+    const novo = ['habitos', 'corpo', 'hoje', 'revisoes'].includes(t); $('#minto').hidden = novo;
     document.documentElement.style.setProperty('--mh', novo ? '0px' : $('#minto').offsetHeight + 'px');
     if (window.__onTab) window.__onTab(t);
     if (t === 'rss' && !built) { built = true; build(); }
     setTimeout(() => CHARTS.forEach(([b, o]) => { if (b.offsetParent) drawChart(b, o); }), 0);
-    try { history.replaceState(null, '', t === 'rss' ? '#recuperacao' : t === 'diario' ? '#' : '#' + t); } catch (e) {}
+    try { history.replaceState(null, '', t === 'rss' ? '#recuperacao' : t === 'hoje' ? '#' : '#' + t); } catch (e) {}
   };
   tabs.forEach(b => b.onclick = () => show(b.dataset.tab));
   window.__showTab = show;
   if (!R || !R.days || !R.days.length) { $('#rssBody').innerHTML = '<div class="card empty">Sem dados brutos ainda. Rode o refresh.</div>'; return; }
-  if (location.hash === '#recuperacao') show('rss'); else if (location.hash === '#saude') show('saude');
 
   function build() {
     const days = R.days, last = days.length - 1;
@@ -3304,11 +3326,11 @@ desempenho  = dormido / necessidade`)}`;
     if (ch.length && ch[ch.length - 1].d <= -0.1) li.push(`📉 Maior queda: <b>${esc(ch[ch.length - 1].h.n)}</b> (${Math.round(ch[ch.length - 1].d * 100)} p.p.)`);
     return `<ul class="ins">${li.map(x => `<li><span>${x}</span></li>`).join('')}</ul>`;
   }
-  function habTable(A, B) {
-    return `<div class="tablewrap"><table class="tin rv-t"><tr><th>Hábito</th><th>Período</th><th>Anterior</th><th>Δ</th></tr>${habitsActive().map(([id, h]) => {
+  function habTable(A, B, upto) {
+    return `<div class="tablewrap"><table class="tin rv-t"><tr><th>Hábito</th><th>Período</th><th>Anterior</th><th>Δ</th>${upto ? '<th>Força</th>' : ''}</tr>${habitsActive().map(([id, h]) => {
       const a = A.per[id], b = B.per[id], pa = a && a.tot ? a.ok / a.tot : null, pb = b && b.tot ? b.ok / b.tot : null;
       const d = pa != null && pb != null ? Math.round((pa - pb) * 100) : null;
-      return `<tr><td>${h.i} ${esc(h.n)}</td><td>${pa == null ? '–' : Math.round(pa * 100) + '% <small style="color:var(--muted)">' + a.ok + '/' + a.tot + '</small>'}</td><td>${pb == null ? '–' : Math.round(pb * 100) + '%'}</td><td>${d == null ? '' : `<span class="delta ${Math.abs(d) < 1 ? 'flat' : d > 0 ? 'up' : 'down'}">${Math.abs(d) < 1 ? '=' : (d > 0 ? '+' : '') + d + ' p.p.'}</span>`}</td></tr>`;
+      return `<tr><td>${h.i} ${esc(h.n)}</td><td>${pa == null ? '–' : Math.round(pa * 100) + '% <small style="color:var(--muted)">' + a.ok + '/' + a.tot + '</small>'}</td><td>${pb == null ? '–' : Math.round(pb * 100) + '%'}</td><td>${d == null ? '' : `<span class="delta ${Math.abs(d) < 1 ? 'flat' : d > 0 ? 'up' : 'down'}">${Math.abs(d) < 1 ? '=' : (d > 0 ? '+' : '') + d + ' p.p.'}</span>`}</td>${upto && upto >= START ? `<td>${(() => { const F = forca(d2 => hv(id, d2).v, upto).f; return F == null ? '–' : Math.round(F * 100) + '%'; })()}</td>` : upto ? '<td>–</td>' : ''}</tr>`;
     }).join('')}</table></div>`;
   }
   function qBlock(t, k) {
@@ -3357,29 +3379,32 @@ desempenho  = dormido / necessidade`)}`;
     if (k === 'mesant') { const pa = new Date(td.getFullYear(), td.getMonth() - 1, 1), pe = new Date(td.getFullYear(), td.getMonth(), 0), qa = new Date(td.getFullYear(), td.getMonth() - 2, 1), qe = new Date(td.getFullYear(), td.getMonth() - 1, 0); return [iso(pa), iso(pe), iso(qa), iso(qe)]; }
     return [iso(addD(td, -29)), t, iso(addD(td, -59)), iso(addD(td, -30))];
   }
+  let RV_T = null, RV_O = {};
+  const rvAgain = () => RV_O.again ? RV_O.again() : renderRevisoes(RV_T, RV_O);
   function renderCmp(head) {
     if (!CP) CP = {p: 'sem', r: cmpPreset('sem')};
     const [a1, a2, b1, b2] = CP.r, A = stats(a1, a2), B = stats(b1, b2);
     const lab = (x, y) => `${fd(ymd(x))} – ${fd(ymd(y))}`;
-    $('#djBody').innerHTML = head + `<div class="card"><h3>Comparar períodos</h3><p class="q">Escolha um atalho ou ajuste as datas. Contagens (dias com exercício, Jiu-Jitsu) dependem do tamanho de cada período.</p>
+    RV_T.innerHTML = head + `<div class="card"><h3>Comparar períodos</h3><p class="q">Escolha um atalho ou ajuste as datas. Contagens (dias com exercício, Jiu-Jitsu) dependem do tamanho de cada período.</p>
       <div class="ctrls" style="margin-bottom:8px">${[['sem', 'Esta semana × anterior'], ['mes', 'Este mês × anterior (mesmos dias)'], ['mesant', 'Mês passado × retrasado'], ['30', '30 dias × 30 anteriores']].map(([k, l]) => `<button type="button" class="chip ${CP.p === k ? 'on' : ''}" data-cp="${k}">${l}</button>`).join('')}</div>
       <div class="dj-params rv-dates"><label>Período A · início<input type="date" data-cr="0" value="${a1}"></label><label>Período A · fim<input type="date" data-cr="1" value="${a2}"></label>
         <label>Período B · início<input type="date" data-cr="2" value="${b1}"></label><label>Período B · fim<input type="date" data-cr="3" value="${b2}"></label></div>
       <div class="grid g2" style="margin-top:10px"><div>${cmpTable(A, B, 'A · ' + lab(a1, a2), 'B · ' + lab(b1, b2))}</div><div>${habTable(A, B)}${highlights(A, B)}</div></div></div>`;
-    $('#djBody').querySelectorAll('[data-cp]').forEach(b => b.onclick = () => { CP = {p: b.dataset.cp, r: cmpPreset(b.dataset.cp)}; renderRevisoes(); });
-    $('#djBody').querySelectorAll('[data-cr]').forEach(i => i.onchange = () => { if (!i.value) return; CP.r[+i.dataset.cr] = i.value; CP.p = null; if (CP.r[0] > CP.r[1]) CP.r[1] = CP.r[0]; if (CP.r[2] > CP.r[3]) CP.r[3] = CP.r[2]; renderRevisoes(); });
+    RV_T.querySelectorAll('[data-cp]').forEach(b => b.onclick = () => { CP = {p: b.dataset.cp, r: cmpPreset(b.dataset.cp)}; rvAgain(); });
+    RV_T.querySelectorAll('[data-cr]').forEach(i => i.onchange = () => { if (!i.value) return; CP.r[+i.dataset.cr] = i.value; CP.p = null; if (CP.r[0] > CP.r[1]) CP.r[1] = CP.r[0]; if (CP.r[2] > CP.r[3]) CP.r[3] = CP.r[2]; rvAgain(); });
   }
-  function renderRevisoes() {
+  function renderRevisoes(T = $('#djBody'), opts = {}) {
+    RV_T = T; RV_O = opts;
     if (!rv.k) rv.k = defKey(rv.t);
     const pend = pendingReviews();
-    const head = `<div class="dj-nav"><div class="seg" id="rvT">${Object.entries(RT).map(([k, n]) => `<button type="button" data-rt="${k}" class="${rv.t === k ? 'on' : ''}">${n}</button>`).join('')}</div><span id="djSave" class="dj-save" aria-live="polite"></span></div>
+    const head = RV_O.noHead ? '' : `<div class="dj-nav"><div class="seg" id="rvT">${Object.entries(RT).map(([k, n]) => `<button type="button" data-rt="${k}" class="${rv.t === k ? 'on' : ''}">${n}</button>`).join('')}</div><span id="djSave" class="dj-save" aria-live="polite"></span></div>
       ${pend.length ? `<div class="rv-pend">${pend.map(p => `<button type="button" class="chip" data-go="${p.t}|${p.k}">📊 Revisão ${RTN[p.t]} pendente · ${perOf(p.t, p.k).lab}</button>`).join('')}</div>` : ''}`;
     const bindHead = () => {
-      $('#djBody').querySelectorAll('[data-rt]').forEach(b => b.onclick = () => { rv = {t: b.dataset.rt, k: null}; renderRevisoes(); });
-      $('#djBody').querySelectorAll('[data-go]').forEach(b => b.onclick = () => { const [t, k] = b.dataset.go.split('|'); rv = {t, k}; renderRevisoes(); });
+      RV_T.querySelectorAll('[data-rt]').forEach(b => b.onclick = () => { rv = {t: b.dataset.rt, k: null}; rvAgain(); });
+      RV_T.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { const [t, k] = b.dataset.go.split('|'); rv = {t, k}; rvAgain(); });
     };
     if (rv.t === 'cmp') { renderCmp(head); bindHead(); return; }
-    if (rv.t === 'evo') { renderEvo(head); bindHead(); return; }
+    if (rv.t === 'evo') { renderEvo(head, RV_T, rvAgain); bindHead(); return; }
     const P = perOf(rv.t, rv.k), PP = perOf(rv.t, P.prev), PN = perOf(rv.t, P.next), t = REAL();
     const canPrev = PP.b >= START, canNext = PN.a <= t;
     const nav = `<div class="dj-nav"><button type="button" class="chip" data-rk="${P.prev}" ${canPrev ? '' : 'disabled'} aria-label="período anterior">‹</button><b>${P.lab}</b>
@@ -3394,16 +3419,16 @@ desempenho  = dormido / necessidade`)}`;
         return `<div class="dj-goal"><div class="dj-gh"><b>${esc(g.n)}</b><span>${p.n}/${p.tgt}${g.per === 'week' ? ' na semana' : ' dias'}</span></div><div class="bar" style="margin-top:4px"><div style="width:${pct * 100}%;background:${pct >= 1 ? 'var(--walk)' : pct >= .6 ? '#C98A00' : 'var(--hr)'}"></div></div></div>`; }).join('')}` : '';
       body = `<div class="grid g2">
         <div class="card"><h3>Resumo × ${labB.toLowerCase()}</h3>${P.b > t ? `<p class="q">Período em andamento: comparado com os mesmos ${el} primeiros dias do anterior.</p>` : ''}${cmpTable(A, B, 'Período', labB)}${goals}</div>
-        <div class="card"><h3>Hábitos no período</h3>${habTable(A, B)}<h3 style="margin-top:12px">Destaques</h3>${highlights(A, B) || '<p class="q">Sem registros de hábitos no período.</p>'}</div></div>
+        <div class="card"><h3>Hábitos no período</h3>${habTable(A, B, RV_O.forca ? (end < iso(addD(ymd(REAL()), -1)) ? end : iso(addD(ymd(REAL()), -1))) : null)}<h3 style="margin-top:12px">Destaques</h3>${highlights(A, B) || '<p class="q">Sem registros de hábitos no período.</p>'}</div></div>
         ${rv.t === 'mes' ? monthHeat(P) : rv.t === 'ano' ? yearTable(+rv.k) : ''}
         ${qBlock(rv.t, rv.k)}`;
     }
-    $('#djBody').innerHTML = head + nav + `<div class="rv-body">${body}</div>`;
+    RV_T.innerHTML = head + nav + `<div class="rv-body">${body}</div>`;
     bindHead();
-    $('#djBody').querySelectorAll('[data-rk]').forEach(b => b.onclick = () => { rv.k = b.dataset.rk; renderRevisoes(); });
-    const ed = $('#rvEdit'); if (ed) ed.onclick = () => { selDay = rv.k; show('hoje'); };
+    RV_T.querySelectorAll('[data-rk]').forEach(b => b.onclick = () => { rv.k = b.dataset.rk; rvAgain(); });
+    const ed = RV_T.querySelector('#rvEdit'); if (ed) ed.onclick = () => { if (RV_O.edit) RV_O.edit(rv.k); else { selDay = rv.k; show('hoje'); } };
     let tq;
-    $('#djBody').querySelectorAll('[data-rq]').forEach(ta => {
+    RV_T.querySelectorAll('[data-rq]').forEach(ta => {
       const sv = () => {
         const base = `revisoes/${rv.t}/${rv.k}`, i = ta.dataset.rq, v = ta.value.trim();
         put(`${base}/q${i}`, v || null);
@@ -3603,7 +3628,7 @@ desempenho  = dormido / necessidade`)}`;
   window.__diarioErr = msg => { $('#djBody').insertAdjacentHTML('afterbegin', `<div class="card" style="border-color:#D43F55;margin-bottom:10px">⚠️ ${esc(msg)}</div>`); };
   window.__DJ = {START, REAL, ymd, sunday, rangeDays, esc, clampN, cfg, day, habitsActive, goalsList, hv, hvRaw, stepsOpen, inRange, exerciseDay, goalDay, goalWeek, adherence, put,
     analyze, renderEvo, renderConfig, medWeeks, MEDS, navy, EMO, tick, DEF, alvoOf, exAlvo, evoItems, EXR, WLAB, pesos, actsOn, discCards, forca, PERS, perOfH, actionOf, effLine,
-    getDB: () => DB, setCfg: c => { CFG = c; }};
+    getDB: () => DB, setCfg: c => { CFG = c; }, stats, pendingReviews, perOf, revOf, RTN, renderRevisoes, setRv: o => { rv = o; }, getRv: () => rv, rate, question, THEMES};
   window.__djRefresh = () => { if (!busy()) { show(sub); renderHeader(); } };
   show('hoje'); renderHeader();
 })();
@@ -4055,15 +4080,269 @@ desempenho  = dormido / necessidade`)}`;
     $('#cpDisc').innerHTML = cpDisc(S);
   }
 
+
+  /* ======================= v15 · 📊 REVISÕES ======================= */
+  st.rv = st.rv || 'sem'; st.hjDay = REAL(); st.hjAll = false;
+  try { const s = JSON.parse(sessionStorage.getItem('ntState2') || '{}'); if (s.rv) st.rv = s.rv; if (s.hjAll) st.hjAll = true; } catch (e) {}
+  const saveSt2 = () => { try { sessionStorage.setItem('ntState2', JSON.stringify({rv: st.rv, hjAll: st.hjAll})); } catch (e) {} };
+  const goHoje = ds => { st.hjDay = ds; window.__showTab && window.__showTab('hoje'); window.scrollTo(0, 0); };
+  const goReview = (t, k) => { st.rv = t; saveSt2(); DJ.setRv({t, k}); window.__showTab && window.__showTab('revisoes'); };
+  function rvData() {
+    const today = REAL(), wS = iso(DJ.sunday(new Date())), nd = DJ.rangeDays(wS, today).length;
+    const pwS = iso(addD(ymd(wS), -7)), pwE = iso(addD(ymd(pwS), nd - 1));
+    const A = DJ.stats(wS, today), B = DJ.stats(pwS, pwE);
+    // mês corrente com 7+ dias: compara com os mesmos dias do anterior; senão, mês passado completo × retrasado
+    const t = ymd(today), early = t.getDate() < 8, o = early ? 1 : 0;
+    const mA = iso(new Date(t.getFullYear(), t.getMonth() - o, 1)), mAe = early ? iso(new Date(t.getFullYear(), t.getMonth(), 0)) : today;
+    const mB = iso(new Date(t.getFullYear(), t.getMonth() - o - 1, 1)), mBl = iso(new Date(t.getFullYear(), t.getMonth() - o, 0));
+    const mBe = early ? mBl : iso(addD(ymd(mB), t.getDate() - 1));
+    const MA = DJ.stats(mA < START ? START : mA, mAe), MB = DJ.stats(mB < START ? START : mB, mBe > mBl ? mBl : mBe), mLab = early ? 'mês passado × retrasado' : 'mês atual × mesmos dias do anterior';
+    const moves = DJ.habitsActive().map(([id, h]) => { const a = MA.per[id], b = MB.per[id]; return a && a.tot >= 5 && b && b.tot >= 5 ? {h, d: a.ok / a.tot - b.ok / b.tot, a: a.ok / a.tot, b: b.ok / b.tot} : null; }).filter(Boolean).sort((x, y) => y.d - x.d);
+    const pend = DJ.pendingReviews();
+    const N = NOW, past = evaluate(addD(TODAY, -30));
+    const worst = CATS.map(c => ({c, s: N.cats[c.id].score, p: past.cats[c.id].score})).filter(x => x.s != null).sort((x, y) => x.s - y.s);
+    let answered = 0, due = 0; for (let k = 1; k <= 4; k++) { const w = iso(addD(ymd(wS), -7 * k)); if (iso(addD(ymd(w), 6)) < START) continue; due++; if (DJ.revOf('sem', w).ts) answered++; }
+    return {A, B, MA, MB, moves, pend, N, past, worst, answered, due, wS, mLab};
+  }
+  function rvTop(S) {
+    const p = S.pend[0];
+    const main = p ? `📊 Revisão ${DJ.RTN[p.t]} pendente: <b>${DJ.perOf(p.t, p.k).lab}</b>. <button type="button" class="nt-link" data-rvgo="${p.t}|${p.k}">responder agora ›</button>`
+      : `Tudo revisado · semana em <b>${pc(S.A.hab)}</b> dos hábitos${S.B.hab != null ? ` (anterior ${pc(S.B.hab)})` : ''}.`;
+    const dh = S.A.hab != null && S.B.hab != null ? (S.A.hab - S.B.hab) * 100 : null;
+    const up = S.moves[0], dn = S.moves[S.moves.length - 1];
+    const dc = S.N.overall != null && S.past.overall != null ? S.N.overall - S.past.overall : null;
+    return mintoHTML(main, [
+      {t: '📅 Semana × anterior', st: S.A.hab == null ? 'na' : S.A.hab >= 0.8 ? 'ok' : S.A.hab >= 0.6 ? 'att' : 'bad', big: pc(S.A.hab), sub: 'hábitos', tr: arrow(dh, ' p.p.'),
+        pts: [`Humor ${f1(S.A.humor)} (ant. ${f1(S.B.humor)}) · energia ${f1(S.A.energia)} (ant. ${f1(S.B.energia)})`, `Sono ${S.A.sono != null ? hm(S.A.sono * 3600) : '–'} · recuperação ${f0(S.A.rec)}%`]},
+      {t: '📈 Mês em movimento', st: !S.moves.length ? 'na' : dn && dn.d <= -0.1 ? 'att' : 'ok', big: up ? `${up.d >= 0 ? '+' : ''}${Math.round(up.d * 100)} p.p.` : '–', sub: up ? 'maior evolução · ' + S.mLab : 'sem dados',
+        pts: [up ? `Evoluiu: ${up.h.i} ${esc(up.h.n)} (${pc(up.b)} → ${pc(up.a)})` : '', dn && dn !== up && dn.d < 0 ? `Caiu: ${dn.h.i} ${esc(dn.h.n)} (${pc(dn.b)} → ${pc(dn.a)})` : 'Nenhuma queda relevante no mês']},
+      {t: '🩺 Check-up', st: S.N.overall == null ? 'na' : ST(S.N.overall).k, big: S.N.overall == null ? '–' : S.N.overall + '/100', sub: '7 dias', tr: arrow(dc, ' pts'),
+        pts: [S.worst[0] ? `Área mais fraca: ${S.worst[0].c.i} ${S.worst[0].c.n} (${S.worst[0].s})` : '', `Revisões semanais respondidas: ${S.answered}/${S.due} (4 sem.)`]},
+    ]);
+  }
+  function rvDisc(S) {
+    const row2 = (l, a, b, fmt, inv) => a == null || b == null ? null : `${l}: <b>${fmt(a)}</b> contra ${fmt(b)} (${a - b === 0 ? 'igual' : (a > b) !== !!inv ? '▲ melhor' : '▼ pior'})`;
+    const wk = [row2('Hábitos cumpridos', S.A.hab, S.B.hab, pc), row2('Humor', S.A.humor, S.B.humor, f1), row2('Energia', S.A.energia, S.B.energia, f1),
+      row2('Estresse percebido', S.A.estresse, S.B.estresse, f1, true), row2('Sono por noite', S.A.sono, S.B.sono, v => hm(v * 3600)), row2('Recuperação média', S.A.rec, S.B.rec, v => f0(v) + '%'),
+      row2('Passos por dia', S.A.passos, S.B.passos, f0), row2('Dias com exercício', S.A.ex, S.B.ex, f0)].filter(Boolean);
+    const cats = CATS.map(c => { const a = S.N.cats[c.id].score, b = S.past.cats[c.id].score; return a == null ? null : `${c.i} <b>${c.n}</b>: ${a}${b != null ? ` (há 30 dias ${b}${Math.abs(a - b) >= 3 ? `, ${a > b ? '▲' : '▼'} ${Math.abs(a - b)}` : ''})` : ''}`; }).filter(Boolean);
+    const secs = [
+      ['📅 A semana em detalhe', [`Comparação com os mesmos ${DJ.rangeDays(S.wS, REAL()).length} primeiros dias da semana anterior. Semana de domingo a sábado.`, wk.length ? wk.join(' · ') : 'Ainda sem dados suficientes nesta semana.']],
+      ['📈 O mês em movimento', [S.moves.length ? `Cumprimento de cada hábito (${S.mLab}): ${S.moves.map(m => `${m.h.i} ${esc(m.h.n)} <b>${m.d >= 0 ? '+' : ''}${Math.round(m.d * 100)} p.p.</b>`).join(' · ')}.` : 'Sem dados do mês anterior para comparar.',
+        'Variações de até 10 p.p. em poucos dias costumam ser ruído; olhe a tendência de várias semanas na aba ✅ Hábitos › Evoluir.']],
+      ['🩺 Check-up por área', [cats.join(' · ') || 'Sem dados suficientes.', 'Cada área compara os últimos 7 dias com referências científicas e com a sua própria média dos 60 dias anteriores. Detalhes em Check-up.']],
+      ['📝 Por que revisar', [`As revisões semanais, mensais e anuais ficam gravadas e podem ser relidas pelas setas. Nas últimas 4 semanas você respondeu <b>${S.answered} de ${S.due}</b>. O aviso aparece no domingo (semana), nos dias 1 a 7 (mês) e de 1 a 7 de janeiro (ano).`]],
+    ];
+    return discBox('revisões', secs);
+  }
+  function rvCheck(B) {
+    const N = NOW, past = evaluate(addD(TODAY, -30)), stt = N.st;
+    const ws = []; for (let k = 12; k >= 0; k--) ws.push(addD(TODAY, -7 * k));
+    const ev = ws.map(d => evaluate(d));
+    B.innerHTML = `<div class="cu"><div class="card cu-main" id="rvRing"></div><div class="cats">${CATS.map(c => {
+      const r = N.cats[c.id], s = r.st, p = past.cats[c.id].score, d = r.score != null && p != null ? r.score - p : null;
+      const inds = N.I.filter(i => i.cat === c.id), sc = inds.filter(i => i.score != null), worst = sc.slice().sort((a, b) => a.score - b.score)[0];
+      return `<div class="card cat" style="--sc:${s.c}"><div class="cat-h"><span class="cat-i">${c.i}</span><div><div class="cat-n">${c.n}</div><div class="cat-q">${c.q}</div></div><div class="cat-s num">${r.score ?? '–'}</div></div>
+        <div class="sbar"><div style="width:${r.score || 0}%;background:${s.c}"></div></div><div class="cat-st">${chipH(s)}${d != null && Math.abs(d) >= 3 ? `<span class="vchip" style="background:var(--soft);color:var(--muted)">${d > 0 ? '▲' : '▼'} ${Math.abs(d)} vs 30 dias</span>` : ''}</div>
+        ${worst ? `<p class="cat-l">${worst.msg(worst.st)}</p>` : ''}
+        <details class="more"><summary>Ver indicadores (${inds.length})</summary>${inds.map(i => `<div class="ind"><div><b>${i.n}</b><span class="v">${i.disp}</span></div><div>${chipH(i.st, i.score ?? '–')}</div><div class="ind-ref">Referência: ${i.ref} · ${i.src}</div></div>`).join('')}</details></div>`;
+    }).join('')}</div></div>
+    <div class="cu3"><div class="card"><h3>✅ O que está bom</h3><ul class="ins">${($('#insGood') || {}).innerHTML || ''}</ul></div>
+      <div class="card"><h3>⚠️ O que precisa de atenção</h3><ul class="ins">${($('#insWarn') || {}).innerHTML || ''}</ul></div>
+      <div class="card recs"><h3>🎯 Recomendações</h3><p class="q">Toque para ver como fazer.</p><ol class="recl" id="rvRecs">${($('#recs') || {}).innerHTML || ''}</ol></div></div>
+    <div class="card" style="margin-top:10px"><h3>Pontuação · 13 semanas</h3><div class="chart" id="rvScore"></div></div>`;
+    B.querySelector('#rvRing').appendChild(ringSVG(N.overall == null ? 0 : N.overall / 100, stt.c, N.overall == null ? '–' : String(N.overall), 'de 100', false));
+    B.querySelector('#rvRing').insertAdjacentHTML('beforeend', `<div class="lbl" style="color:${stt.c}">${stt.e} ${N.overall == null ? 'Dados insuficientes' : stt.n}</div><div class="sub">Base: ${N.nCats} de 6 áreas${past.overall != null && N.overall != null ? `<br>${N.overall >= past.overall ? '▲' : '▼'} ${Math.abs(N.overall - past.overall)} pts vs 30 dias` : ''}</div>`);
+    B.querySelector('#rvRecs').addEventListener('click', e => { const li = e.target.closest('li'); if (li) li.classList.toggle('open'); });
+    chart(B.querySelector('#rvScore'), {x: ws, yMin: 0, yMax: 100, height: 200,
+      zones: [{from: 75, to: 100, color: 'rgba(22,151,122,.09)'}, {from: 50, to: 75, color: 'rgba(201,138,0,.07)'}, {from: 0, to: 50, color: 'rgba(212,63,85,.06)'}],
+      tipExtra: i => CATS.map(c => row(`${c.i} ${c.n}`, ev[i].cats[c.id].score ?? '–', ev[i].cats[c.id].st.c)).join(''),
+      series: [{name: 'Pontuação geral', color: css('--ink'), values: ev.map(e => e.overall), type: 'line', width: 2.6}, {name: 'semana', color: css('--ink'), values: ev.map(e => e.overall), type: 'dots', r: 3, noTip: true}]});
+  }
+  function renderRev() {
+    const T = document.getElementById('tab-revisoes'); if (!T || T.hidden) return;
+    const B = $('#rvBody2'); purge(T);
+    const S = rvData();
+    $('#rvTop2').innerHTML = rvTop(S);
+    $('#rvTop2').querySelectorAll('[data-rvgo]').forEach(b => b.onclick = () => { const [t, k] = b.dataset.rvgo.split('|'); goReview(t, k); });
+    $('#rvNav2').innerHTML = subNav([['dia', '🗓️ Dia'], ['sem', '📅 Semana'], ['mes', '🗓 Mês'], ['ano', '📆 Ano'], ['cmp', '⚖️ Comparar'], ['check', '🩺 Check-up']], st.rv);
+    $('#rvNav2').querySelectorAll('[data-k]').forEach(b => b.onclick = () => { st.rv = b.dataset.k; saveSt2(); if (st.rv !== 'check') DJ.setRv({t: st.rv, k: null}); renderRev(); });
+    if (st.rv === 'check') rvCheck(B);
+    else { if (DJ.getRv().t !== st.rv) DJ.setRv({t: st.rv, k: null}); DJ.renderRevisoes(B, {noHead: true, forca: true, edit: goHoje, again: renderRev}); }
+    $('#rvDisc2').innerHTML = rvDisc(S);
+  }
+
+  /* ======================= v15 · ☀️ HOJE ======================= */
+  const MOM = [['manha', '☀️ Manhã', 'manha'], ['dia', '🏃 Dia', 'dia'], ['noite', '🌙 Noite', 'noite']];
+  const momNow = () => { const h = new Date().getHours(); return h < 11 ? 'manha' : h < 18 ? 'dia' : 'noite'; };
+  const rssDay = ds => ((D.rss && D.rss.days) || []).find(x => x.date === ds);
+  function hjData(ds) {
+    const isToday = ds === REAL(), mom = isToday ? momNow() : 'noite';
+    const d = DJ.day(ds), x = dayMap[ds] || {}, sl = sleepMap[ds], r = rssDay(ds);
+    const hs = DJ.habitsActive(), res = hs.map(([id, h]) => ({id, h, r: DJ.hv(id, ds)}));
+    const done = res.filter(o => o.r.v === true), miss = res.filter(o => o.r.v !== true);
+    const stepH = hs.find(([, h]) => h.rule === 'steps'), waterH = hs.find(([, h]) => h.rule === 'water');
+    const stepT = stepH ? stepH[1].target || 6000 : 6000, waterT = waterH ? waterH[1].target || 3 : 3;
+    const stepsLeft = x.steps != null ? Math.max(0, stepT - x.steps) : null, waterLeft = waterH ? Math.max(0, waterT - (d.agua || 0)) : 0;
+    const acts = ((r && r.acts) || []).length ? r.acts : DJ.actsOn(ds).map(a => ({name: a.activityName || typeOf(a), time: a.startTimeLocal.slice(11, 16), dur: a.duration, load: null, src: ''}));
+    return {ds, isToday, mom, d, x, sl, r, res, done, miss, stepT, waterT, stepsLeft, waterLeft, acts, fechado: d.fechado};
+  }
+  function oneThing(H) {
+    const r = H.r;
+    if (H.fechado) return `Dia fechado ✓ · <b>${H.done.length} de ${H.res.length}</b> hábitos cumpridos.`;
+    if (H.mom === 'manha') {
+      if (r && r.recovery != null) { const [a, b] = r.target, msg = r.band === 'verde' ? 'cabe treino forte' : r.band === 'amarelo' ? 'treino moderado' : 'dia de descanso ativo';
+        return `Recuperação <b style="color:${BAND[r.band]}">${f0(r.recovery)}% (${r.band})</b> · ${msg} (esforço ${nf(a, 0)}–${nf(b, 0)}).`; }
+      return H.sl ? `Você dormiu <b>${hm(H.sl.total)}</b>. A recuperação aparece depois da próxima sincronização.` : 'Bom dia! O sono de hoje aparece depois da próxima sincronização.';
+    }
+    if (H.mom === 'dia') {
+      const f = [];
+      if (H.stepsLeft) f.push(`<b>${nf(H.stepsLeft)} passos</b>`);
+      if (H.waterLeft) f.push(`<b>${nf(H.waterLeft, 1)} L de água</b>`);
+      if (!H.acts.length && r && r.band === 'verde') f.push('um <b>treino</b> (recuperação verde)');
+      return f.length ? `Faltam ${f.join(' e ')} para fechar a meta de hoje.` : 'Metas do dia em dia ✅ · aproveite para cuidar do sono de hoje.';
+    }
+    const miss = H.miss.filter(o => !o.r.open).map(o => o.h.i + ' ' + esc(o.h.n));
+    return `<b>${H.done.length} de ${H.res.length}</b> hábitos${miss.length ? ` · faltam ${miss.slice(0, 3).join(', ')}${miss.length > 3 ? ` e mais ${miss.length - 3}` : ''}` : ' · tudo cumprido 👏'}. Feche o dia quando terminar.`;
+  }
+  function hjTop(H) {
+    const S1 = hbData(), S2 = cpData(), pend = DJ.pendingReviews(), L = S2.L;
+    return mintoHTML(oneThing(H), [
+      {t: '✅ Hábitos', st: S1.A.pct == null ? 'na' : S1.A.pct >= 0.8 ? 'ok' : S1.A.pct >= 0.6 ? 'att' : 'bad', big: pc(S1.A.pct), sub: 'na semana', tr: arrow(S1.A.pct != null && S1.P.pct != null ? (S1.A.pct - S1.P.pct) * 100 : null, ' p.p.'),
+        pts: [S1.top ? `Foco: ${S1.top.i} ${esc(S1.top.n)} (${pc(S1.top.c)} · alvo ${pc(S1.top.alvoPct)})` : 'Todos os hábitos no alvo', `Força média ${pc(S1.Fm)}`]},
+      {t: '📈 Corpo', st: L.band ? {verde: 'ok', amarelo: 'att', vermelho: 'bad'}[L.band] : 'na', big: L.recovery != null ? f0(L.recovery) + '%' : '–', sub: 'recuperação hoje', tr: arrow(S2.r7 != null && S2.rp7 != null ? S2.r7 - S2.rp7 : null, ' pts'),
+        pts: [`Sono 7 noites: ${S2.sp7 != null ? f0(S2.sp7) + '% da necessidade' : '–'} · dívida ${hm(S2.debt7)}`, `Carga ${S2.ratio != null ? nf(S2.ratio, 2) + '×' : '–'} a média semanal`]},
+      {t: '📊 Revisões', st: pend.length ? 'att' : 'ok', big: pend.length ? String(pend.length) : '✓', sub: pend.length ? 'pendente(s)' : 'em dia',
+        pts: pend.length ? pend.map(p => `<button type="button" class="nt-link" data-rvgo="${p.t}|${p.k}">📊 Revisão ${DJ.RTN[p.t]} · ${DJ.perOf(p.t, p.k).lab} ›</button>`) : [`Check-up ${NOW.overall ?? '–'}/100`, 'Próxima revisão semanal no domingo']},
+    ]);
+  }
+  const fChip = (id, h, upto) => { const F = DJ.forca(dd => DJ.hv(id, dd).v, upto).f, ap = DJ.EXR.includes(h.rule) ? null : DJ.alvoOf(id, h) / 7; return F == null ? '' : `<span class="nt-f" style="--fc:${forcaCol(F, ap)}" title="Força do hábito">${Math.round(F * 100)}%</span>`; };
+  function hjHab(o, H) {
+    const {id, h, r} = o, ds = H.ds, d = H.d, x = H.x, fc = fChip(id, h, yday());
+    if (h.rule === 'water') { const l = d.agua || 0;
+      return `<div class="nt-hab ${r.v ? 'done' : ''}"><span class="dj-hi">${h.i}</span><span class="dj-hn">${esc(h.n)}<small>${nf(l, 1)} de ${nf(h.target || 3, 1)} L</small></span>
+        <span class="dj-water"><button type="button" data-water="-0.5" aria-label="menos meio litro">−</button><b>${nf(l, 1)} L</b><button type="button" data-water="0.5" aria-label="mais meio litro">+</button></span>${fc}<span class="dj-tick">${DJ.tick(r.v)}</span></div>`; }
+    let sub = '';
+    if (h.rule === 'steps') sub = x.steps != null ? `${r.open ? '⏳ ' : ''}${nf(x.steps)} de ${nf(h.target || 6000)} (${nf(x.steps / (h.target || 6000) * 100)}%)` : 'sem passos ainda';
+    else if (h.src === 'auto') sub = r.how === 'ajuste' ? '✋ ajustado' : '🤖 Garmin';
+    return `<button type="button" class="nt-hab ${r.v ? 'done' : ''} ${r.open ? 'open' : ''}" data-hab="${id}" aria-pressed="${!!r.v}"><span class="dj-hi">${h.i}</span><span class="dj-hn">${esc(h.n)}${sub ? `<small>${sub}</small>` : ''}</span>${fc}<span class="dj-tick">${r.open ? '⏳' : DJ.tick(r.v)}</span></button>`;
+  }
+  const habsOf = (H, per) => H.res.filter(o => DJ.perOfH(o.id, o.h) === per);
+  function blkManha(H) {
+    const {ds, d, sl, r} = H, m = d.m || {}, med = d.med || {}, N = (sl && sl.noite) || {}, sunday = ymd(ds).getDay() === 0, hasCm = DJ.MEDS.slice(1).some(([k]) => med[k] != null);
+    const inp = ([k, l, u, a, b, s]) => `<label><span>${l} (${u})</span><input type="number" inputmode="decimal" min="${a}" max="${b}" step="${s}" data-med="${k}" value="${med[k] ?? ''}" placeholder="–"></label>`;
+    const hb = habsOf(H, 'manha');
+    return `<section class="hj-blk"><h2 class="hj-h">☀️ Manhã</h2><div class="hj-g">
+      <div class="card"><h3>😴 Como dormi</h3><div class="grid g2" style="gap:8px;margin-top:6px">
+        <div class="kpi"><div class="l">Sono</div><div class="v num">${sl ? hm(sl.total) : '–'}</div><div class="l">${r && r.perf != null ? f0(r.perf) + '% da necessidade' : ''}</div></div>
+        <div class="kpi"><div class="l">Recuperação</div><div class="v num" style="color:${r && r.band ? BAND[r.band] : 'inherit'}">${r && r.recovery != null ? f0(r.recovery) + '%' : '–'}</div><div class="l">${r && r.target ? `esforço ${nf(r.target[0], 0)}–${nf(r.target[1], 0)}` : ''}</div></div>
+        <div class="kpi"><div class="l">FC mínima no sono</div><div class="v num">${N.fcMin ?? '–'}<small>bpm</small></div><div class="l">${N.fcMinHora ? 'às ' + N.fcMinHora : ''}</div></div>
+        <div class="kpi"><div class="l">Recarga na noite</div><div class="v num">${N.bbRecarga != null ? (N.bbRecarga > 0 ? '+' : '') + N.bbRecarga : '–'}</div><div class="l">${N.bbIni != null ? N.bbIni + ' → ' + N.bbFim : ''}</div></div></div></div>
+      <div class="card"><h3>✍️ Check-in da manhã ${m.ts ? '<small class="dj-ok">✓</small>' : ''}</h3>
+        ${DJ.rate('dias/' + ds + '/m/humor', 'humor', m.humor, 'Humor')}${DJ.rate('dias/' + ds + '/m/energia', 'energia', m.energia, 'Energia')}${DJ.rate('dias/' + ds + '/m/sono', 'sono', m.sono, 'Como dormi')}
+        <div class="dj-meds nt-meds">${inp(DJ.MEDS[0])}</div>
+        <details class="nt-cm" ${sunday || hasCm ? 'open' : ''}><summary>+ medidas em cm${sunday ? ' · dia de medir' : ''}</summary><div class="dj-meds">${DJ.MEDS.slice(1).map(inp).join('')}</div></details>
+        <label class="dj-line"><span>Intenção do dia</span><input type="text" maxlength="120" data-txt="dias/${ds}/m/intencao" value="${esc(m.intencao)}" placeholder="Opcional · uma linha"></label></div>
+      ${hb.length ? `<div class="card"><h3>Hábitos da manhã <small class="hj-c">${hb.filter(o => o.r.v === true).length}/${hb.length}</small></h3><div class="nt-habs">${hb.map(o => hjHab(o, H)).join('')}</div></div>` : ''}
+    </div></section>`;
+  }
+  function blkDia(H) {
+    const {x, acts} = H, hb = habsOf(H, 'dia');
+    return `<section class="hj-blk"><h2 class="hj-h">🏃 Dia</h2><div class="hj-g">
+      <div class="card"><h3>👟 Movimento</h3><div class="grid g2" style="gap:8px;margin-top:6px">
+        <div class="kpi"><div class="l">Passos</div><div class="v num">${x.steps != null ? nf(x.steps) : '–'}</div><div class="bar"><div style="width:${x.steps != null ? Math.min(100, x.steps / H.stepT * 100) : 0}%"></div></div><div class="l">meta ${nf(H.stepT)}${H.stepsLeft ? ` · faltam ${nf(H.stepsLeft)}` : ''}</div></div>
+        <div class="kpi"><div class="l">Body Battery</div><div class="v num">${x.bbLatest ?? x.bbMax ?? '–'}</div><div class="l">${x.bbMax != null ? `máx ${x.bbMax} · mín ${x.bbMin ?? '–'}` : ''}</div></div></div>
+        <p class="note">Passos e Body Battery chegam a cada sincronização do robô (a cada 2 h, das 6h às 22h).</p></div>
+      <div class="card"><h3>🏋️ Treino do dia</h3>${acts.length ? `<ul class="ins">${acts.map(a => `<li><span class="e">${a.bjj ? '🥋' : '🏋️'}</span><span><b>${esc(a.name)}</b> · ${a.time} · ${hm(a.dur)}${a.load != null ? ` · carga ${f1(a.load)}` : ''}</span></li>`).join('')}</ul>` : `<p class="q" style="margin-top:6px">Nenhum treino sincronizado ainda.${H.r && H.r.target ? ` Meta de esforço: ${nf(H.r.target[0], 0)}–${nf(H.r.target[1], 0)}.` : ''}</p>`}
+        ${H.r && H.r.strain != null ? `<p class="q">Esforço até agora: <b>${nf(H.r.strain, 1)}</b> de 21.</p>` : ''}</div>
+      ${hb.length ? `<div class="card"><h3>Hábitos do dia <small class="hj-c">${hb.filter(o => o.r.v === true).length}/${hb.length}</small></h3><div class="nt-habs">${hb.map(o => hjHab(o, H)).join('')}</div></div>` : ''}
+    </div></section>`;
+  }
+  function blkNoite(H) {
+    const {ds, d} = H, n = d.n || {}, refl = n.reflexao || {};
+    const q = refl.q ? {t: refl.t, i: (DJ.THEMES.find(t => t[0] === refl.t) || [, '💭'])[1], q: refl.q} : DJ.question(ds, refl.s || 0);
+    const hb = habsOf(H, 'noite');
+    const F1 = avg(H.res.map(o => DJ.forca(dd => DJ.hv(o.id, dd).v, ds).f)), F0 = avg(H.res.map(o => DJ.forca(dd => DJ.hv(o.id, dd).v, iso(addD(ymd(ds), -1))).f));
+    return `<section class="hj-blk"><h2 class="hj-h">🌙 Noite</h2><div class="hj-g">
+      <div class="card"><h3>✍️ Check-in da noite ${n.ts ? '<small class="dj-ok">✓</small>' : ''}</h3>
+        ${DJ.rate('dias/' + ds + '/n/estresse', 'estresse', n.estresse, 'Estresse percebido')}
+        <div class="dj-refl"><div class="dj-rh"><span class="vchip" style="background:var(--soft)">${q.i} ${esc(q.t)}</span>
+          <span><button type="button" class="dj-link" data-q="next">Outra pergunta</button> · <button type="button" class="dj-link" data-q="skip">${refl.pulada ? 'Desfazer pular' : 'Pular'}</button></span></div>
+          ${refl.pulada ? '<p class="q" style="margin:6px 0 0">Pergunta pulada hoje.</p>' : `<p class="dj-q">${esc(q.q)}</p><textarea maxlength="280" rows="2" data-refl="1" placeholder="Resposta curta (até 280 caracteres)">${esc(refl.r)}</textarea>`}</div></div>
+      ${hb.length ? `<div class="card"><h3>Hábitos da noite <small class="hj-c">${hb.filter(o => o.r.v === true).length}/${hb.length}</small></h3><div class="nt-habs">${hb.map(o => hjHab(o, H)).join('')}</div></div>` : ''}
+      <div class="card hj-close ${H.fechado ? 'on' : ''}"><h3>${H.fechado ? '✅ Dia fechado' : '🔒 Fechar o dia'}</h3>
+        <div class="hj-sum"><div><b class="num">${H.done.length}</b><span>de ${H.res.length} hábitos</span></div><div><b class="num">${pc(H.res.length ? H.done.length / H.res.length : null)}</b><span>do dia</span></div><div><b class="num" style="color:${F1 != null && F0 != null && F1 >= F0 ? COL.ok : COL.bad}">${F1 != null && F0 != null ? (F1 >= F0 ? '+' : '−') + nf(Math.abs(F1 - F0) * 100, 1) : '–'}</b><span>p.p. na força média</span></div></div>
+        ${H.miss.length ? `<p class="q" style="margin:6px 0">Não cumpridos: ${H.miss.map(o => o.r.open ? `${o.h.i} ${esc(o.h.n)} ⏳` : null).filter(Boolean).concat([]).length ? '' : ''}${H.miss.map(o => `${o.h.i} ${esc(o.h.n)}`).join(' · ')}</p>` : '<p class="q" style="margin:6px 0">Todos os hábitos cumpridos. 👏</p>'}
+        <button type="button" class="chip ${H.fechado ? '' : 'on'}" id="hjClose">${H.fechado ? 'Reabrir o dia' : 'Fechar o dia'}</button>
+        ${H.fechado ? `<span class="q" style="margin-left:8px">fechado às ${(() => { const t = new Date(H.fechado); return String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0'); })()}</span>` : ''}
+        <p class="note">Fechar não muda os cálculos: sem marcação já conta como não cumprido. Serve para registrar que o dia foi revisado.</p></div>
+    </div></section>`;
+  }
+  function hjDisc(H) {
+    const S1 = hbData(), S2 = cpData(), r = H.r, T = S1.top;
+    const why = H.fechado ? 'O dia foi fechado: o resumo mostra o cumprimento final.' : H.mom === 'manha' ? 'De manhã, a mensagem principal é a recuperação, porque ela define o tamanho do treino do dia (verde 14–18, amarelo 9–13,5, vermelho até 8 de esforço).'
+      : H.mom === 'dia' ? 'Durante o dia, a mensagem principal é o que falta para as metas diárias (passos e água), atualizado a cada sincronização.' : 'À noite, a mensagem principal é o fechamento: quantos hábitos foram cumpridos e o que ainda dá para fazer antes de dormir.';
+    const secs = [
+      ['🎯 Por que essa é a coisa importante', [why, H.isToday ? `Momento atual: <b>${MOM.find(m => m[0] === H.mom)[1]}</b> (manhã até 11h, dia até 18h, noite depois). Use “ver o dia inteiro” para preencher tudo de uma vez.` : 'Dia anterior: todos os blocos aparecem juntos.']],
+      r && r.recovery != null ? ['🔋 O corpo hoje', [`Recuperação <b>${f0(r.recovery)}%</b>: FC de repouso ${r.rhr ?? '–'} bpm (nota ${f0(r.inputs.rhr)}) e sono ${f0(r.perf)}% da necessidade (nota ${f0(r.inputs.sleep)}). Dívida de sono dos últimos 7 dias: <b>${hm(S2.debt7)}</b>. Carga da semana em ${S2.ratio != null ? nf(S2.ratio, 2) + '×' : '–'} a média.`,
+        r.band === 'verde' ? 'Dia bom para treino forte: Jiu-Jitsu com rolas, intervalado ou musculação pesada.' : r.band === 'amarelo' ? 'Prefira técnica, musculação leve ou corrida fácil.' : 'Priorize caminhada, mobilidade e dormir mais cedo hoje.']] : null,
+      T ? ['✅ O hábito que mais rende', [`<b>${T.i} ${esc(T.n)}</b> é o 1º do ranking “Onde evoluir” (${pc(T.c)} nos últimos 28 dias, alvo ${pc(T.alvoPct)}). ${T.measured && T.eff.some(e => e.e > 0.05) ? 'Efeito nos seus dados: ' + T.eff.filter(e => e.e > 0.05 && e.w > 0).sort((a, b) => b.e - a.e).slice(0, 2).map(DJ.effLine).join('; ') + '.' : ''}`, `👉 ${DJ.actionOf(T)}`]] : null,
+    ];
+    const cards = S1.EV.disc.length ? `<div class="nt-dsec"><h4>📓 O que mexe nos seus números</h4><div class="grid g3 evo-disc">${DJ.discCards(S1.EV.disc.slice(0, 3))}</div></div>` : '';
+    return discBox('hoje', secs, cards);
+  }
+  function bindHoje(B, H) {
+    const ds = H.ds, DB = () => DJ.getDB();
+    const stamp = part => { const d = DJ.day(ds); if (!(d[part] && d[part].ts)) DJ.put(`dias/${ds}/${part}/ts`, Date.now()); };
+    B.querySelectorAll('[data-w]').forEach(b => b.onclick = () => { const p = b.dataset.w, v = +b.dataset.v, cur = p.split('/').reduce((o, k) => o && o[k], DB()); DJ.put(p, cur === v ? null : v); stamp(p.includes('/m/') ? 'm' : 'n'); renderHoje(); });
+    B.querySelectorAll('[data-hab]').forEach(b => b.onclick = () => { toggleHab(b.dataset.hab, ds); stamp('n'); renderHoje(); });
+    B.querySelectorAll('[data-water]').forEach(b => b.onclick = () => { water(ds, +b.dataset.water); stamp('n'); renderHoje(); });
+    B.querySelectorAll('[data-med]').forEach(i => i.onchange = () => {
+      const k = i.dataset.med, def = DJ.MEDS.find(x => x[0] === k), v = i.value === '' ? null : Math.round(parseFloat(i.value.replace(',', '.')) * 10) / 10;
+      if (v != null && (isNaN(v) || v < def[3] || v > def[4])) { i.setCustomValidity(`Entre ${def[3]} e ${def[4]}`); i.reportValidity(); return; }
+      i.setCustomValidity(''); DJ.put(`dias/${ds}/med/${k}`, v); stamp('m');
+    });
+    B.querySelectorAll('[data-txt]').forEach(i => i.onchange = () => { DJ.put(i.dataset.txt, i.value.trim() || null); stamp('m'); });
+    const ta = B.querySelector('[data-refl]'); let tt;
+    const saveRefl = () => { const d = DJ.day(ds), cur = (d.n && d.n.reflexao) || {}, q = DJ.question(ds, cur.s || 0);
+      DJ.put(`dias/${ds}/n/reflexao`, ta.value.trim() ? {t: cur.t || q.t, q: cur.q || q.q, r: ta.value.trim(), s: cur.s || 0} : (cur.s ? {s: cur.s} : null)); stamp('n'); };
+    if (ta) { ta.oninput = () => { clearTimeout(tt); tt = setTimeout(saveRefl, 900); }; ta.onchange = () => { clearTimeout(tt); saveRefl(); }; }
+    B.querySelectorAll('[data-q]').forEach(b => b.onclick = () => { const d = DJ.day(ds), cur = (d.n && d.n.reflexao) || {};
+      if (b.dataset.q === 'skip') DJ.put(`dias/${ds}/n/reflexao`, cur.pulada ? null : {pulada: true, s: cur.s || 0}); else DJ.put(`dias/${ds}/n/reflexao`, {s: (cur.s || 0) + 1}); renderHoje(); });
+    const cl = B.querySelector('#hjClose'); if (cl) cl.onclick = () => { DJ.put(`dias/${ds}/fechado`, H.fechado ? null : Date.now()); renderHoje(); };
+  }
+  function renderHoje() {
+    const T = document.getElementById('tab-hoje'); if (!T || T.hidden) return;
+    const B = $('#hjBody'); purge(T);
+    if (st.hjDay < START) st.hjDay = START; if (st.hjDay > REAL()) st.hjDay = REAL();
+    const H = hjData(st.hjDay), all = st.hjAll || !H.isToday;
+    $('#hjTop').innerHTML = hjTop(H);
+    $('#hjTop').querySelectorAll('[data-rvgo]').forEach(b => b.onclick = () => { const [t, k] = b.dataset.rvgo.split('|'); goReview(t, k); });
+    const ds = H.ds;
+    $('#hjNav').innerHTML = `<div class="dj-nav hj-nav"><button type="button" class="chip" data-nav="-1" ${ds <= START ? 'disabled' : ''} aria-label="dia anterior">‹</button><b>${H.isToday ? 'Hoje · ' : ''}${DOW[ymd(ds).getDay()]}, ${fdy(ymd(ds))}</b>
+      <button type="button" class="chip" data-nav="1" ${ds >= REAL() ? 'disabled' : ''} aria-label="próximo dia">›</button>${H.isToday ? '' : '<button type="button" class="chip" data-nav="0">Hoje</button>'}
+      ${H.isToday ? `<span class="vchip hj-mom">${MOM.find(m => m[0] === H.mom)[1]}</span><button type="button" class="chip ${st.hjAll ? 'on' : ''}" id="hjAll" aria-pressed="${st.hjAll}">${st.hjAll ? 'Só o momento atual' : 'Ver o dia inteiro'}</button>` : ''}
+      <span class="dj-save" aria-live="polite"></span></div>`;
+    $('#hjNav').querySelectorAll('[data-nav]').forEach(b => b.onclick = () => { const v = +b.dataset.nav; st.hjDay = v === 0 ? REAL() : iso(addD(ymd(st.hjDay), v)); renderHoje(); });
+    const ha = $('#hjAll'); if (ha) ha.onclick = () => { st.hjAll = !st.hjAll; saveSt2(); renderHoje(); };
+    const order = all ? ['manha', 'dia', 'noite'] : [H.mom];
+    B.innerHTML = order.map(k => k === 'manha' ? blkManha(H) : k === 'dia' ? blkDia(H) : blkNoite(H)).join('')
+      + (all ? '' : `<p class="note">Os outros momentos do dia ficam em “Ver o dia inteiro”. Hábitos de todos os períodos também podem ser marcados em ✅ Hábitos.</p>`);
+    bindHoje(B, H);
+    $('#hjDisc').innerHTML = hjDisc(H);
+  }
+
   /* ---------- ligação com as abas e sincronização ---------- */
   const rerender = () => {
     if (visible('tab-habitos') && !busyIn($('#tab-habitos'))) renderHab();
     if (visible('tab-corpo') && !busyIn($('#tab-corpo'))) renderCorpo();
+    if (visible('tab-hoje') && !busyIn($('#tab-hoje'))) renderHoje();
+    if (visible('tab-revisoes') && !busyIn($('#tab-revisoes'))) renderRev();
   };
   (window.__djL = window.__djL || []).push(rerender);
-  window.__onTab = t => { if (t === 'habitos') renderHab(); else if (t === 'corpo') renderCorpo(); else if (t === 'diario' && window.__djRefresh) window.__djRefresh(); };
-  if (location.hash === '#habitos' || location.hash === '#corpo') window.__showTab && window.__showTab(location.hash.slice(1));
-  window.__nt = {renderHab, renderCorpo, st};
+  window.__onTab = t => { if (t === 'habitos') renderHab(); else if (t === 'corpo') renderCorpo(); else if (t === 'hoje') renderHoje(); else if (t === 'revisoes') renderRev(); else if (t === 'diario' && window.__djRefresh) window.__djRefresh(); };
+  { const h = location.hash.slice(1), t = h === 'recuperacao' ? 'rss' : ['hoje', 'habitos', 'corpo', 'revisoes', 'diario', 'saude'].includes(h) ? h : 'hoje'; window.__showTab && window.__showTab(t); }
+  window.__nt = {renderHab, renderCorpo, renderHoje, renderRev, st};
 })();
 
 } // fim BOOT
