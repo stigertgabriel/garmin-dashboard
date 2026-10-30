@@ -4835,6 +4835,7 @@ messagingSenderId: "281442531876",
 appId: "1:281442531876:web:b4aac1de0f91919f1ef6b1"
 });
 const auth = getAuth(app), db = getDatabase(app);
+const $g = id => document.getElementById(id);
 // v18: atalho na tela inicial
 const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 let deferredInstall = null;
@@ -4850,7 +4851,6 @@ $g('instTxt').innerHTML = ios
 : '<ol class="inst-l"><li>No <b>Chrome</b>, toque no menu <b>⋮</b> no canto superior direito.</li><li>Escolha <b>Instalar app</b> ou <b>Adicionar à tela inicial</b>.</li><li>Confirme. O ícone <b>Diário</b> aparece na tela inicial.</li></ol><p class="q">No computador, o Chrome e o Edge mostram um ícone de instalar na barra de endereço.</p>';
 $g('instDlg').showModal();
 });
-const $g = id => document.getElementById(id);
 const gate = (txt, opts = {}) => {
 $g('gate').hidden = false; $g('app').hidden = true;
 $g('gText').textContent = txt; $g('gSpin').hidden = !opts.spin; $g('gIn').hidden = !opts.login; $g('gMsg').textContent = opts.msg || '';
